@@ -1,0 +1,38 @@
+# DigitalOcean App Platform spec for the WidinX website + HubSpot lead relay.
+# Apply with:  doctl apps create --spec .do/app.yaml   (first time)
+#              doctl apps update <app-id> --spec .do/app.yaml
+# The HubSpot token is stored as an encrypted SECRET in the App Platform
+# console — set it there (or via a local copy of this file that is not committed).
+name: widinx-website
+region: fra
+features:
+  - buildpack-stack=ubuntu-22
+services:
+  - name: web
+    git:
+      repo_clone_url: https://github.com/api-walker-hub/widinx-website.git
+      branch: main
+    source_dir: /
+    environment_slug: node-js
+    build_command: npm run build
+    run_command: npm start
+    http_port: 8787
+    instance_count: 1
+    instance_size_slug: apps-s-1vcpu-0.5gb
+    health_check:
+      http_path: /api/health
+      initial_delay_seconds: 10
+    envs:
+      - key: NODE_ENV
+        value: production
+        scope: RUN_AND_BUILD_TIME
+      - key: PORT
+        value: "8787"
+        scope: RUN_TIME
+      - key: HUBSPOT_API_BASE
+        value: https://api-na2.hubapi.com
+        scope: RUN_TIME
+      - key: HUBSPOT_PRIVATE_APP_TOKEN
+        scope: RUN_TIME
+        type: SECRET
+        value: "" # set in the App Platform console, never commit the real value
