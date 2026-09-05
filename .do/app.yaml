@@ -23,9 +23,13 @@ services:
       http_path: /api/health
       initial_delay_seconds: 10
     envs:
+      # Keep devDependencies (vite, tailwind) available for the build step.
+      - key: NPM_CONFIG_PRODUCTION
+        value: "false"
+        scope: BUILD_TIME
       - key: NODE_ENV
         value: production
-        scope: RUN_AND_BUILD_TIME
+        scope: RUN_TIME
       - key: PORT
         value: "8787"
         scope: RUN_TIME
