@@ -36,7 +36,7 @@ const year = new Date().getFullYear()
     <div class="border-t border-white/20">
       <div class="wrap flex flex-col gap-3 py-6 font-mono text-[10px] uppercase tracking-[0.08em] text-white/60 sm:flex-row sm:items-center sm:justify-between">
         <span>© {{ year }} {{ site.name }}</span>
-        <span>Built in Europe · EU data residency available</span>
+        <span>EU data residency available</span>
       </div>
     </div>
   </footer>
