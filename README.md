@@ -81,7 +81,13 @@ The privacy policy body lives in `src/components/legal/PrivacyContent.vue` and i
 
 ## Deploy
 
-Deployed on DigitalOcean App Platform (region `fra`) as one Node service from `.do/app.yaml`: the buildpack runs `npm run build`, then `npm start` serves `dist/` and `/api/leads` on port 8787. Source is the public repo `api-walker-hub/widinx-website`, branch `main` — App Platform redeploys on push.
+Deployed on DigitalOcean App Platform (region `fra`) as one Node service from `.do/app.yaml`: the buildpack runs `npm run build`, then `npm start` serves `dist/` and `/api/leads` on port 8787. Source is the public repo `api-walker-hub/widinx-website`, branch `main`. Because the app uses a plain git clone URL (not the GitHub integration), pushes do **not** auto-deploy — trigger one after pushing:
+
+```bash
+doctl apps create-deployment 4fb40361-3adb-47ce-ab65-44a322f73290
+```
+
+Live URL: https://widinx-website-8l3s4.ondigitalocean.app
 
 - `HUBSPOT_PRIVATE_APP_TOKEN` is an encrypted secret in the App Platform console; the committed spec keeps it empty.
 - Update the spec with `doctl apps update <app-id> --spec .do/app.yaml` (add the token value in a local, uncommitted copy first, or set it in the console).
