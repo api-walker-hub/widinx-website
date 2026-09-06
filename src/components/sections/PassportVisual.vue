@@ -31,8 +31,11 @@ const signals = [
       <path d="m158 187 17 51 137 1 13-63M148 344l180 16 2-103" stroke="#d1a17b" stroke-width="1" stroke-dasharray="3 3" opacity=".65"/>
       <path d="M235 227h26v34h-26z" fill="#cbb78b"/><path d="M243 234h10v19h-10z" fill="#805d3d"/>
       <path d="m349 207 9 130" stroke="#b6805c" opacity=".6"/>
-      <path d="m310 197 11 68" stroke="#4d392b" stroke-width="2"/><rect x="305" y="260" width="29" height="42" rx="4" transform="rotate(-9 305 260)" fill="#e8e6d2"/>
-      <path d="m313 273 4 11 4-9 4 8 3-12" stroke="#245c4d" stroke-width="2"/>
+      <path d="m310 197 11 68" stroke="#4d392b" stroke-width="2"/>
+      <g transform="rotate(-9 305 260)">
+        <rect x="305" y="260" width="29" height="42" rx="4" fill="#e8e6d2"/>
+        <image href="/widinx-symbol.svg" x="309" y="274" width="21" height="13.3" />
+      </g>
       <circle cx="108" cy="190" r="5" fill="#387962"/><circle cx="409" cy="304" r="5" fill="#387962"/>
     </svg>
     <div class="signal-orbit">
