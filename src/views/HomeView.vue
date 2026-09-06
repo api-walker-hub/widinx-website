@@ -1,7 +1,5 @@
 <script setup>
-import { ticker } from '@/content/home'
 import HeroSection from '@/components/sections/HeroSection.vue'
-import TickerStrip from '@/components/ui/TickerStrip.vue'
 import PillarsSection from '@/components/sections/PillarsSection.vue'
 import JourneySection from '@/components/sections/JourneySection.vue'
 import PlatformSection from '@/components/sections/PlatformSection.vue'
@@ -15,7 +13,6 @@ import CtaSection from '@/components/sections/CtaSection.vue'
 <template>
   <div>
     <HeroSection />
-    <TickerStrip :items="ticker" />
     <PillarsSection />
     <JourneySection />
     <PlatformSection />
