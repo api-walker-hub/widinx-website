@@ -1,14 +1,23 @@
 <script setup>
-import SectionBackground from '@/components/ui/SectionBackground.vue'
 import { journey } from '@/content/home'
 import SectionHead from '@/components/ui/SectionHead.vue'
 </script>
 
 <template>
-  <section id="journey" class="section-illustrated section-pad bg-white">
-      <SectionBackground scene="shipping" />
+  <section id="journey" class="section-illustrated section-pad bg-bone">
     <div class="wrap">
-      <SectionHead :eyebrow="journey.eyebrow" :title="journey.title" :intro="journey.intro" class="mb-14" />
+      <div class="mb-12 grid items-center gap-8 lg:grid-cols-[1.3fr_1fr] lg:gap-16">
+        <SectionHead :eyebrow="journey.eyebrow" :title="journey.title" :intro="journey.intro" />
+        <img
+          src="/images/widinx-globe-transparent.png"
+          alt=""
+          width="1254"
+          height="1254"
+          loading="lazy"
+          decoding="async"
+          class="mx-auto w-full max-w-[300px] lg:max-w-[380px]"
+        />
+      </div>
       <ol class="relative grid gap-4 md:grid-cols-4">
         <!-- connecting thread -->
         <span class="pointer-events-none absolute top-[38px] left-[6%] right-[6%] hidden h-[2px] bg-ink md:block" />
