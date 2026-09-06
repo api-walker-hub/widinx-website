@@ -267,3 +267,24 @@
 .section-illustrated > .wrap { position: relative; z-index: 1; }
 .legal-illustrated > :not(.section-background) { position: relative; z-index: 1; }
 .legal-illustrated > .section-background { max-height: 540px; opacity: .25; }
+
+/* Each illustrated chapter occupies at least the viewport below the header.
+   Minimum height keeps long content accessible without nested scroll areas. */
+:root { --site-header-height: 77px; }
+html { scroll-padding-top: var(--site-header-height); }
+html:has(main .screen-scene),
+html:has(main section.section-illustrated) { scroll-snap-type: y mandatory; }
+section.section-illustrated,
+section.screen-scene {
+  min-height: calc(100vh - var(--site-header-height));
+  min-height: calc(100dvh - var(--site-header-height));
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+section.section-illustrated > .wrap,
+.screen-scene > .wrap { flex-shrink: 0; }
+footer { scroll-snap-align: start; }
+

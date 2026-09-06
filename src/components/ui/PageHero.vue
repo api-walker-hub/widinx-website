@@ -13,7 +13,7 @@ defineProps({
 </script>
 
 <template>
-  <section class="relative overflow-hidden border-b border-line bg-bone">
+  <section class="screen-scene relative overflow-hidden border-b border-line bg-bone">
     <SectionBackground :scene="scene" />
     <div class="wrap relative grid items-end gap-10 py-[clamp(56px,7vw,96px)] lg:grid-cols-[1.25fr_1fr]">
       <div v-reveal>
