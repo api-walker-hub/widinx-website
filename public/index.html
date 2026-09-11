@@ -1,24 +1,18 @@
 <meta charset="utf-8">
 <title>WidinX Regulation OS</title>
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;450;500;550;600;650;700&family=Space+Grotesk:wght@400;500;600;700&family=Instrument+Serif:ital@0;1&family=IBM+Plex+Mono:wght@400;500&display=swap">
 <style>
+/* Single light theme — the exact "Stamped Ledger" tokens of the live WidinX console (assets/css/main.css):
+   bone ground, warm paper cards, forest ink, the #1B3D2F green, ochre / clay / slate status colours,
+   Inter body, Space Grotesk display, Instrument Serif for the odd editorial line, sharp corners. */
 :root{
-  --paper:#F5F3EE;--surface:#FFFFFF;--surface-2:#FAF8F3;--ink:#1E2A24;--muted:#6A7570;--hair:#E3DED3;--hair-2:#EFEBE2;
-  --primary:#1B3D2F;--primary-ink:#F5F3EE;--primary-soft:#E4EFE7;--primary-soft-ink:#1B3D2F;
-  --ready:#1F6B45;--ready-bg:#E3F2E8;--warn:#8A5A00;--warn-bg:#FBEFD6;--crit:#9B2C2C;--crit-bg:#FBE4E4;--review:#2F4F8F;--review-bg:#E7EEF9;--info:#4B5563;--info-bg:#ECEAE3;
-  --shadow:0 1px 2px rgba(30,42,36,.06),0 8px 24px rgba(30,42,36,.06);
-  --f-display:"Manrope",system-ui,sans-serif;--f-body:"IBM Plex Sans",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+  color-scheme:light;
+  --paper:#F1EFE7;--surface:#FDFCFA;--surface-2:#F6F4EE;--ink:#10231B;--muted:#536A5F;--hair:#C7D1CC;--hair-2:#DFE5E1;
+  --primary:#1B3D2F;--primary-ink:#F7F4EC;--primary-soft:#DDEBE2;--primary-soft-ink:#1B3D2F;--accent:#2F7A54;
+  --ready:#2B6E4B;--ready-bg:#DDEBE2;--warn:#AD7A0B;--warn-bg:#F5E8C8;--crit:#AE3A29;--crit-bg:#F3DAD5;--review:#2C6C96;--review-bg:#DCE7EF;--info:#536A5F;--info-bg:#E6E2D7;
+  --shadow:0 1px 0 rgba(16,35,27,.08),0 8px 24px rgba(16,35,27,.06);
+  --f-display:"Space Grotesk","Inter",system-ui,sans-serif;--f-body:"Inter",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;--f-serif:"Instrument Serif",Georgia,serif;
 }
-@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
-  --paper:#141A17;--surface:#1B221E;--surface-2:#202823;--ink:#ECE9E1;--muted:#9AA39D;--hair:#2C352F;--hair-2:#252D28;
-  --primary:#7FBF9B;--primary-ink:#0F1A14;--primary-soft:#22362B;--primary-soft-ink:#BFE3CD;
-  --ready:#7FBF9B;--ready-bg:#1D3327;--warn:#E3B45C;--warn-bg:#3A2E14;--crit:#E28B8B;--crit-bg:#3B1F1F;--review:#93B3EA;--review-bg:#1E2A3F;--info:#B7BDB9;--info-bg:#2A312D;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);}}
-:root[data-theme="dark"]{
-  --paper:#141A17;--surface:#1B221E;--surface-2:#202823;--ink:#ECE9E1;--muted:#9AA39D;--hair:#2C352F;--hair-2:#252D28;
-  --primary:#7FBF9B;--primary-ink:#0F1A14;--primary-soft:#22362B;--primary-soft-ink:#BFE3CD;
-  --ready:#7FBF9B;--ready-bg:#1D3327;--warn:#E3B45C;--warn-bg:#3A2E14;--crit:#E28B8B;--crit-bg:#3B1F1F;--review:#93B3EA;--review-bg:#1E2A3F;--info:#B7BDB9;--info-bg:#2A312D;
-  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);}
 *{box-sizing:border-box}
 body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 var(--f-body);-webkit-font-smoothing:antialiased}
 a{color:inherit}
@@ -49,6 +43,10 @@ h3{font-size:13px;font-weight:700}
 .nav a.on{background:var(--primary-soft);color:var(--primary-soft-ink);font-weight:600}
 .nav a.on svg{color:currentColor}
 .nav .count{margin-left:auto;font-size:11px;background:var(--hair-2);border-radius:999px;padding:1px 7px;color:var(--muted)}
+.nav .kids{display:flex;flex-direction:column;gap:1px;margin:2px 0 6px 26px;border-left:1px solid var(--hair);padding-left:8px}
+.nav .kids a{padding:5px 8px;font-size:12.5px;font-weight:500;color:var(--muted)}
+.nav .kids a.on{background:transparent;color:var(--ink);font-weight:600}
+.nav .kids a.on::before{content:"";display:inline-block;width:6px;height:6px;border-radius:50%;background:var(--primary);margin-right:6px}
 .tenant{margin-top:auto;margin:auto 10px 12px;padding:12px;border:1px solid var(--hair);border-radius:10px;background:var(--surface-2)}
 .tenant b{display:block;font-size:13px}
 .tenant span{font-size:12px;color:var(--muted)}
@@ -276,6 +274,14 @@ tr.row:hover td{background:var(--surface-2);cursor:pointer}
 .tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--paper);font-size:11px;padding:4px 8px;border-radius:6px;display:none;white-space:nowrap}
 .hint{position:fixed;left:24px;bottom:20px;z-index:6;background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--muted);box-shadow:var(--shadow)}
 .hint b{color:var(--ink)}
+/* Sharp. everywhere. (--radius: 0 in the live console). Pills stay pills. */
+.card,.btn,.input,.select,.seg,.tile,.col,.kcard,.lc,.drawer,.modal .box,.subnav,.folders,.photo,.sec,.opt,.dropzone,.sugg,.qr,.iconbtn,.tenant,.search,.nav a,.nav .kids a,.pcard .ico,.pjcard .letter,.brand .mark,.bar,.bar i,.scope .s,.boundary,.perm span,.lock,.toast,.hint,.aud,.opt .ico,.carbon span,.subnav button,.folders button,.field .input,[style*="border-radius"]{border-radius:0!important}
+.badge,.chip,.tag,.step,.afous,.flag,.avatar,.nav .count,.col .ch .cnt,.radio,.toggle,.toggle::after,.dot{border-radius:999px!important}
+.rail{background:#EDEAE0}
+.nav a.on{box-shadow:inset 3px 0 0 var(--primary)}
+th{border-bottom:2px solid var(--ink)}
+.auth .left h1,.pub .herotxt h1,.site-hero h1{font-family:var(--f-serif);font-weight:400;letter-spacing:0}
+.auth .left h1 em{font-style:italic}
 </style>
 
 <div id="app"></div>
@@ -287,7 +293,7 @@ tr.row:hover td{background:var(--surface-2);cursor:pointer}
 
 <script>
 /* capture helpers: ?theme=light|dark stamps the theme, ?capture=1 hides the hint pill */
-(function(){ const qs=new URLSearchParams(location.search); if(qs.get('theme')) document.documentElement.dataset.theme=qs.get('theme'); if(qs.get('capture')) document.getElementById('hint').hidden=true; })();
+(function(){ const qs=new URLSearchParams(location.search); document.documentElement.dataset.theme='light'; if(qs.get('capture')) document.getElementById('hint').hidden=true; })();
 /* ---------- icons ---------- */
 const I = {
   home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
@@ -394,24 +400,44 @@ function closeAll(){ $('#drawer').classList.remove('open'); $('#scrim').classLis
 function openModal(html){ $('#modal').innerHTML=`<div class="box">${html}</div>`; $('#modal').classList.add('open'); $('#scrim').classList.add('open'); }
 
 /* ---------- shell ---------- */
-function shell(inner, active){
-  const nav = [
-    ['home','Home',I.home],['products','Products & markets',I.grid],['work','My work',I.work,'5'],['outputs','Outputs',I.out,'9'],['projects','Projects',I.folder]
-  ];
+/* Merged information architecture: every entry of the live WidinX console
+   (Overview, Projects, Products list/create, Passports, Codes & links, Imports CSV/JSON + External apps,
+   Exports, Families, Categories, Attributes, Sector templates, API & developers, Organisation, Members,
+   Roles, AI provider, My profile, Audit) + Regulation OS (Home, Products & markets, My work, Outputs,
+   Workspace admin, Partner). Children unfold under the active parent, like the WidinX rail. */
+const NAV = [
+  {g:'Workspace'},
+  {r:'home',l:'Overview',i:'home'},
+  {r:'work',l:'My work',i:'work',c:'5'},
+  {r:'projects',l:'Projects',i:'folder'},
+  {g:'Products & markets'},
+  {r:'products',l:'Products & market cases',i:'grid',kids:[['products','List & cases'],['products/new','Create product'],['products?view=board','Cases board']]},
+  {r:'catalog',l:'Catalog structure',i:'cube',kids:[['catalog/families','Families'],['catalog/categories','Categories'],['catalog/attributes','Attributes']]},
+  {g:'Passports & outputs'},
+  {r:'outputs',l:'Outputs',i:'out',c:'9',kids:[['outputs','All outputs'],['passports','Passports'],['codes','Codes & links'],['exports','Exports']]},
+  {g:'Data'},
+  {r:'imports',l:'Imports',i:'down',kids:[['imports','CSV / JSON'],['imports/external','External apps']]},
+  {g:'Configure'},
+  {r:'packs',l:'Sector templates',i:'leaf'},
+  {r:'developers',l:'API & developers',i:'cog'},
+  {g:'Workspace admin'},
+  {r:'admin',l:'Workspace admin',i:'shield',kids:[['admin','Overview'],['admin/org','Organisation'],['admin/members','Members'],['admin/roles','Roles & access'],['admin/integrations','Integrations'],['admin/email','Email & notifications'],['admin/input','Input methods'],['admin/output','Output formats'],['admin/publishing','Publishing & carriers'],['admin/afous','AI provider & Afous policy'],['admin/audit','Audit log'],['admin/profile','My profile']]},
+  {g:'Partner (demo)'},
+  {r:'partner',l:'Delegated clients',i:'users'},
+  {r:'clients',l:'Client cases',i:'folder'},
+];
+function shell(inner, active, sub){
+  const items = NAV.map(n=>{
+    if(n.g) return `<div class="eyebrow">${n.g}</div>`;
+    const on = active===n.r;
+    let kids='';
+    if(on && n.kids) kids = `<div class="kids">${n.kids.map(k=>`<a href="#/${k[0]}" class="${sub===k[0]?'on':''}">${k[1]}</a>`).join('')}</div>`;
+    return `<a href="#/${n.r}" class="${on?'on':''}">${I[n.i]}${n.l}${n.c?`<span class="count">${n.c}</span>`:''}</a>${kids}`;
+  }).join('');
   return `<div class="shell">
   <nav class="rail">
     <div class="brand"><span class="mark">VX</span><div><b>WidinX</b><small>Regulation OS</small></div></div>
-    <div class="nav">
-      <div class="eyebrow">Workspace</div>
-      ${nav.map(([r,l,ic,c])=>`<a href="#/${r}" class="${active===r?'on':''}">${ic}${l}${c?`<span class="count">${c}</span>`:''}</a>`).join('')}
-      <div class="eyebrow">Catalogue</div>
-      <a href="#/imports" class="${active==='imports'?'on':''}">${I.down}Imports</a>
-      <a href="#/packs" class="${active==='packs'?'on':''}">${I.leaf}Sector packs</a>
-      <div class="eyebrow">Administration</div>
-      <a href="#/admin" class="${active==='admin'?'on':''}">${I.cog}Workspace admin</a>
-      <a href="#/partner" class="${active==='partner'?'on':''}">${I.users}Partner view <span class="count">demo</span></a>
-      <a href="#/clients" class="${active==='clients'?'on':''}">${I.folder}Client cases <span class="count">demo</span></a>
-    </div>
+    <div class="nav" style="overflow:auto">${items}</div>
     <div class="tenant"><b>Atlas Industries</b><span>Product operator workspace</span></div>
   </nav>
   <div class="main">
@@ -548,11 +574,11 @@ function vWork(){
 
 function vOutputs(){
   const lc=[['Generated','1','Controlled draft created'],['Validating','1','Automated validation'],['In review','1','Human review'],['Approved','2','Approved version'],['Ready to publish','1','Release preflight complete'],['Published','5','Published governed result'],['Submitted','1','External filing branch']];
-  const list=outputs.filter(o=>S.outState==='all'||o.state===S.outState);
+  const list=outputs.filter(o=>(S.outState==='all'||o.state===S.outState)&&(S.outClass!=='passport'||/passport/i.test(o.cls)));
   const ot = S.outTab || 'outputs';
   const head = `<div class="pagehead"><div class="grow"><div class="eyebrow">Regulated results & controlled deliverables</div><h1>Outputs</h1><p>The controlled artefact, its lifecycle state, its representation and how it is delivered. Passports, declarations, labels, certificates, filings, codes and EPR exports in one place.</p></div><div class="actions"><div class="seg"><button class="on">Cards</button><button data-toast="List view (demo)">List</button></div><a class="btn primary" href="#/outputs/new">${I.plus}Create output</a></div></div>
   ${motto('Claims are easy. Proof is harder. WidinX makes it verifiable.')}
-  <div class="tabs">${[['outputs','All outputs','9'],['codes','Codes & carriers'],['exports','EPR & reporting exports','4']].map(x=>`<button class="${ot===x[0]?'on':''}" data-outtab="${x[0]}">${x[1]}${x[2]?`<span class="cnt">${x[2]}</span>`:''}</button>`).join('')}</div>`;
+  <div class="tabs">${[['outputs','All outputs','9','outputs'],['passports','Passports','5','passports'],['codes','Codes & links','','codes'],['exports','Exports','4','exports']].map(x=>`<button class="${(x[0]==='passports'?(ot==='outputs'&&S.outClass==='passport'):(ot===x[0]&&!(x[0]==='outputs'&&S.outClass==='passport')))?'on':''}" data-route="${x[3]}">${x[1]}${x[2]?`<span class="cnt">${x[2]}</span>`:''}</button>`).join('')}</div>`;
   if(ot==='codes') return head+vCodes();
   if(ot==='exports') return head+vExports();
   return head+`
@@ -590,9 +616,12 @@ function vProjects(){
 }
 
 function vAdmin(){
-  const tabs=[['overview','Overview'],['members','Members'],['roles','Roles & access'],['integrations','Integrations'],['email','Email & notifications'],['input','Input methods'],['output','Output formats'],['publishing','Publishing & carriers'],['afous','Afous.ai policy'],['dev','Developers'],['brand','Branding']];
+  const tabs=[['overview','Overview'],['org','Organisation'],['members','Members'],['roles','Roles & access'],['integrations','Integrations'],['email','Email & notifications'],['input','Input methods'],['output','Output formats'],['publishing','Publishing & carriers'],['afous','AI provider & Afous policy'],['audit','Audit log'],['profile','My profile'],['brand','Branding']];
   let panel='';
   const t=S.adminTab;
+  if(t==='org') panel=vOrg();
+  if(t==='audit') panel=vAudit();
+  if(t==='profile') panel=vProfile();
   if(t==='overview') panel=`<div class="grid g4">${[['Members','6','all active','ready'],['Role policies','6','maker-checker capable','warn'],['Connected methods','8','files + API + secure links','review'],['Mail health','98.7%','demo delivery rate','ready']].map(k=>`<div class="card kpi ${k[3]}"><div class="eyebrow">${k[0]}</div><div class="v num">${k[1]}</div><div class="d">${k[2]}</div></div>`).join('')}</div>
     <div class="grid g2"><div class="card"><div class="bd"><h3>What belongs here?</h3><p class="muted" style="margin:6px 0 0">Tenant admins manage people, tenant permissions, source-system connections and external communication settings.</p></div></div><div class="card"><div class="bd"><h3>What does not?</h3><p class="muted" style="margin:6px 0 0">Global regulations, regulatory templates, canonical output schemas, resolver / carrier policies and legal maturity are authored in the separate WidinX Platform Regulatory Admin.</p></div></div></div>`;
   if(t==='members') panel=`<div class="card"><div class="hd"><h2>Members</h2><span class="muted" style="font-size:12px">Operational access, current workload and critical-role assignments.</span><button class="btn sm primary" style="margin-left:auto" data-toast="Invite sent (demo)">Invite member</button></div><table><thead><tr><th>Member</th><th>Workspace role</th><th>Status</th><th>Current work</th><th>Risk / restriction</th><th></th></tr></thead><tbody>${members.map(m=>`<tr><td><span class="avatar" style="display:inline-grid;width:24px;height:24px;font-size:9px;margin-right:8px">${m[0]}</span><b>${m[1]}</b></td><td>${m[2]}</td><td><span class="badge ready">Active</span></td><td>${m[3]}</td><td>${m[4]}</td><td><button class="btn sm">Edit access</button></td></tr>`).join('')}</tbody></table></div>`;
@@ -615,7 +644,7 @@ function vAdmin(){
         <dl class="kv" style="grid-template-columns:90px 1fr"><dt>Scope</dt><dd>${S.scope==='ws'?'Atlas Industries workspace':S.scope==='brand'?'Atlas Mobility (brand)':'EV Batteries (family)'}</dd><dt>Resolver</dt><dd>${S.scope==='family'?'GS1 Digital Link':'WidinX HTTPS output URL'}</dd><dt>Carrier</dt><dd>${S.scope==='brand'?'Data Matrix':'QR Code'}</dd></dl>
         <div class="tile" style="background:var(--review-bg);color:var(--review)"><div><b>What changes here?</b><p style="color:inherit">Only the starting preference for compatible outputs inside this scope. No publication is triggered.</p></div></div>
         <div class="tile" style="background:var(--warn-bg);color:var(--warn)"><div><b>Case / output policy can override this.</b><p style="color:inherit">An EV Battery Passport can lock QR even when a Brand prefers Data Matrix.</p></div></div></div></div></div>`;
-  if(t==='afous') panel=`<div class="pagehead" style="align-items:center"><div class="grow"><div class="eyebrow">AI assistance</div><h2 style="font-size:18px">Afous.ai policy</h2><p><b>Afous</b> means “hands” in Amazigh — an assistant designed to help people do the next step, not replace controlled regulatory decisions. Never a floating popup: a header drawer and in-context actions only.</p></div><span class="badge info">Assistive only</span></div>
+  if(t==='afous') panel=vAiProvider()+`<div class="pagehead" style="align-items:center"><div class="grow"><div class="eyebrow">AI assistance</div><h2 style="font-size:18px">Afous.ai policy</h2><p><b>Afous</b> means “hands” in Amazigh — an assistant designed to help people do the next step, not replace controlled regulatory decisions. Never a floating popup: a header drawer and in-context actions only.</p></div><span class="badge info">Assistive only</span></div>
     <div class="grid g2"><div class="card"><div class="hd"><h2>Allowed assistance</h2></div><div class="list">${['Extract facts from documents','Suggest source → canonical mapping','Suggest product classification','Summarise evidence','Explain why a requirement is shown','Detect anomalies / missing context','Write descriptions and passport texts','Draft claim candidates'].map(a=>`<div class="it"><span class="cb on" data-cb></span>${a}</div>`).join('')}</div></div>
     <div class="card"><div class="hd"><h2>Always controlled</h2></div><div class="list">${['Final legal applicability','Final compliance decision','Evidence validity approval','Market-readiness approval','Publication / submission approval'].map(a=>`<div class="it"><span class="badge crit">Rule / human</span>${a}</div>`).join('')}</div></div></div>`;
   if(t==='dev') panel=`<div class="grid g2"><div class="card"><div class="hd"><h2>API keys</h2><button class="btn sm primary" style="margin-left:auto" data-toast="Key created — copy it now, it will not be shown again">Create key</button></div><div class="list"><div class="it"><span class="mono">wx_live_…8f2a</span><span class="muted" style="font-size:12px">Akeneo sync · last used 2 h ago</span><span class="badge ready" style="margin-left:auto">Active</span></div><div class="it"><span class="mono">wx_test_…c91d</span><span class="muted" style="font-size:12px">Sandbox</span><span class="badge info" style="margin-left:auto">Test</span></div></div></div>
@@ -623,7 +652,19 @@ function vAdmin(){
   if(t==='brand') panel=`<div class="card"><div class="bd grid g2"><div class="field"><label>Logo</label><div class="tile"><span class="mark" style="width:36px;height:36px;border-radius:8px;background:var(--primary);color:var(--primary-ink);display:grid;place-items:center;font-weight:800;font-family:var(--f-display)">VX</span><div><b>WidinX mark</b><p>SVG · used on public passports and outputs</p></div></div></div><div class="field"><label>Primary colour</label><div class="tile"><span style="width:36px;height:36px;border-radius:8px;background:#1B3D2F"></span><div><b class="mono">#1B3D2F</b><p>Locked to the WidinX green.</p></div></div></div></div></div>`;
   return `<div class="pagehead"><div class="grow"><div class="eyebrow">Workspace administration</div><h1>Workspace configuration</h1><p>People, permissions, enterprise connections, external collaboration and tenant-visible platform capabilities.</p></div></div>
   ${motto('More intelligence. Less interface.')}
-  <div class="admin"><div class="subnav">${tabs.map(x=>`<button class="${t===x[0]?'on':''}" data-admintab="${x[0]}">${x[1]}</button>`).join('')}</div><div style="display:flex;flex-direction:column;gap:14px;min-width:0">${panel}</div></div>`;
+  <div class="admin"><div class="subnav">${tabs.map(x=>`<button class="${t===x[0]?'on':''}" data-route="admin${x[0]==='overview'?'':'/'+x[0]}">${x[1]}</button>`).join('')}</div><div style="display:flex;flex-direction:column;gap:14px;min-width:0">${panel}</div></div>`;
+}
+/* API & developers as its own page (WidinX) */
+function vDevelopers(){
+  S.adminTab='dev';
+  const saved = S.adminTab; const inner = (function(){ const t='dev'; return `<div class="grid g2"><div class="card"><div class="hd"><h2>API keys</h2><button class="btn sm primary" style="margin-left:auto" data-toast="Key created — copy it now, it will not be shown again">Create key</button></div><div class="list"><div class="it"><span class="mono">wx_live_…8f2a</span><span class="muted" style="font-size:12px">Akeneo sync · last used 2 h ago</span><span class="badge ready" style="margin-left:auto">Active</span></div><div class="it"><span class="mono">wx_test_…c91d</span><span class="muted" style="font-size:12px">Sandbox</span><span class="badge info" style="margin-left:auto">Test</span></div></div></div>
+    <div class="card"><div class="hd"><h2>Webhooks</h2></div><div class="list"><div class="it"><span class="mono">output.published</span><span class="muted" style="font-size:12px">https://erp.atlas.example/hooks</span><span class="badge ready" style="margin-left:auto">200 · 5 min ago</span></div><div class="it"><span class="mono">case.readiness.changed</span><span class="muted" style="font-size:12px">https://erp.atlas.example/hooks</span><span class="badge ready" style="margin-left:auto">200</span></div><div class="it"><span class="mono">passport.scanned</span><span class="muted" style="font-size:12px">https://analytics.atlas.example</span><span class="badge ready" style="margin-left:auto">200</span></div></div></div></div>`; })();
+  return `<div class="pagehead"><div class="grow"><div class="eyebrow">Configure</div><h1>API & developers</h1><p>Conventions, public routes and response shapes of the WidinX API, plus your keys and webhooks.</p></div><div class="actions"><button class="btn" data-toast="OpenAPI 3.1 downloaded">OpenAPI spec</button><a class="btn" href="#/imports/external">External apps</a></div></div>
+  ${inner}
+  <div class="grid g3">
+    <div class="card"><div class="hd"><h2>Conventions</h2></div><div class="bd muted" style="font-size:13px">Bearer keys · JSON · snake_case on catalogue routes, camelCase on regulation routes · pages of at most 100 rows · errors as <span class="mono">{ message, details }</span> in plain words.</div></div>
+    <div class="card"><div class="hd"><h2>Public routes</h2></div><div class="bd" style="font-size:12.5px;display:flex;flex-direction:column;gap:6px"><span class="mono">GET /public/passports/{id}</span><span class="mono">GET /public/passports/{id}/json</span><span class="mono">GET /01/{gtin}/10/{lot}</span><span class="mono">GET /01/{gtin}/21/{serial}</span><span class="mono">GET /public/signing-keys</span></div></div>
+    <div class="card"><div class="hd"><h2>Response</h2></div><div class="bd"><pre class="mono" style="margin:0;font-size:11.5px;white-space:pre-wrap">{ "id": "OUT-001", "status": "PUBLISHED",\n  "grain": "BATCH", "subject": { "gtin": "04012345678905", "lot": "B-2608-14" },\n  "carbonClass": "B", "origin": "DE", "markets": ["EU","US"],\n  "signature": { "alg": "Ed25519", "kid": "widinx-2026-09" } }</pre></div></div></div>`;
 }
 
 function vPartner(){
@@ -818,12 +859,60 @@ function vWizard(){
 /* ---------- public site (WidinX marketing) ---------- */
 function vSite(){
   return `<div class="pub" style="max-width:1120px"><div class="pubtop"><div class="brand" style="padding:0;border:0"><span class="mark">VX</span><div><b>WidinX</b><small>Regulation OS</small></div></div><nav style="display:flex;gap:16px;margin-left:24px;font-weight:600;font-size:13px"><a href="#/site" data-toast="Sectors (demo)">Sectors</a><a href="#/site" data-toast="Standards (demo)">Standards</a><a href="#/site" data-toast="Docs (demo)">Docs</a><a href="#/site" data-toast="FAQ (demo)">FAQ</a></nav><span style="margin-left:auto"></span><a class="btn sm" href="#/signin">Sign in</a><a class="btn sm primary" href="#/signin">Get a demo</a></div>
-    <div style="padding:32px 0 8px"><h1 style="font-size:44px;font-weight:800;letter-spacing:-.02em;max-width:18ch">Compliance shouldn't be searched for. <span style="color:var(--primary)">It should be WidinX.</span></h1><p style="font-size:17px;color:var(--muted);max-width:60ch">Tell us what you sell, where you want to sell it and when. WidinX turns regulatory complexity into owned actions, verifiable evidence and the outputs needed to reach the market.</p></div>
+    <div class="site-hero" style="padding:32px 0 8px"><h1 style="font-size:52px;line-height:1.05;max-width:18ch">Compliance shouldn't be searched for. <span style="color:var(--primary)">It should be WidinX.</span></h1><p style="font-size:17px;color:var(--muted);max-width:60ch">Tell us what you sell, where you want to sell it and when. WidinX turns regulatory complexity into owned actions, verifiable evidence and the outputs needed to reach the market.</p></div>
     <div class="grid g3">${[['Digital product passports','Model, batch or serial grain. Consumer, B2B, authority and recycler audiences. Signed, registry-ready, multilingual.'],['Market cases','One case per product × market with a readiness decision, a lifecycle and a Kanban of actions.'],['Outputs that release','Passports, declarations, labels, certificates, filings, EPR exports — governed from draft to submitted.']].map(x=>`<div class="card" style="padding:18px"><b style="font-family:var(--f-display);font-size:15px">${x[0]}</b><p class="muted" style="margin:6px 0 0">${x[1]}</p></div>`).join('')}</div>
     <div><div class="eyebrow" style="margin-bottom:8px">Pricing</div><div class="grid g3">${[['Starter','€290 / mo','1 workspace · 250 passports · EU packs · CSV & JSON imports'],['Scale','€990 / mo','5 brands · 5,000 passports · EU + US packs · Akeneo & REST · partner delegation'],['Enterprise','Talk to us','Unlimited · SSO · custom resolvers & domains · authority registries · SLA']].map((t,i)=>`<div class="card" style="padding:18px;${i===1?'border-color:var(--primary)':''}"><div class="eyebrow">${t[0]}</div><div style="font-family:var(--f-display);font-size:26px;font-weight:800">${t[1]}</div><p class="muted" style="margin:6px 0 12px">${t[2]}</p><a class="btn sm ${i===1?'primary':''}" href="#/signin">Start</a></div>`).join('')}</div></div>
     <div class="grid g4">${['Batteries','Textiles & apparel','Footwear','Electronics','Toys','Packaging','Cosmetics','Furniture'].map(s=>`<div class="tile" style="cursor:pointer" data-route="packs"><div><b>${s}</b><p>EU + US sector pack</p></div></div>`).join('')}</div>
     <p class="muted" style="font-size:12px;text-align:center">Know it. Link it. Prove it. · Public product view: <a href="#/passport">open a passport</a> · Scoped request: <a href="#/request">example</a></p></div>`;
 }
+
+/* ---------- External apps (WidinX Imports › External apps, all cards the same size) ---------- */
+function vExternal(){
+  const live=[{n:'Akeneo PIM',s:'Connected',sc:'ready',b:'Products, families, attributes and media from Akeneo, mapped to sector packs. Last sync 2 h ago · 48 products.',a:['Configure','Sync now']}];
+  const road=[['SAP / ERP','Material masters and batches from SAP S/4HANA and other ERPs.'],['Shopify','Products and variants from your Shopify catalogue, with passport links pushed back to the storefront.'],['WooCommerce','The same for WooCommerce stores.'],['Zapier / Make','Trigger passport creation and updates from any automation platform.'],['Outbound webhooks','Passport published, superseded, scanned: events delivered to your systems.'],['SFTP / managed file drop','Enterprise batch exchange (Regulation OS integration catalogue).'],['GraphQL','Optional API source method.'],['Inbound webhooks','Event-driven inbound updates.']];
+  const card=(t,badge,bc,body,btns)=>`<div class="card" style="padding:18px;min-height:212px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;align-items:center;height:40px"><span class="ico" style="width:40px;height:40px;border-radius:9px;background:var(--surface-2);border:1px solid var(--hair);display:grid;place-items:center;color:var(--primary)"><span style="width:18px;height:18px;display:block">${I.cube}</span></span><span class="badge ${bc}" style="margin-left:auto">${badge}</span></div><b style="font-family:var(--f-display);font-size:15px">${t}</b><p class="muted" style="margin:0;font-size:13px;display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden">${body}</p><div style="display:flex;gap:6px;margin-top:auto">${btns}</div></div>`;
+  return `<div class="pagehead"><div class="grow"><div class="eyebrow">Imports › External apps</div><h1>External apps</h1><p>Connected systems that feed the catalogue. The integration catalogue and input-method policy live in Workspace admin.</p></div><div class="actions"><a class="btn" href="#/admin/integrations">Integration catalogue</a><a class="btn" href="#/admin/input">Input methods</a><button class="btn primary" data-toast="Connector request logged">${I.plus}Request connector</button></div></div>
+  <p class="eyebrow" style="margin:0">Connected</p>
+  <div class="grid g3">${live.map(x=>card(x.n,x.s,x.sc,x.b,`<a class="btn sm primary" href="#/imports">${x.a[0]}</a><button class="btn sm" data-toast="Akeneo sync started · 48 products">${x.a[1]}</button>`)).join('')}
+    ${card('CSV / JSON files','Native','ready','Bulk file intake for tabular or structured source data; every run becomes a Data import project.',`<a class="btn sm primary" href="#/imports">Import a file</a>`)}
+    ${card('REST API','Native','ready','Push products, SKUs, batches and evidence from your own systems. Keys and webhooks under API & developers.',`<a class="btn sm" href="#/developers">Open API docs</a>`)}</div>
+  <p class="eyebrow" style="margin:0">On the roadmap</p>
+  <div class="grid g3">${road.map(r=>card(r[0],'Roadmap','info',r[1],`<button class="btn sm" data-toast="${r[0]}: request logged">Request / assess</button>`)).join('')}</div>`;
+}
+
+/* ---------- Catalog structure (families, categories, attributes) ---------- */
+function vCatalog(kind){
+  if(kind==='families') return `<div class="pagehead"><div class="grow"><div class="eyebrow">Catalog structure</div><h1>Families</h1><p>A family carries the attribute groups a sector pack requires; products inherit them.</p></div><div class="actions"><a class="btn" href="#/packs">${I.leaf}From a sector pack</a><button class="btn primary" data-toast="Family created">${I.plus}New family</button></div></div>
+    <div class="card"><table><thead><tr><th>Family</th><th>Category</th><th>Pack</th><th>Attributes</th><th>Products</th><th>Required filled</th><th></th></tr></thead><tbody>${[['EV batteries','Batteries › Traction','EU · Batteries','29','2','82%'],['Portable batteries','Batteries › Portable','EU · Batteries','24','1','91%'],['Apparel','Textiles › Outerwear','EU · Textiles + US · Textiles','22','2','67%'],['Safety footwear','Footwear › PPE','EU · Footwear','18','1','40%'],['Connected devices','Electronics › Hubs','US · Electronics','26','1','55%']].map(r=>`<tr class="row" data-toast="Family ${r[0]} (demo)"><td><b>${r[0]}</b></td><td>${r[1]}</td><td><span class="tag">${r[2]}</span></td><td class="num">${r[3]}</td><td class="num">${r[4]}</td><td><div class="bar" style="width:120px"><i style="width:${r[5]}"></i></div></td><td style="text-align:right"><button class="btn sm">Edit</button></td></tr>`).join('')}</tbody></table></div>`;
+  if(kind==='categories') return `<div class="pagehead"><div class="grow"><div class="eyebrow">Catalog structure</div><h1>Categories</h1><p>The tree products hang from. Categories map to sectors for pack selection and to HS chapters for customs filings.</p></div><button class="btn primary" data-toast="Category created">${I.plus}New category</button></div>
+    <div class="card"><div class="list">${[['Batteries','',2,'85'],['Traction batteries','Batteries',1,'8507 60'],['Portable batteries','Batteries',1,'8507 60'],['Textiles','',2,'61 · 62'],['Outerwear','Textiles',2,'6201'],["Children's textiles",'Textiles',1,'6209'],['Footwear','',1,'64'],['PPE footwear','Footwear',1,'6403'],['Electronics','',1,'85'],['Hubs & routers','Electronics',1,'8517']].map(c=>`<div class="it" style="padding-left:${c[1]?36:16}px"><b>${c[0]}</b>${c[1]?`<span class="muted" style="font-size:12px">in ${c[1]}</span>`:''}<span class="muted num" style="margin-left:auto;font-size:12px">${c[2]} product(s)</span><span class="tag mono">HS ${c[3]}</span></div>`).join('')}</div></div>`;
+  return `<div class="pagehead"><div class="grow"><div class="eyebrow">Catalog structure</div><h1>Attributes</h1><p>Canonical attributes, their types and options. Mapping recipes bind source columns to these.</p></div><div class="actions"><button class="btn" data-toast="Attribute group created">New group</button><button class="btn primary" data-toast="Attribute created">${I.plus}New attribute</button></div></div>
+    <div class="toolbar"><div class="search" style="max-width:420px" data-search>${I.search}<span>Search code, label, group…</span></div><span class="select">All groups ${I.chev}</span><span class="select">All types ${I.chev}</span></div>
+    <div class="card"><table><thead><tr><th>Code</th><th>Label</th><th>Group</th><th>Type</th><th>Used by</th><th>Required in packs</th></tr></thead><tbody>${[['dpp_country_of_origin','Country of origin','Identity','Country','12 products','EU · US'],['dpp_target_markets','Target markets','Identity','Multiselect (EU, US)','12','EU · US'],['dpp_carbon_intensity_class','Carbon footprint class','Sustainability','Select (A–E)','3','EU Batteries'],['rated_energy_wh','Rated energy (Wh)','Performance','Number','2','EU Batteries'],['recycled_content_cobalt','Recycled cobalt (%)','Sustainability','Number','2','EU Batteries'],['substance_pb_pct','Lead (% w/w)','Substances','Number','2','EU Batteries · US Electronics'],['us_prop65_warning_text','Prop 65 warning text','US core','Text','4','US · all'],['us_state_epr_registrations','State EPR registrations','US core','Multiselect','4','US · all'],['fibre_composition','Fibre composition','Textile','Composition','2','EU Textiles'],['care_symbols','Care symbols','Textile','Multiselect','2','EU · US Textiles']].map(r=>`<tr><td class="mono">${r[0]}</td><td><b>${r[1]}</b></td><td>${r[2]}</td><td>${r[3]}</td><td class="num">${r[4]}</td><td><span class="tag">${r[5]}</span></td></tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ---------- New product (WidinX create) ---------- */
+function vNewProduct(){
+  return `<div class="pagehead"><a class="iconbtn" href="#/products">${I.back}</a><div class="grow"><div class="eyebrow">Products & markets</div><h1>New product</h1><p>Create by hand, or <a href="#/imports">import a file</a> / <a href="#/imports/external">connect an app</a>. A market case can be created right after.</p></div></div>
+  <div class="grid" style="grid-template-columns:2fr 1fr"><div class="card"><div class="bd grid g2">
+    <div class="field" style="grid-column:1/-1"><label>Name <button class="afous" data-afous="drawer" style="margin-left:6px">${I.spark} Write with Afous</button></label><input class="input" value="VoltCore VC-90E"></div>
+    <div class="field"><label>Family</label><span class="select" style="justify-content:space-between">EV batteries (EU · Batteries pack) ${I.chev}</span></div><div class="field"><label>Category</label><span class="select" style="justify-content:space-between">Batteries › Traction ${I.chev}</span></div>
+    <div class="field"><label>Manufacturer *</label><input class="input" value="Atlas Mobility GmbH"></div><div class="field"><label>HS code *</label><input class="input mono" value="850760"></div>
+    <div class="field"><label>Country of origin *</label><span class="select" style="justify-content:space-between">${FLAG.DE} Germany ${I.chev}</span></div><div class="field"><label>Target markets</label><div class="chips"><span class="chip on">${FLAG.EU} EU</span><span class="chip on">${FLAG.US} US</span></div></div>
+    <div class="field"><label>GTIN</label><input class="input mono" value="04012345678936"></div><div class="field"><label>Master product (variant of)</label><span class="select" style="justify-content:space-between">— none ${I.chev}</span></div>
+    <div class="field" style="grid-column:1/-1"><label>Description</label><textarea class="input" rows="3">90 kWh NMC 811 traction battery, second generation of the VC-75E platform.</textarea></div>
+    <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end"><button class="btn" data-toast="Saved as draft">Save draft</button><a class="btn primary" href="#/product/p1" data-toast="Product created · 3 required details still missing: rated energy, carbon class, dismantling manual">Create product</a></div></div></div>
+  <div style="display:flex;flex-direction:column;gap:14px"><div class="card"><div class="hd"><h2>What the pack will ask for</h2></div><div class="bd muted" style="font-size:13px">EU · Batteries: 29 attributes in 6 groups (identity, performance, sustainability, substances, circularity, markets). Required ones are flagged in the Attributes tab; Afous can fill them from the datasheet and test reports.</div></div>
+    <div class="card"><div class="hd"><h2>Errors you will actually understand</h2></div><div class="bd muted" style="font-size:13px">“Some details are missing: Manufacturer, Country of origin, HS code.” — never a bare 400.</div></div></div></div>`;
+}
+
+/* ---------- Settings pages (Organisation, AI provider, Audit, Profile) ---------- */
+function vOrg(){ return `<div class="grid g2"><div class="card"><div class="hd"><h2>Organisation</h2></div><div class="bd grid g2"><div class="field"><label>Legal name</label><input class="input" value="Atlas Industries SE"></div><div class="field"><label>Workspace slug</label><input class="input mono" value="atlas"></div><div class="field"><label>Registered country</label><span class="select" style="justify-content:space-between">${FLAG.DE} Germany ${I.chev}</span></div><div class="field"><label>EORI / VAT</label><input class="input mono" value="DE123456789"></div><div class="field"><label>Brands</label><div class="chips"><span class="chip">Atlas Mobility</span><span class="chip">Atlas Wear</span><span class="chip">Atlas Home</span><button class="chip" data-toast="Brand added">+ Add</button></div></div><div class="field"><label>Default market</label><span class="select" style="justify-content:space-between">${FLAG.EU} European Union ${I.chev}</span></div><div style="grid-column:1/-1;display:flex;justify-content:flex-end"><button class="btn primary" data-toast="Organisation saved">Save</button></div></div></div>
+  <div style="display:flex;flex-direction:column;gap:14px"><div class="card"><div class="hd"><h2>Legal capacity per market</h2></div><div class="list"><div class="it">${FLAG.EU} EU<span class="muted" style="font-size:12px">Manufacturer placing on the market</span><span class="badge ready" style="margin-left:auto">Declared</span></div><div class="it">${FLAG.US} US<span class="muted" style="font-size:12px">Importer of record via Northwind Imports</span><span class="badge warn" style="margin-left:auto">Delegated</span></div></div></div>
+  <div class="card"><div class="hd"><h2>Public passport branding</h2></div><div class="bd muted" style="font-size:13px">Logo, primary colour (locked to WidinX green), footer contact and languages (EN, FR, DE) — shown on every public passport and scoped request.</div></div></div></div>`; }
+function vAudit(){ return `<div class="card"><div class="hd"><h2>Audit log</h2><span class="muted" style="font-size:12px">Every controlled decision, by whom, under which rule</span><button class="btn sm" style="margin-left:auto" data-toast="CSV export queued">Export</button></div><table><thead><tr><th>When</th><th>Who</th><th>Action</th><th>Object</th><th>Rule / human</th></tr></thead><tbody>${[['today 09:41','Samira B.','Readiness recomputed → Action required','CASE-BAT-EU','Rule'],['today 09:12','Medica Labs (scoped)','Evidence submitted','UN 38.3 report','Human'],['yesterday 17:02','Yasmine M.','Output approved','OUT-002 v3.1','Human'],['09 Sep 14:20','Youssef B.','Output published & signed','OUT-001 v1.0','Human'],['09 Sep 14:19','Afous','Facts extracted (31) — assistive','VC-75E attributes','Rule'],['04 Sep 10:05','Karim R.','Mapping recipe saved','Akeneo → EU Batteries v2','Human']].map(r=>`<tr><td class="muted num">${r[0]}</td><td>${r[1]}</td><td><b>${r[2]}</b></td><td class="mono">${r[3]}</td><td><span class="badge ${r[4]==='Human'?'review':'info'}">${r[4]}</span></td></tr>`).join('')}</tbody></table></div>`; }
+function vProfile(){ return `<div class="grid g2"><div class="card"><div class="hd"><h2>My profile</h2></div><div class="bd grid g2"><div class="field"><label>Name</label><input class="input" value="Youssef B."></div><div class="field"><label>Email</label><input class="input" value="youssef@atlas.example"></div><div class="field"><label>Workspace role</label><input class="input" value="Product Owner" disabled></div><div class="field"><label>Language</label><span class="select" style="justify-content:space-between">English ${I.chev}</span></div><div class="field"><label>Theme</label><div class="seg"><button class="on">Light</button><button data-toast="Dark theme is token-based; try your OS setting">Dark</button><button>System</button></div></div><div class="field"><label>Notifications</label><div class="chips"><span class="chip on">Readiness changes</span><span class="chip on">Evidence received</span><span class="chip">Every output event</span></div></div></div></div><div class="card"><div class="hd"><h2>Sessions & security</h2></div><div class="list"><div class="it">MacBook · Paris<span class="muted" style="font-size:12px">now</span><span class="badge ready" style="margin-left:auto">Current</span></div><div class="it">iPhone · Paris<span class="muted" style="font-size:12px">2 h ago</span><button class="btn sm" style="margin-left:auto" data-toast="Session revoked">Revoke</button></div><div class="it">Two-factor<span class="badge ready" style="margin-left:auto">Enabled</span></div></div></div></div>`; }
+function vAiProvider(){ return `<div class="grid g2"><div class="card"><div class="hd"><h2>AI provider</h2><span class="badge info">WidinX setting</span></div><div class="bd grid g2"><div class="field"><label>Provider</label><span class="select" style="justify-content:space-between">Anthropic · Claude ${I.chev}</span></div><div class="field"><label>Model</label><span class="select" style="justify-content:space-between">claude-sonnet-5 ${I.chev}</span></div><div class="field" style="grid-column:1/-1"><label>API key</label><input class="input mono" value="sk-ant-…4f2a" disabled></div><div class="field"><label>Data residency</label><span class="select" style="justify-content:space-between">EU only ${I.chev}</span></div><div class="field"><label>Retention</label><span class="select" style="justify-content:space-between">No training · 0 days ${I.chev}</span></div><div style="grid-column:1/-1;display:flex;justify-content:flex-end"><button class="btn primary" data-toast="Provider saved · test call OK">Save & test</button></div></div></div><div class="card"><div class="hd"><h2>Where Afous appears</h2></div><div class="list">${[['Header drawer','Ask anything about the current screen'],['Product form','Write with Afous · Fill from documents'],['Compliance step','Gap advice · Claim suggestions'],['Imports mapping','Column mapping suggestions'],['Passport content','Descriptions and audience texts'],['Bottom-right popup','Never']].map(r=>`<div class="it"><b>${r[0]}</b><span class="muted" style="font-size:12px;margin-left:auto">${r[1]}</span></div>`).join('')}</div></div></div>`; }
 
 /* ---------- global search & notifications ---------- */
 function searchDrawer(){
@@ -858,24 +947,35 @@ const newOutputModal = `<div class="hd"><b>Create output</b><button class="iconb
 
 /* ---------- router ---------- */
 function render(){
-  const h = location.hash.replace(/^#\/?/,'') || 'home';
+  const raw = location.hash.replace(/^#\/?/,'') || 'home';
+  const [h, hq] = raw.split('?');
+  const hqs = new URLSearchParams(hq||'');
+  if(hqs.get('view')) S.view = hqs.get('view');
   S.route = h;
   const app=$('#app'); let html='';
   if(h==='signin') html=vSignin();
   else if(h==='passport') html=vPassport();
   else if(h==='site') html=vSite();
   else if(h==='request') html=vRequest();
-  else if(h.startsWith('product/')) html=shell(vProduct(h.split('/')[1]),'products');
-  else if(h==='imports') html=shell(vImports(),'imports');
+  else if(h==='products/new') html=shell(vNewProduct(),'products','products/new');
+  else if(h.startsWith('product/')) html=shell(vProduct(h.split('/')[1]),'products','products');
+  else if(h==='imports') html=shell(vImports(),'imports','imports');
+  else if(h==='imports/external') html=shell(vExternal(),'imports','imports/external');
+  else if(h.startsWith('catalog/')) html=shell(vCatalog(h.split('/')[1]),'catalog',h);
+  else if(h==='catalog') html=shell(vCatalog('families'),'catalog','catalog/families');
   else if(h==='packs') html=shell(vPacks(),'packs');
+  else if(h==='developers') html=shell(vDevelopers(),'developers');
   else if(h==='clients') html=shell(vClients(),'clients');
-  else if(h==='outputs/new') html=shell(vWizard(),'outputs');
-  else if(h.startsWith('case/')) html=shell(vCase(h.split('/')[1]),'products');
-  else if(h==='products') html=shell(vProducts(),'products');
+  else if(h==='outputs/new') html=shell(vWizard(),'outputs','outputs');
+  else if(h==='passports'){ S.outTab='outputs'; S.outClass='passport'; html=shell(vOutputs(),'outputs','passports'); }
+  else if(h==='codes'){ S.outTab='codes'; html=shell(vOutputs(),'outputs','codes'); }
+  else if(h==='exports'){ S.outTab='exports'; html=shell(vOutputs(),'outputs','exports'); }
+  else if(h.startsWith('case/')) html=shell(vCase(h.split('/')[1]),'products','products');
+  else if(h==='products') html=shell(vProducts(),'products',S.view==='board'?'products?view=board':'products');
   else if(h==='work') html=shell(vWork(),'work');
-  else if(h==='outputs') html=shell(vOutputs(),'outputs');
+  else if(h==='outputs'){ S.outTab='outputs'; S.outClass='all'; html=shell(vOutputs(),'outputs','outputs'); }
   else if(h==='projects') html=shell(vProjects(),'projects');
-  else if(h==='admin') html=shell(vAdmin(),'admin');
+  else if(h.startsWith('admin')){ const t=h.split('/')[1]||'overview'; S.adminTab=t; html=shell(vAdmin(),'admin','admin'+(t==='overview'?'':'/'+t)); }
   else if(h==='partner') html=shell(vPartner(),'partner');
   else html=shell(vHome(),'home');
   app.innerHTML=html; window.scrollTo(0,0);
