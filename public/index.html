@@ -1,0 +1,931 @@
+<meta charset="utf-8">
+<title>WidinX Regulation OS</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Manrope:wght@500;600;700;800&family=IBM+Plex+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<style>
+:root{
+  --paper:#F5F3EE;--surface:#FFFFFF;--surface-2:#FAF8F3;--ink:#1E2A24;--muted:#6A7570;--hair:#E3DED3;--hair-2:#EFEBE2;
+  --primary:#1B3D2F;--primary-ink:#F5F3EE;--primary-soft:#E4EFE7;--primary-soft-ink:#1B3D2F;
+  --ready:#1F6B45;--ready-bg:#E3F2E8;--warn:#8A5A00;--warn-bg:#FBEFD6;--crit:#9B2C2C;--crit-bg:#FBE4E4;--review:#2F4F8F;--review-bg:#E7EEF9;--info:#4B5563;--info-bg:#ECEAE3;
+  --shadow:0 1px 2px rgba(30,42,36,.06),0 8px 24px rgba(30,42,36,.06);
+  --f-display:"Manrope",system-ui,sans-serif;--f-body:"IBM Plex Sans",system-ui,sans-serif;--f-mono:"IBM Plex Mono",ui-monospace,monospace;
+}
+@media (prefers-color-scheme: dark){:root:not([data-theme="light"]){
+  --paper:#141A17;--surface:#1B221E;--surface-2:#202823;--ink:#ECE9E1;--muted:#9AA39D;--hair:#2C352F;--hair-2:#252D28;
+  --primary:#7FBF9B;--primary-ink:#0F1A14;--primary-soft:#22362B;--primary-soft-ink:#BFE3CD;
+  --ready:#7FBF9B;--ready-bg:#1D3327;--warn:#E3B45C;--warn-bg:#3A2E14;--crit:#E28B8B;--crit-bg:#3B1F1F;--review:#93B3EA;--review-bg:#1E2A3F;--info:#B7BDB9;--info-bg:#2A312D;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);}}
+:root[data-theme="dark"]{
+  --paper:#141A17;--surface:#1B221E;--surface-2:#202823;--ink:#ECE9E1;--muted:#9AA39D;--hair:#2C352F;--hair-2:#252D28;
+  --primary:#7FBF9B;--primary-ink:#0F1A14;--primary-soft:#22362B;--primary-soft-ink:#BFE3CD;
+  --ready:#7FBF9B;--ready-bg:#1D3327;--warn:#E3B45C;--warn-bg:#3A2E14;--crit:#E28B8B;--crit-bg:#3B1F1F;--review:#93B3EA;--review-bg:#1E2A3F;--info:#B7BDB9;--info-bg:#2A312D;
+  --shadow:0 1px 2px rgba(0,0,0,.4),0 8px 24px rgba(0,0,0,.35);}
+*{box-sizing:border-box}
+body{margin:0;background:var(--paper);color:var(--ink);font:14px/1.5 var(--f-body);-webkit-font-smoothing:antialiased}
+a{color:inherit}
+button{font:inherit;color:inherit;background:none;border:0;cursor:pointer}
+h1,h2,h3{font-family:var(--f-display);margin:0;text-wrap:balance}
+h1{font-size:24px;font-weight:700;letter-spacing:-.01em}
+h2{font-size:16px;font-weight:700}
+h3{font-size:13px;font-weight:700}
+.mono{font-family:var(--f-mono);font-size:12px}
+.muted{color:var(--muted)}
+.eyebrow{font-family:var(--f-display);font-size:11px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--muted)}
+.num{font-variant-numeric:tabular-nums}
+:focus-visible{outline:2px solid var(--primary);outline-offset:2px}
+@media (prefers-reduced-motion:reduce){*{transition:none!important;animation:none!important}}
+
+/* shell */
+.shell{display:grid;grid-template-columns:232px 1fr;min-height:100vh}
+.rail{background:var(--surface);border-right:1px solid var(--hair);display:flex;flex-direction:column;position:sticky;top:0;height:100vh}
+.brand{display:flex;align-items:center;gap:10px;padding:16px 18px 14px;border-bottom:1px solid var(--hair-2)}
+.brand .mark{width:28px;height:28px;border-radius:7px;background:var(--primary);color:var(--primary-ink);display:grid;place-items:center;font-family:var(--f-display);font-weight:800;font-size:12px}
+.brand b{font-family:var(--f-display);font-weight:800;font-size:15px;letter-spacing:-.01em}
+.brand small{display:block;font-size:10px;letter-spacing:.1em;text-transform:uppercase;color:var(--muted)}
+.nav{padding:12px 10px;display:flex;flex-direction:column;gap:2px}
+.nav .eyebrow{padding:10px 10px 6px}
+.nav a{display:flex;align-items:center;gap:10px;padding:8px 10px;border-radius:8px;text-decoration:none;color:var(--ink);font-weight:500}
+.nav a svg{width:16px;height:16px;flex:none;color:var(--muted)}
+.nav a:hover{background:var(--surface-2)}
+.nav a.on{background:var(--primary-soft);color:var(--primary-soft-ink);font-weight:600}
+.nav a.on svg{color:currentColor}
+.nav .count{margin-left:auto;font-size:11px;background:var(--hair-2);border-radius:999px;padding:1px 7px;color:var(--muted)}
+.tenant{margin-top:auto;margin:auto 10px 12px;padding:12px;border:1px solid var(--hair);border-radius:10px;background:var(--surface-2)}
+.tenant b{display:block;font-size:13px}
+.tenant span{font-size:12px;color:var(--muted)}
+.main{min-width:0}
+.top{height:56px;display:flex;align-items:center;gap:14px;padding:0 24px;background:var(--surface);border-bottom:1px solid var(--hair);position:sticky;top:0;z-index:5}
+.search{flex:1;max-width:560px;display:flex;align-items:center;gap:8px;background:var(--paper);border:1px solid var(--hair);border-radius:8px;padding:7px 12px;color:var(--muted)}
+.search svg{width:14px;height:14px}
+.top .right{margin-left:auto;display:flex;align-items:center;gap:10px}
+.badge{display:inline-flex;align-items:center;gap:6px;padding:3px 9px;border-radius:999px;font-family:var(--f-display);font-size:11px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;white-space:nowrap}
+.badge.info{background:var(--info-bg);color:var(--info)}
+.badge.ready{background:var(--ready-bg);color:var(--ready)}
+.badge.warn{background:var(--warn-bg);color:var(--warn)}
+.badge.crit{background:var(--crit-bg);color:var(--crit)}
+.badge.review{background:var(--review-bg);color:var(--review)}
+.badge.primary{background:var(--primary-soft);color:var(--primary-soft-ink)}
+.badge.tenant{background:var(--surface-2);border:1px solid var(--hair);color:var(--muted);text-transform:none;letter-spacing:0}
+.avatar{width:30px;height:30px;border-radius:50%;background:var(--primary);color:var(--primary-ink);display:grid;place-items:center;font-family:var(--f-display);font-size:11px;font-weight:700}
+.iconbtn{width:34px;height:34px;border-radius:8px;display:grid;place-items:center;color:var(--muted);border:1px solid transparent}
+.iconbtn:hover{background:var(--surface-2);border-color:var(--hair)}
+.iconbtn svg{width:16px;height:16px}
+.page{padding:22px 24px 40px;display:flex;flex-direction:column;gap:18px}
+.pagehead{display:flex;align-items:flex-start;gap:16px}
+.pagehead .grow{flex:1;min-width:0}
+.pagehead p{margin:4px 0 0;color:var(--muted)}
+.actions{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
+.btn{display:inline-flex;align-items:center;gap:7px;padding:8px 13px;border-radius:8px;border:1px solid var(--hair);background:var(--surface);font-weight:600;font-size:13px;white-space:nowrap}
+.btn:hover{background:var(--surface-2)}
+.btn.primary{background:var(--primary);color:var(--primary-ink);border-color:var(--primary)}
+.btn.primary:hover{filter:brightness(1.08)}
+.btn.sm{padding:5px 10px;font-size:12px}
+.btn svg{width:14px;height:14px}
+.motto{display:flex;align-items:center;gap:10px;border-left:3px solid var(--primary);padding:6px 12px;background:var(--surface-2);font-family:var(--f-display);font-weight:700;font-size:12px;letter-spacing:.02em}
+.motto .eyebrow{color:var(--primary)}
+.toolbar{display:flex;gap:10px;align-items:center;flex-wrap:wrap}
+.chips{display:flex;gap:6px;flex-wrap:wrap}
+.chip{padding:5px 11px;border-radius:999px;border:1px solid var(--hair);background:var(--surface);font-size:12px;font-weight:600}
+.chip.on{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.select{display:inline-flex;align-items:center;gap:8px;padding:7px 11px;border:1px solid var(--hair);border-radius:8px;background:var(--surface);font-size:13px;cursor:pointer}
+.select svg{width:14px;height:14px;flex:none;color:var(--muted)}
+.link svg,.tabs svg,.chip svg,.tag svg,.afous svg,.flag svg{width:12px;height:12px}
+textarea.input{resize:vertical;font-family:var(--f-body)}
+.seg{display:inline-flex;border:1px solid var(--hair);border-radius:8px;overflow:hidden;background:var(--surface)}
+.seg button{padding:6px 12px;font-weight:600;font-size:12px}
+.seg button.on{background:var(--ink);color:var(--paper)}
+.grid{display:grid;gap:14px}
+.g5{grid-template-columns:repeat(5,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g2{grid-template-columns:repeat(2,1fr)}.g4{grid-template-columns:repeat(4,1fr)}
+.card{background:var(--surface);border:1px solid var(--hair);border-radius:12px}
+.card .hd{display:flex;align-items:center;gap:10px;padding:12px 16px;border-bottom:1px solid var(--hair-2)}
+.card .hd .link{margin-left:auto;font-size:12px;color:var(--muted);text-decoration:none;font-weight:600}
+.card .bd{padding:14px 16px}
+.kpi{padding:14px 16px;border-top:3px solid var(--primary)}
+.kpi .v{font-family:var(--f-display);font-size:26px;font-weight:800;letter-spacing:-.02em;line-height:1.1}
+.kpi .d{font-size:12px;color:var(--muted)}
+.kpi.warn{border-top-color:var(--warn)}.kpi.crit{border-top-color:var(--crit)}.kpi.ready{border-top-color:var(--ready)}.kpi.review{border-top-color:var(--review)}
+table{width:100%;border-collapse:collapse}
+th{text-align:left;font-family:var(--f-display);font-size:11px;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);padding:9px 12px;border-bottom:1px solid var(--hair)}
+td{padding:11px 12px;border-bottom:1px solid var(--hair-2);vertical-align:middle}
+tr.row:hover td{background:var(--surface-2);cursor:pointer}
+.list{display:flex;flex-direction:column}
+.list .it{display:flex;align-items:center;gap:12px;padding:10px 16px;border-bottom:1px solid var(--hair-2)}
+.list .it:last-child{border-bottom:0}
+.list .it:hover{background:var(--surface-2);cursor:pointer}
+.bar{height:6px;border-radius:3px;background:var(--hair-2);overflow:hidden}
+.bar i{display:block;height:100%;background:var(--primary)}
+/* product cards */
+.pcard{display:flex;flex-direction:column}
+.pcard .ph{display:flex;align-items:center;gap:12px;padding:14px 16px}
+.pcard .ico{width:40px;height:40px;border-radius:10px;background:var(--surface-2);border:1px solid var(--hair);display:grid;place-items:center}
+.pcard .ico svg{width:18px;height:18px;color:var(--primary)}
+.pcard .tags{display:flex;gap:6px;padding:0 16px 12px;border-bottom:1px solid var(--hair-2)}
+.tag{font-size:11px;padding:2px 8px;border-radius:999px;background:var(--surface-2);border:1px solid var(--hair);color:var(--muted);font-weight:600}
+.mrow{padding:12px 16px;border-bottom:1px solid var(--hair-2);display:grid;grid-template-columns:1fr auto;gap:6px 12px;align-items:center}
+.mrow:last-child{border-bottom:0}
+.mrow b{font-size:13px}
+.mrow .meta{grid-column:1/-1;display:flex;align-items:center;gap:8px;color:var(--muted);font-size:12px}
+.mrow .next{grid-column:1;font-size:12px}
+.mrow .btn{grid-column:2;justify-self:end}
+/* stepper */
+.stepper{display:flex;align-items:center;gap:0;overflow-x:auto}
+.step{display:flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--hair);border-radius:999px;background:var(--surface);font-size:12px;font-weight:600;white-space:nowrap}
+.step.done{background:var(--primary-soft);color:var(--primary-soft-ink);border-color:transparent}
+.step.now{background:var(--ink);color:var(--paper);border-color:var(--ink)}
+.step .dot{width:8px;height:8px;border-radius:50%;background:currentColor;opacity:.7}
+.stepper .arr{width:22px;height:1px;background:var(--hair);flex:none;margin:0 2px}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--hair)}
+.tabs button{padding:10px 14px;font-weight:600;color:var(--muted);border-bottom:2px solid transparent;margin-bottom:-1px}
+.tabs button.on{color:var(--ink);border-bottom-color:var(--primary)}
+.tabs .cnt{margin-left:6px;font-size:11px;color:var(--muted)}
+/* kanban */
+.kanban{display:grid;grid-template-columns:repeat(5,minmax(230px,1fr));gap:12px;overflow-x:auto}
+.col{background:var(--surface-2);border:1px solid var(--hair);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:10px;border-top:3px solid var(--hair)}
+.col.crit{border-top-color:var(--crit)}.col.warn{border-top-color:var(--warn)}.col.review{border-top-color:var(--review)}.col.ready{border-top-color:var(--ready)}.col.done{border-top-color:var(--primary)}
+.col .ch{display:flex;align-items:center;gap:8px;padding:2px 4px 4px;font-family:var(--f-display);font-weight:700;font-size:13px}
+.col .ch .cnt{margin-left:auto;font-size:11px;background:var(--surface);border:1px solid var(--hair);border-radius:999px;padding:1px 7px;color:var(--muted)}
+.kcard{background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:12px;display:flex;flex-direction:column;gap:8px;cursor:pointer;box-shadow:0 1px 1px rgba(0,0,0,.02)}
+.kcard:hover{border-color:var(--primary)}
+.kcard .t{font-weight:600;line-height:1.35}
+.kcard .m{font-size:12px;color:var(--muted)}
+.kcard .f{display:flex;align-items:center;gap:8px;margin-top:2px}
+.kcard .f .avatar{width:22px;height:22px;font-size:9px}
+.kcard .f .btn{margin-left:auto}
+/* outputs */
+.lcstrip{display:grid;grid-template-columns:repeat(7,1fr);gap:8px}
+.lc{padding:12px;border:1px solid var(--hair);border-radius:10px;background:var(--surface);display:flex;flex-direction:column;gap:2px;cursor:pointer}
+.lc.on{border-color:var(--primary);background:var(--primary-soft)}
+.lc .v{font-family:var(--f-display);font-size:22px;font-weight:800}
+.lc .l{font-size:12px;font-weight:700;font-family:var(--f-display)}
+.lc .d{font-size:11px;color:var(--muted)}
+.ocard{display:flex;flex-direction:column;border-top:3px solid var(--primary)}
+.ocard .oh{display:flex;align-items:center;gap:10px;padding:14px 16px 6px}
+.ocard .oh .eyebrow{font-size:10px}
+.ocard .chips{padding:4px 16px 10px}
+.ocard .chip{font-size:11px;padding:3px 8px;font-weight:500}
+.ocard .of{display:flex;gap:8px;padding:10px 16px 14px;margin-top:auto}
+/* drawer & modal */
+.scrim{position:fixed;inset:0;background:rgba(20,26,23,.35);z-index:20;display:none}
+.scrim.open{display:block}
+.drawer{position:fixed;top:0;right:0;height:100vh;width:520px;max-width:92vw;background:var(--surface);border-left:1px solid var(--hair);z-index:21;transform:translateX(100%);transition:transform .22s ease;display:flex;flex-direction:column;box-shadow:var(--shadow)}
+.drawer.open{transform:none}
+.drawer .dh{display:flex;align-items:center;gap:10px;padding:14px 18px;border-bottom:1px solid var(--hair)}
+.drawer .db{padding:18px;overflow:auto;display:flex;flex-direction:column;gap:14px}
+.kv{display:grid;grid-template-columns:150px 1fr;gap:8px 12px;font-size:13px}
+.kv dt{color:var(--muted)}.kv dd{margin:0}
+.modal{position:fixed;inset:0;z-index:30;display:none;place-items:center}
+.modal.open{display:grid}
+.modal .box{width:560px;max-width:92vw;background:var(--surface);border:1px solid var(--hair);border-radius:14px;box-shadow:var(--shadow);overflow:hidden}
+.modal .box .hd{padding:14px 18px;border-bottom:1px solid var(--hair);display:flex;align-items:center;gap:10px}
+.modal .box .bd{padding:18px;display:flex;flex-direction:column;gap:12px}
+.field{display:flex;flex-direction:column;gap:5px}
+.field label{font-size:12px;font-weight:600;color:var(--muted)}
+.input{border:1px solid var(--hair);border-radius:8px;padding:8px 11px;background:var(--paper);font:inherit;color:inherit;width:100%}
+.dropzone{border:1.5px dashed var(--hair);border-radius:10px;padding:22px;text-align:center;color:var(--muted);background:var(--paper)}
+.toast{position:fixed;left:50%;bottom:24px;transform:translateX(-50%) translateY(20px);opacity:0;background:var(--ink);color:var(--paper);padding:10px 16px;border-radius:10px;font-weight:600;z-index:40;transition:.2s;pointer-events:none;box-shadow:var(--shadow)}
+.toast.show{opacity:1;transform:translateX(-50%)}
+/* afous */
+.afous{display:inline-flex;align-items:center;gap:6px;padding:4px 9px;border-radius:999px;background:var(--primary-soft);color:var(--primary-soft-ink);font-size:11px;font-weight:700;font-family:var(--f-display)}
+.afous svg{width:12px;height:12px}
+.sugg{border:1px solid var(--hair);border-radius:10px;padding:12px;background:var(--surface-2);display:flex;flex-direction:column;gap:6px}
+.sugg .t{font-weight:600}
+/* admin */
+.admin{display:grid;grid-template-columns:220px 1fr;gap:18px;align-items:start}
+.subnav{display:flex;flex-direction:column;gap:2px;padding:8px;background:var(--surface);border:1px solid var(--hair);border-radius:12px}
+.subnav button{text-align:left;padding:8px 10px;border-radius:8px;font-weight:600;color:var(--muted)}
+.subnav button.on{background:var(--primary-soft);color:var(--primary-soft-ink)}
+.matrix td:not(:first-child){text-align:center}
+.cb{display:inline-block;width:16px;height:16px;border-radius:4px;border:1.5px solid var(--hair);background:var(--surface);vertical-align:middle}
+.cb.on{background:var(--primary);border-color:var(--primary);position:relative}
+.cb.on::after{content:"";position:absolute;left:4.5px;top:1.5px;width:4px;height:8px;border:solid var(--primary-ink);border-width:0 2px 2px 0;transform:rotate(45deg)}
+.toggle{width:36px;height:20px;border-radius:999px;background:var(--hair);position:relative;flex:none}
+.toggle::after{content:"";position:absolute;top:2px;left:2px;width:16px;height:16px;border-radius:50%;background:var(--surface);transition:.15s}
+.toggle.on{background:var(--primary)}.toggle.on::after{left:18px}
+.tile{display:flex;gap:12px;align-items:flex-start;padding:14px;border:1px solid var(--hair);border-radius:10px;background:var(--surface)}
+.tile.on{background:var(--primary-soft);border-color:transparent}
+.tile b{display:block}.tile small{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--muted);margin:2px 0 4px}
+.tile p{margin:0;font-size:12px;color:var(--muted)}
+.scope{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px}
+.scope .s{padding:12px;border:1px solid var(--hair);border-radius:10px;background:var(--surface)}
+.scope .s.on{border-color:var(--primary);background:var(--primary-soft)}
+.scope small{display:block;font-size:10px;letter-spacing:.08em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+/* projects */
+.projects{display:grid;grid-template-columns:240px 1fr;gap:18px;align-items:start}
+.folders{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:10px;display:flex;flex-direction:column;gap:2px}
+.folders button{display:flex;align-items:center;gap:8px;padding:7px 10px;border-radius:8px;text-align:left;font-weight:500}
+.folders button.on{background:var(--primary-soft);color:var(--primary-soft-ink);font-weight:600}
+.folders button svg{width:14px;height:14px;color:var(--muted)}
+.folders .cnt{margin-left:auto;font-size:11px;color:var(--muted)}
+.pjcard{padding:14px 16px;display:flex;flex-direction:column;gap:10px;cursor:pointer}
+.pjcard:hover{border-color:var(--primary)}
+.pjcard .ph2{display:flex;align-items:center;gap:10px}
+.pjcard .letter{width:34px;height:34px;border-radius:9px;background:var(--primary);color:var(--primary-ink);display:grid;place-items:center;font-family:var(--f-display);font-weight:800}
+.pjcard .assets{display:flex;gap:10px;font-size:12px;color:var(--muted)}
+/* passport (public) */
+.pub{max-width:1080px;margin:0 auto;padding:28px 24px 60px;display:flex;flex-direction:column;gap:20px}
+.pubtop{display:flex;align-items:center;gap:12px}
+.pubtop .lang{margin-left:auto}
+.hero{display:grid;grid-template-columns:360px 1fr;gap:22px}
+.photo{background:var(--surface);border:1px solid var(--hair);border-radius:16px;aspect-ratio:1;display:grid;place-items:center;position:relative;overflow:hidden}
+.photo svg{width:70%;height:70%}
+.qr{position:absolute;right:12px;bottom:12px;width:84px;height:84px;background:#fff;border:1px solid var(--hair);border-radius:8px;padding:6px}
+.qr canvas{width:100%;height:100%;image-rendering:pixelated}
+.herotxt{display:flex;flex-direction:column;gap:12px}
+.herotxt h1{font-size:32px;font-weight:800;letter-spacing:-.02em}
+.badges{display:flex;gap:8px;flex-wrap:wrap}
+.flag{display:inline-flex;align-items:center;gap:6px;padding:4px 10px;border-radius:999px;border:1px solid var(--hair);background:var(--surface);font-size:12px;font-weight:600}
+.carbon{display:flex;gap:4px;align-items:flex-end}
+.carbon span{flex:1;height:34px;border-radius:6px;display:grid;place-items:center;font-family:var(--f-display);font-weight:800;color:#fff;opacity:.35}
+.carbon span.on{opacity:1;outline:3px solid var(--ink);outline-offset:2px}
+.aud{display:inline-flex;border:1px solid var(--hair);border-radius:10px;overflow:hidden;background:var(--surface)}
+.aud button{padding:9px 14px;font-weight:600;font-size:13px;display:flex;align-items:center;gap:8px}
+.aud button.on{background:var(--primary);color:var(--primary-ink)}
+.sections{display:grid;grid-template-columns:1fr 1fr;gap:14px}
+.sec{background:var(--surface);border:1px solid var(--hair);border-radius:12px;padding:16px;display:flex;flex-direction:column;gap:10px}
+.sec dl{margin:0;display:grid;grid-template-columns:1fr 1fr;gap:6px 12px;font-size:13px}
+.sec dt{color:var(--muted)}.sec dd{margin:0;font-weight:500}
+.timeline{display:flex;flex-direction:column;gap:8px}
+.timeline .ev{display:grid;grid-template-columns:110px 1fr;gap:10px;font-size:13px}
+.timeline .ev .d{color:var(--muted);font-family:var(--f-mono);font-size:12px}
+.lock{display:flex;gap:10px;align-items:flex-start;padding:12px 14px;border-radius:10px;background:var(--warn-bg);color:var(--warn);font-size:13px}
+/* sign in */
+.auth{min-height:100vh;display:grid;grid-template-columns:1fr 1fr}
+.auth .left{padding:48px;display:flex;flex-direction:column;gap:26px}
+.auth .left h1{font-size:42px;line-height:1.05;font-weight:800;letter-spacing:-.02em;max-width:14ch}
+.auth .left h1 em{font-style:normal;color:var(--primary)}
+.auth .right{background:var(--surface);border-left:1px solid var(--hair);padding:40px 48px;display:flex;flex-direction:column;gap:18px}
+.opt{display:flex;align-items:center;gap:14px;padding:14px 16px;border:1.5px solid var(--hair);border-radius:12px;cursor:pointer;background:var(--surface)}
+.opt.on{border-color:var(--primary);background:var(--primary-soft)}
+.opt .ico{width:38px;height:38px;border-radius:9px;background:var(--surface-2);border:1px solid var(--hair);display:grid;place-items:center;flex:none}
+.opt .ico svg{width:18px;height:18px;color:var(--primary)}
+.opt b{display:block}.opt small{color:var(--muted)}
+.opt .radio{margin-left:auto;width:18px;height:18px;border-radius:50%;border:2px solid var(--hair)}
+.opt.on .radio{border-color:var(--primary);background:var(--primary);box-shadow:inset 0 0 0 3px var(--surface)}
+.pillars{display:grid;grid-template-columns:repeat(3,1fr);gap:16px;border-top:1px solid var(--hair);padding-top:16px}
+.pillars b{display:block;font-family:var(--f-display)}
+.pillars p{margin:2px 0 0;font-size:12px;color:var(--muted)}
+/* partner */
+.client{display:flex;flex-direction:column;gap:10px;padding:16px}
+.perm{display:flex;gap:6px}
+.perm span{flex:1;text-align:center;font-size:11px;padding:4px;border-radius:6px;background:var(--surface-2);border:1px solid var(--hair);font-weight:600}
+.boundary{padding:10px 12px;border-radius:8px;background:var(--surface-2);border:1px solid var(--hair);font-size:12px}
+.boundary b{display:block}
+/* chart bits */
+.chart{width:100%;height:150px;display:block}
+.legend{display:flex;gap:12px;font-size:12px;color:var(--muted);flex-wrap:wrap}
+.legend i{display:inline-block;width:10px;height:10px;border-radius:2px;margin-right:5px;vertical-align:middle}
+.tip{position:absolute;pointer-events:none;background:var(--ink);color:var(--paper);font-size:11px;padding:4px 8px;border-radius:6px;display:none;white-space:nowrap}
+.hint{position:fixed;left:24px;bottom:20px;z-index:6;background:var(--surface);border:1px solid var(--hair);border-radius:10px;padding:8px 12px;font-size:12px;color:var(--muted);box-shadow:var(--shadow)}
+.hint b{color:var(--ink)}
+</style>
+
+<div id="app"></div>
+<div class="scrim" id="scrim"></div>
+<aside class="drawer" id="drawer" aria-hidden="true"></aside>
+<div class="modal" id="modal"></div>
+<div class="toast" id="toast"></div>
+<div class="hint" id="hint">Clickable prototype · <b>everything with a hover state does something</b></div>
+
+<script>
+/* capture helpers: ?theme=light|dark stamps the theme, ?capture=1 hides the hint pill */
+(function(){ const qs=new URLSearchParams(location.search); if(qs.get('theme')) document.documentElement.dataset.theme=qs.get('theme'); if(qs.get('capture')) document.getElementById('hint').hidden=true; })();
+/* ---------- icons ---------- */
+const I = {
+  home:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 11l9-8 9 8v9a1 1 0 0 1-1 1h-5v-6H9v6H4a1 1 0 0 1-1-1z"/></svg>',
+  grid:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1.5"/><rect x="14" y="3" width="7" height="7" rx="1.5"/><rect x="3" y="14" width="7" height="7" rx="1.5"/><rect x="14" y="14" width="7" height="7" rx="1.5"/></svg>',
+  work:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="7" width="18" height="13" rx="2"/><path d="M8 7V5a2 2 0 0 1 2-2h4a2 2 0 0 1 2 2v2"/></svg>',
+  out:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M14 3H6a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V9z"/><path d="M14 3v6h6"/></svg>',
+  folder:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 7a2 2 0 0 1 2-2h4l2 2h8a2 2 0 0 1 2 2v9a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/></svg>',
+  cog:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>',
+  search:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="7"/><path d="m20 20-3.5-3.5"/></svg>',
+  spark:'<svg viewBox="0 0 24 24" fill="currentColor"><path d="M12 2l1.8 6.2L20 10l-6.2 1.8L12 18l-1.8-6.2L4 10l6.2-1.8z"/></svg>',
+  bell:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 8a6 6 0 0 1 12 0c0 7 3 9 3 9H3s3-2 3-9"/><path d="M10 21a2 2 0 0 0 4 0"/></svg>',
+  plus:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M12 5v14M5 12h14"/></svg>',
+  down:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 3v12M6 9l6 6 6-6M4 21h16"/></svg>',
+  chev:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m6 9 6 6 6-6"/></svg>',
+  x:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M6 6l12 12M18 6 6 18"/></svg>',
+  battery:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="7" width="18" height="10" rx="2"/><path d="M22 11v2M6 11v2M10 11v2"/></svg>',
+  shirt:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 7 16 4l-2 2h-4l-2-2-4 3 2 4h2v10h8V11h2z"/></svg>',
+  shoe:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 15h18l-3-4-4-2-3 1-2-3-4 2z"/><path d="M3 15v3h18v-3"/></svg>',
+  cpu:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="6" y="6" width="12" height="12" rx="2"/><path d="M9 2v4M15 2v4M9 18v4M15 18v4M2 9h4M2 15h4M18 9h4M18 15h4"/></svg>',
+  cube:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 8 4.5v11L12 22l-8-4.5v-11z"/><path d="M12 22V11M4 6.5l8 4.5 8-4.5"/></svg>',
+  shield:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 2 4 5v6c0 5 3.5 9.5 8 11 4.5-1.5 8-6 8-11V5z"/></svg>',
+  users:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="9" cy="8" r="3.5"/><path d="M2 20a7 7 0 0 1 14 0"/><circle cx="17" cy="9" r="2.5"/><path d="M15.5 14a5 5 0 0 1 6.5 5"/></svg>',
+  seal:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m12 2 2.4 2 3-.5 1 2.9 2.7 1.5-.6 3 2 2.3-2 2.3.6 3-2.7 1.5-1 2.9-3-.5-2.4 2-2.4-2-3 .5-1-2.9-2.7-1.5.6-3L2 12l2-2.3-.6-3 2.7-1.5 1-2.9 3 .5z"/><path d="m9 12 2 2 4-4"/></svg>',
+  upload:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 16V4M6 10l6-6 6 6M4 20h16"/></svg>',
+  leaf:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M4 20c0-9 6-15 16-16 0 10-6 16-16 16z"/><path d="M4 20c4-4 7-7 12-11"/></svg>',
+  qr:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7"/><rect x="14" y="3" width="7" height="7"/><rect x="3" y="14" width="7" height="7"/><path d="M14 14h3v3M21 14v7h-4M14 21h1"/></svg>',
+  back:'<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="m15 6-6 6 6 6"/></svg>',
+};
+const FLAG = {EU:'🇪🇺',US:'🇺🇸',FR:'🇫🇷',DE:'🇩🇪',PT:'🇵🇹',VN:'🇻🇳'};
+
+/* ---------- data ---------- */
+const READY = {
+  unknown:{c:'info',l:'Unknown / info needed'},action:{c:'warn',l:'Action required'},blocked:{c:'crit',l:'Blocked'},
+  review:{c:'review',l:'Review required'},cond:{c:'ready',l:'Ready with conditions'},go:{c:'ready',l:'Ready to release'}
+};
+const LIFECYCLE = ['Draft / Intake','Assessing','Gap resolution','Human review','Output preparation','Release / submission','Monitoring'];
+const products = [
+  {id:'p1',name:'VoltCore VC-75E',sub:'EV battery',sector:'Batteries',icon:'battery',sku:3,origin:'DE',cases:[
+    {id:'c1',market:'EU',name:'European Union',code:'VC-75E · CASE-BAT-EU',target:'20 Feb 2027',ready:'action',next:'Confirm rated energy mapping',stage:2},
+  ]},
+  {id:'p2',name:'PocketCell P-10',sub:'Portable battery',sector:'Batteries',icon:'battery',sku:2,origin:'VN',cases:[
+    {id:'c2',market:'EU',name:'European Union',code:'P-10 · CASE-PORTABLE-EU',target:'20 Feb 2027',ready:'cond',next:'Validate final QR payload policy',stage:4},
+  ]},
+  {id:'p3',name:'Atlas Linen Jacket',sub:'Textile apparel',sector:'Textiles & apparel',icon:'shirt',sku:6,origin:'PT',cases:[
+    {id:'c3',market:'EU',name:'European Union',code:'ALJ-204 · CASE-TEXTILE-EU',target:'11 Sep 2026',ready:'cond',next:'Monitor textile delegated act',stage:6},
+    {id:'c4',market:'US',name:'US Federal',code:'ALJ-204-US · CASE-TEXTILE-US',target:'01 Dec 2026',ready:'cond',next:'Approve US care-label mapping',stage:3},
+  ]},
+  {id:'p4',name:'Kids Rain Jacket',sub:"Children's textile",sector:"Children's products",icon:'shirt',sku:4,origin:'PT',cases:[
+    {id:'c5',market:'US',name:'US Federal',code:'KRJ-11 · CASE-KIDS-US',target:'11 Sep 2026',ready:'blocked',next:'Confirm CPC rule citations',stage:2},
+  ]},
+  {id:'p5',name:'Atlas SafeStep S3',sub:'Safety footwear',sector:'Footwear',icon:'shoe',sku:5,origin:'PT',cases:[
+    {id:'c6',market:'EU',name:'European Union',code:'SS-S3-44 · CASE-FOOT-EU',target:'01 Mar 2027',ready:'action',next:'Confirm PPE classification and conformity route',stage:1},
+  ]},
+  {id:'p6',name:'NovaLink Smart Hub',sub:'Connected device',sector:'Electronics / ICT',icon:'cpu',sku:1,origin:'DE',cases:[
+    {id:'c7',market:'US',name:'US Federal',code:'NSH-500 · CASE-ELEC-US',target:'15 Nov 2026',ready:'review',next:'Verify FCC authorization evidence',stage:3},
+  ]},
+];
+const caseById = id => { for (const p of products) for (const c of p.cases) if (c.id===id) return {p,c}; return null; };
+const tasks = [
+  {col:0,sector:'Batteries',market:'EU',t:'Obtain carbon-footprint verification',p:'VoltCore VC-75E · VC-75E',why:'Blocks Battery Passport release',due:'Due 18 Sep',who:'AK',case:'c1'},
+  {col:0,sector:"Children's products",market:'US',t:'Confirm CPC rule citations',p:'Kids Rain Jacket · KRJ-11',why:'Blocks CPC and eFiling package',due:'Due today',who:'SB',case:'c5'},
+  {col:1,sector:'Batteries',market:'EU',t:'Confirm rated energy mapping',p:'VoltCore VC-75E · VC-75E',why:'Blocks final battery assessment',due:'Due today',who:'SB',case:'c1'},
+  {col:1,sector:'Electronics / ICT',market:'US',t:'Verify FCC authorization evidence',p:'NovaLink Smart Hub · NSH-500',why:'US electronics release condition',due:'Due 18 Sep',who:'SB',case:'c7'},
+  {col:2,sector:'Batteries',market:'EU',t:'Approve EU Declaration of Conformity',p:'VoltCore VC-75E · VC-75E',why:'Controlled output approval',due:'After blockers',who:'YM',case:'c1'},
+  {col:2,sector:'Footwear',market:'EU',t:'Attach conformity-assessment evidence',p:'Atlas SafeStep S3 · SS-S3-44',why:'Waiting on classification route',due:'Due 19 Sep',who:'YM',case:'c6'},
+  {col:3,sector:'Batteries',market:'EU',t:'Validate portable-battery QR policy',p:'PocketCell P-10 · P-10',why:'Release information policy',due:'Due 21 Sep',who:'LN',case:'c2'},
+  {col:3,sector:"Children's products",market:'US',t:'Approve FTC textile label dataset',p:'Kids Rain Jacket · KRJ-11',why:'Retail label release',due:'Due 20 Sep',who:'YM',case:'c5'},
+  {col:4,sector:'Batteries',market:'EU',t:'Verify manufacturer identity facts',p:'VoltCore VC-75E · VC-75E',why:'Used by EU outputs',due:'Completed',who:'YB',case:'c1'},
+  {col:4,sector:'Textiles & apparel',market:'EU',t:'Confirm fibre composition source',p:'Atlas Linen Jacket · ALJ-204',why:'EU label data',due:'Completed',who:'KR',case:'c3'},
+];
+const outputs = [
+  {id:'OUT-001',cls:'Digital passport · EU',name:'Battery Passport',p:'VoltCore VC-75E',sku:'VC-75E',state:'Published',sc:'ready',v:'v1.0 · 09 Sep 2026',chips:['Web + JSON-LD','ID: UPI / model ID','Resolve: WidinX HTTPS','Carrier: QR Code'],how:'Hosted passport + registry workflow',a:['View final result','Download']},
+  {id:'OUT-002',cls:'Legal declaration · EU',name:'EU Declaration of Conformity',p:'VoltCore VC-75E',sku:'VC-75E',state:'Approved',sc:'review',v:'v3.1 · 11 Sep 2026',chips:['PDF + JSON','ID: Document version ID','Resolve: Controlled HTTPS','Carrier: none'],how:'Download / authority on request',a:['Open controlled output','Mark ready to publish']},
+  {id:'OUT-003',cls:'Label dataset · EU',name:'EU Textile Fibre Label Dataset',p:'Atlas Linen Jacket',sku:'ALJ-204',state:'Published',sc:'ready',v:'v2.3 · 11 Sep 2026',chips:['JSON + SVG + PNG','ID: SKU / model ID','Resolve: Customer HTTPS','Carrier: physical label'],how:'Product label + e-commerce',a:['View final result','Download']},
+  {id:'OUT-004',cls:'Certificate · US',name:"Children's Product Certificate",p:'Kids Rain Jacket',sku:'KRJ-11',state:'Approved',sc:'review',v:'v1.8 · 10 Sep 2026',chips:['PDF','ID: Certificate ID','Resolve: Controlled WidinX URL','Carrier: none'],how:'Supply chain / authority',a:['Open controlled output','Mark ready to publish']},
+  {id:'OUT-005',cls:'Filing dataset · US',name:'CPSC eFiling Package',p:'Kids Rain Jacket',sku:'KRJ-11',state:'Submitted',sc:'primary',v:'v1.2 · 10 Sep 2026',chips:['Structured filing payload','ID: Submission ref','Resolve: n/a','Carrier: none'],how:'CPSC / CBP filing workflow',a:['View submission','Download']},
+  {id:'OUT-006',cls:'EPR export · EU',name:'Packaging EPR declaration Q3',p:'Atlas Mobility (brand)',sku:'12 SKUs',state:'Validating',sc:'warn',v:'v0.4 · today',chips:['CSV + XLSX','ID: Reporting period','Resolve: n/a','Carrier: none'],how:'Producer responsibility scheme',a:['Open draft','Run validation']},
+];
+const projects = [
+  {id:'j1',name:'EU Battery Passport · VoltCore',type:'Regulation & DPP',folder:'Batteries',done:3,of:7,assets:{products:1,outputs:2,evidence:6},case:'c1'},
+  {id:'j2',name:'US textile care labels',type:'Regulation & DPP',folder:'Textiles',done:2,of:7,assets:{products:2,outputs:1,evidence:3},case:'c4'},
+  {id:'j3',name:'Akeneo spring import',type:'Data import',folder:'Imports',done:4,of:5,assets:{products:48,outputs:0,evidence:0}},
+  {id:'j4',name:'CPSC eFiling · Kids Rain Jacket',type:'Regulation & DPP',folder:'Textiles',done:5,of:7,assets:{products:1,outputs:2,evidence:4},case:'c5'},
+  {id:'j5',name:'NordTex CSV backfill',type:'Data import',folder:'Imports',done:5,of:5,assets:{products:120,outputs:0,evidence:0}},
+];
+const members = [
+  ['YB','Youssef B.','Product Owner','2 cases','1 action'],['SB','Samira B.','Compliance Reviewer','3 reviews','2 blockers'],['AK','Amine K.','Evidence Owner / Quality','3 requests','1 overdue'],
+  ['YM','Yasmine M.','Legal / Quality Approver','2 approvals','0 overdue'],['KR','Karim R.','Data Steward','2 mappings','0 blocked'],['LN','Leila N.','Product Compliance','2 cases','1 blocker']
+];
+
+/* ---------- state ---------- */
+const S = { route:'home', view:'cards', filter:'all', caseTab:'compliance', adminTab:'publishing', folder:'all', audience:'consumer', outState:'all', access:'controlled', afousOpen:false, evidenceAdded:false, scope:'ws' };
+const QS = new URLSearchParams(location.search);
+for (const k of ['audience','caseTab','adminTab','view','access','scope','folder']) if (QS.get(k)) S[k] = QS.get(k);
+if (QS.get('evidence')) S.evidenceAdded = true;
+
+/* ---------- helpers ---------- */
+const $ = s => document.querySelector(s);
+const badge = (k,extra='') => `<span class="badge ${READY[k].c} ${extra}">${READY[k].l}</span>`;
+const go = r => { location.hash = '#/'+r; };
+function toast(msg){ const t=$('#toast'); t.textContent=msg; t.classList.add('show'); clearTimeout(t._h); t._h=setTimeout(()=>t.classList.remove('show'),2200); }
+function openDrawer(html){ $('#drawer').innerHTML=html; $('#drawer').classList.add('open'); $('#scrim').classList.add('open'); }
+function closeAll(){ $('#drawer').classList.remove('open'); $('#scrim').classList.remove('open'); $('#modal').classList.remove('open'); }
+function openModal(html){ $('#modal').innerHTML=`<div class="box">${html}</div>`; $('#modal').classList.add('open'); $('#scrim').classList.add('open'); }
+
+/* ---------- shell ---------- */
+function shell(inner, active){
+  const nav = [
+    ['home','Home',I.home],['products','Products & markets',I.grid],['work','My work',I.work,'5'],['outputs','Outputs',I.out,'9'],['projects','Projects',I.folder]
+  ];
+  return `<div class="shell">
+  <nav class="rail">
+    <div class="brand"><span class="mark">VX</span><div><b>WidinX</b><small>Regulation OS</small></div></div>
+    <div class="nav">
+      <div class="eyebrow">Workspace</div>
+      ${nav.map(([r,l,ic,c])=>`<a href="#/${r}" class="${active===r?'on':''}">${ic}${l}${c?`<span class="count">${c}</span>`:''}</a>`).join('')}
+      <div class="eyebrow">Catalogue</div>
+      <a href="#/imports" class="${active==='imports'?'on':''}">${I.down}Imports</a>
+      <a href="#/packs" class="${active==='packs'?'on':''}">${I.leaf}Sector packs</a>
+      <div class="eyebrow">Administration</div>
+      <a href="#/admin" class="${active==='admin'?'on':''}">${I.cog}Workspace admin</a>
+      <a href="#/partner" class="${active==='partner'?'on':''}">${I.users}Partner view <span class="count">demo</span></a>
+      <a href="#/clients" class="${active==='clients'?'on':''}">${I.folder}Client cases <span class="count">demo</span></a>
+    </div>
+    <div class="tenant"><b>Atlas Industries</b><span>Product operator workspace</span></div>
+  </nav>
+  <div class="main">
+    <header class="top">
+      <div class="search" data-search style="cursor:text">${I.search}<span>Search product, case, task, requirement, output…</span><span class="mono muted" style="margin-left:auto;font-size:11px">⌘K</span></div>
+      <div class="right">
+        <span class="badge tenant">Demo tenant · v3.0</span>
+        <span class="select" style="font-size:12px;padding:4px 9px" data-toast="Role switch: Product operator · Partner / consultant · Controlled access (demo)">Product operator ${I.chev}</span>
+        <button class="iconbtn" title="Notifications" data-notif style="position:relative">${I.bell}<span style="position:absolute;top:6px;right:6px;width:7px;height:7px;border-radius:50%;background:var(--crit)"></span></button>
+        <button class="iconbtn" data-afous="drawer" title="Afous">${I.spark}</button>
+        <span class="avatar">YB</span>
+      </div>
+    </header>
+    <main class="page">${inner}</main>
+  </div></div>`;
+}
+const motto = t => `<div class="motto"><span class="eyebrow">WidinX</span>${t}</div>`;
+
+/* ---------- screens ---------- */
+function vHome(){
+  const kpis=[['Products','12','in 4 families','ready'],['Market cases','8','EU 5 · US 3',''],['Published outputs','5','2 awaiting approval','review'],['Open gaps','14','6 blocking','warn'],['Blocking release','5','across 4 cases','crit']];
+  const cov=[['Batteries',100],['Textiles & apparel',67],["Children's products",50],['Footwear',0],['Electronics / ICT',0]];
+  const months=['Apr','May','Jun','Jul','Aug','Sep'], issued=[1,2,2,4,3,5];
+  const w=420,h=130,pad=24; const pts=issued.map((v,i)=>[pad+i*((w-2*pad)/5), h-pad-(v/6)*(h-2*pad)]);
+  const line=pts.map((p,i)=>(i?'L':'M')+p[0].toFixed(1)+' '+p[1].toFixed(1)).join(' ');
+  return `
+  <div class="pagehead"><div class="grow"><h1>Overview</h1><p>Atlas Industries · Friday, 11 September</p></div>
+    <div class="actions"><a class="btn" href="#/products">${I.down}Import products</a><a class="btn primary" href="#/products">${I.plus}Create market case</a></div></div>
+  <div class="toolbar"><span class="select">Last 90 days ${I.chev}</span><span class="select">All families ${I.chev}</span><span class="select">All markets ${I.chev}</span><span class="muted" style="font-size:12px;margin-left:auto">Complex behind the scenes. Clear where it matters.</span></div>
+  <div class="grid g5">${kpis.map(k=>`<div class="card kpi ${k[3]}"><div class="eyebrow">${k[0]}</div><div class="v num">${k[1]}</div><div class="d">${k[2]}</div></div>`).join('')}</div>
+  <div class="grid" style="grid-template-columns:2fr 1fr">
+    <div class="grid g2">
+      <div class="card"><div class="hd"><h2>Passport coverage by family</h2><a class="link" href="#/products">Table</a></div><div class="bd" style="display:flex;flex-direction:column;gap:10px">
+        ${cov.map(c=>`<div><div style="display:flex;justify-content:space-between;font-size:12px"><span>${c[0]}</span><span class="num muted">${c[1]}%</span></div><div class="bar"><i style="width:${c[1]}%"></i></div></div>`).join('')}</div></div>
+      <div class="card"><div class="hd"><h2>Passports issued per month</h2></div><div class="bd" style="position:relative">
+        <svg class="chart" viewBox="0 0 ${w} ${h}">
+          ${[0,2,4,6].map(v=>{const y=h-pad-(v/6)*(h-2*pad);return `<line x1="${pad}" x2="${w-pad}" y1="${y}" y2="${y}" stroke="var(--hair)"/><text x="${pad-6}" y="${y+4}" font-size="10" text-anchor="end" fill="var(--muted)">${v}</text>`}).join('')}
+          <path d="${line} L${pts[5][0]} ${h-pad} L${pts[0][0]} ${h-pad}Z" fill="var(--primary)" opacity=".08"/>
+          <path d="${line}" fill="none" stroke="var(--primary)" stroke-width="2"/>
+          ${pts.map((p,i)=>`<circle cx="${p[0]}" cy="${p[1]}" r="${i===5?5:3.5}" fill="var(--primary)" stroke="var(--surface)" stroke-width="2"/><text x="${p[0]}" y="${h-8}" font-size="10" text-anchor="middle" fill="var(--muted)">${months[i]}</text>`).join('')}
+        </svg></div></div>
+      <div class="card"><div class="hd"><h2>Compliance verdicts</h2></div><div class="bd">
+        <div style="display:flex;height:14px;border-radius:7px;overflow:hidden;gap:2px"><i style="flex:5;background:var(--ready)"></i><i style="flex:3;background:var(--warn)"></i><i style="flex:2;background:var(--crit)"></i><i style="flex:2;background:var(--review)"></i></div>
+        <div class="legend" style="margin-top:10px"><span><i style="background:var(--ready)"></i>Ready 5</span><span><i style="background:var(--warn)"></i>Action required 3</span><span><i style="background:var(--crit)"></i>Blocked 2</span><span><i style="background:var(--review)"></i>Review 2</span></div></div></div>
+      <div class="card"><div class="hd"><h2>Markets & origin</h2></div><div class="bd" style="display:flex;flex-direction:column;gap:8px;font-size:13px">
+        <div style="display:flex;justify-content:space-between"><span>${FLAG.EU} European Union</span><b class="num">5 cases · 9 products</b></div>
+        <div style="display:flex;justify-content:space-between"><span>${FLAG.US} US Federal</span><b class="num">3 cases · 4 products</b></div>
+        <div class="muted" style="font-size:12px;border-top:1px solid var(--hair-2);padding-top:8px">Origin: ${FLAG.PT} PT 3 · ${FLAG.DE} DE 2 · ${FLAG.VN} VN 1 · 6 undeclared</div></div></div>
+    </div>
+    <div style="display:flex;flex-direction:column;gap:14px">
+      <div class="card"><div class="hd"><h2>Priority slice</h2><a class="link" href="#/work">Open board</a></div>
+        <div class="list">${tasks.filter(t=>t.col<2).slice(0,4).map(t=>`<div class="it" data-case="${t.case}"><span class="badge ${t.col===0?'crit':'warn'}" style="font-size:9px">${t.col===0?'Blocking':'Review'}</span><div style="flex:1;min-width:0"><div style="font-weight:600;font-size:13px">${t.t}</div><div class="muted" style="font-size:12px">${t.p} · ${t.due}</div></div></div>`).join('')}</div></div>
+      <div class="card"><div class="hd"><h2>Attention</h2></div><div class="list">
+        <div class="it" data-case="c6"><div><div style="font-weight:600;font-size:13px">Atlas SafeStep S3 · 3 attributes missing</div><div class="muted" style="font-size:12px">Manufacturer, HS code, country of origin</div></div></div>
+        <div class="it" data-case="c1"><div><div style="font-weight:600;font-size:13px">Carbon-footprint certificate expires in 12 days</div><div class="muted" style="font-size:12px">VoltCore VC-75E · EU</div></div></div>
+        <div class="it" data-route="outputs"><div><div style="font-weight:600;font-size:13px">1 output stale in Validating for 6 days</div><div class="muted" style="font-size:12px">Packaging EPR declaration Q3</div></div></div></div></div>
+      <div class="card"><div class="hd"><h2>Ask Afous</h2><span class="afous">${I.spark} assistive</span></div><div class="bd" style="display:flex;flex-direction:column;gap:8px">
+        <button class="btn sm" data-afous="q1">Which cases can I release this month?</button><button class="btn sm" data-afous="q2">What blocks the VoltCore passport?</button></div></div>
+    </div>
+  </div>`;
+}
+
+function vProducts(){
+  const list = products.filter(p=>S.filter==='all'||p.cases.some(c=>c.ready===S.filter||(S.filter==='cond'&&['cond','go'].includes(c.ready))));
+  const cards = list.map(p=>`<div class="card pcard">
+    <div class="ph" data-product="${p.id}" style="cursor:pointer"><span class="ico">${I[p.icon]}</span><div style="flex:1;min-width:0"><b style="font-family:var(--f-display)">${p.name}</b><div class="muted" style="font-size:12px">${p.sub} · made in ${FLAG[p.origin]} ${p.origin}</div></div>${badge(p.cases.reduce((w,c)=>['blocked','action'].includes(c.ready)?c.ready:w,p.cases[0].ready))}</div>
+    <div class="tags"><span class="tag">${p.sector}</span><span class="tag">${p.sku} SKUs</span><span class="tag">${p.cases.length} case${p.cases.length>1?'s':''}</span></div>
+    ${p.cases.map(c=>`<div class="mrow" data-case="${c.id}"><b>${FLAG[c.market]} ${c.name}</b>${badge(c.ready)}<div class="meta"><span class="mono">${c.code}</span>· target ${c.target}</div><div class="next">Next: ${c.next}</div><button class="btn sm" data-case="${c.id}">Open case</button></div>`).join('')}
+  </div>`).join('');
+  const rows = list.flatMap(p=>p.cases.map(c=>`<tr class="row" data-case="${c.id}"><td><b>${p.name}</b><div class="mono muted">${c.code}</div></td><td>${p.sector}</td><td>${FLAG[c.market]} ${c.name}<div class="muted" style="font-size:12px">${c.market==='EU'?'Manufacturer placing product on EU market':'Importer'}</div></td><td>${badge(c.ready)}</td><td>${c.next}</td><td class="num">${c.target}</td><td><button class="btn sm">Open</button></td></tr>`)).join('');
+  return `
+  <div class="pagehead"><div class="grow"><div class="eyebrow">Products & markets</div><h1>Product portfolio & market cases</h1><p>Search by product, SKU, case code, sector or market; each product can group several market cases.</p></div>
+    <div class="actions"><span class="select">Import ${I.chev}</span><a class="btn" href="#/products">${I.plus}New product</a><button class="btn primary" data-modal="newcase">${I.plus}Create market case</button></div></div>
+  ${motto('Know it. Link it. Prove it.')}
+  <div class="card"><div class="hd"><h2>How a market case moves from assessment to release</h2><button class="link" data-modal="lifecycle" style="color:var(--review)">Lifecycle & readiness explained</button></div></div>
+  <div class="toolbar">
+    <div class="chips">${[['all','All'],['cond','Ready / conditions'],['action','Action required'],['blocked','Blocked'],['unknown','Unknown / future']].map(([k,l])=>`<button class="chip ${S.filter===k?'on':''}" data-filter="${k}">${l}</button>`).join('')}</div>
+    <div class="seg" style="margin-left:auto"><button class="${S.view==='cards'?'on':''}" data-view="cards">Cards</button><button class="${S.view==='list'?'on':''}" data-view="list">List</button><button class="${S.view==='board'?'on':''}" data-view="board">Board</button></div></div>
+  <div class="toolbar"><div class="search" style="max-width:520px" data-search>${I.search}<span>Search product, SKU, case code, identifier, sector…</span></div><span class="select">All assigned markets ${I.chev}</span><span class="select">${FLAG.EU} EU · ${FLAG.US} US</span><span class="tag">${list.length} product(s)</span><a class="btn sm" href="#/packs" style="margin-left:auto">${I.leaf}Sector packs</a><a class="btn sm" href="#/imports">${I.down}Import</a></div>
+  ${S.view==='cards'?`<div class="grid g3">${cards}</div>`:S.view==='board'?vCasesBoard():`<div class="card" style="overflow:auto"><table><thead><tr><th>Product / code</th><th>Sector</th><th>Market case</th><th>Status</th><th>Next action</th><th>Target</th><th></th></tr></thead><tbody>${rows}</tbody></table></div>`}`;
+}
+
+function vCase(id){
+  const hit = caseById(id)||caseById('c1'); const {p,c}=hit;
+  const tabs=[['steps','Steps'],['board','Board'],['compliance','Compliance','3 gaps'],['assets','Assets','12'],['settings','Settings']];
+  let panel='';
+  if(S.caseTab==='compliance') panel=`
+    <div class="grid" style="grid-template-columns:2fr 1fr">
+      <div class="card"><div class="hd"><h2>Gaps from the last evaluation</h2><span class="muted" style="font-size:12px">espr-dpp-readiness-eu · v3 · ${FLAG[c.market]} ${c.market}</span><button class="btn sm" style="margin-left:auto" data-toast="Evaluation re-run: 3 gaps, 1 fewer than yesterday">Re-evaluate</button></div>
+        <div class="list">
+          <div class="it"><span class="badge crit">Blocking</span><div style="flex:1"><b>Carbon footprint verification missing</b><div class="muted" style="font-size:12px">Regulation (EU) 2023/1542 Art. 7 · needs third-party verified declaration</div></div><button class="btn sm primary" data-modal="evidence">${I.upload}Attach evidence</button></div>
+          <div class="it"><span class="badge warn">Action</span><div style="flex:1"><b>Rated energy attribute not mapped</b><div class="muted" style="font-size:12px">Source column "Wh_nominal" → canonical "rated_energy_wh"</div></div><button class="btn sm" data-toast="Afous suggested rated_energy_wh ← Wh_nominal (confidence 0.96)"><span class="afous">${I.spark} Suggest mapping</span></button></div>
+          <div class="it"><span class="badge warn">Action</span><div style="flex:1"><b>Substances of concern: 1 CAS without concentration</b><div class="muted" style="font-size:12px">CAS 7439-92-1 (lead) · declare % w/w in homogeneous material</div></div><button class="btn sm" data-modal="evidence">Request from supplier</button></div>
+          ${S.evidenceAdded?`<div class="it" style="background:var(--ready-bg)"><span class="badge ready">Verified</span><div style="flex:1"><b>Carbon-footprint verification certificate · TÜV SÜD</b><div class="muted" style="font-size:12px">Uploaded just now · valid to 30 Jun 2027 · awaiting evidence validity approval (rule / human)</div></div></div>`:''}
+        </div></div>
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div class="card"><div class="hd"><h2>Claims</h2></div><div class="list">
+          <div class="it"><div style="flex:1"><b>Recycled content ≥ 16% cobalt</b><div class="muted" style="font-size:12px">2 evidence files · substantiated</div></div><span class="badge ready">OK</span></div>
+          <div class="it"><div style="flex:1"><b>Carbon footprint class B</b><div class="muted" style="font-size:12px">Needs verified declaration</div></div><span class="badge warn">Open</span></div></div>
+          <div class="bd" style="padding-top:8px"><button class="btn sm" data-toast="Afous drafted 2 claim candidates from the BOM and test reports"><span class="afous">${I.spark} Suggest claims</span></button></div></div>
+        <div class="card"><div class="hd"><h2>Readiness</h2></div><div class="bd" style="display:flex;flex-direction:column;gap:8px">${badge(c.ready)}<p class="muted" style="margin:0;font-size:12px">A state at a point in time for Product × Market × Date × Role, recomputed after every evaluation. Blocked is a severity, not a stage.</p></div></div>
+      </div></div>`;
+  if(S.caseTab==='steps') panel=`<div class="card"><div class="list">${LIFECYCLE.map((s,i)=>`<div class="it"><span class="badge ${i<c.stage?'ready':i===c.stage?'warn':'info'}" style="width:110px;justify-content:center">${i<c.stage?'Done':i===c.stage?'Current':'Later'}</span><div style="flex:1"><b>${s}</b><div class="muted" style="font-size:12px">${['Subject, market, sector pack chosen','Applicable definitions found: 3 · 1 unknown','3 gaps open · 2 claims','Maker-checker approval by Legal / Quality','Outputs generated from the case','Publish / submit, registry entry','Delegated acts, expiring evidence'][i]}</div></div><span class="muted num" style="font-size:12px">${['02 Sep','04 Sep','today','—','—','—','—'][i]}</span></div>`).join('')}</div></div>`;
+  if(S.caseTab==='board') panel=vBoard(tasks.filter(t=>t.case===c.id||t.case==='c1'));
+  if(S.caseTab==='assets') panel=`<div class="grid g3">${[['Products','1 product · 3 SKUs · 2 batches',I.cube],['Evidence','6 files · 1 expiring',I.shield],['Outputs','Battery Passport v1.0 · EU DoC v3.1',I.out],['Import runs','Akeneo spring import · 48 rows',I.down],['Codes','QR + GS1 DataMatrix · 3 SKUs',I.qr],['Documents','Test reports · datasheet · manual',I.folder]].map(a=>`<div class="card" style="padding:14px 16px;display:flex;gap:12px;align-items:center"><span class="ico" style="width:36px;height:36px;border-radius:9px;background:var(--surface-2);border:1px solid var(--hair);display:grid;place-items:center;color:var(--primary)"><span style="width:16px;height:16px;display:block">${a[2]}</span></span><div><b>${a[0]}</b><div class="muted" style="font-size:12px">${a[1]}</div></div></div>`).join('')}</div>`;
+  if(S.caseTab==='settings') panel=`<div class="card"><div class="bd grid g2">
+    <div class="field"><label>Case name</label><input class="input" value="${p.name} · ${c.name}"></div><div class="field"><label>Folder</label><span class="select">Batteries ${I.chev}</span></div>
+    <div class="field"><label>Target market</label><span class="select">${FLAG[c.market]} ${c.name} ${I.chev}</span></div><div class="field"><label>Target date</label><input class="input" value="${c.target}"></div>
+    <div class="field"><label>Members</label><div style="display:flex;gap:6px">${['YB','SB','AK','YM'].map(m=>`<span class="avatar" style="width:26px;height:26px;font-size:9px">${m}</span>`).join('')}<button class="btn sm">${I.plus}Add</button></div></div>
+    <div class="field"><label>Sector pack</label><span class="select">${c.market==='EU'?'EU · Batteries (ESPR + 2023/1542)':'US · Textiles (FTC care label)'} ${I.chev}</span></div>
+    <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end"><button class="btn" data-toast="Case archived (demo)">Archive</button><button class="btn primary" data-toast="Settings saved">Save</button></div></div></div>`;
+  return `
+  <div class="pagehead"><a class="iconbtn" href="#/products" title="Back">${I.back}</a><div class="grow"><div class="eyebrow">Market case · <span class="mono">${c.code}</span></div><h1>${p.name} · ${FLAG[c.market]} ${c.name}</h1><p>${p.sub} · ${p.sector} · made in ${FLAG[p.origin]} ${p.origin} · target ${c.target}</p></div>
+    <div class="actions">${badge(c.ready)}<button class="btn" data-afous="drawer"><span class="afous">${I.spark} Gap advice</span></button><a class="btn primary" href="#/outputs">${I.out}Create output</a></div></div>
+  <div class="stepper">${LIFECYCLE.map((s,i)=>`<span class="step ${i<c.stage?'done':i===c.stage?'now':''}"><i class="dot"></i>${s}</span>${i<6?'<i class="arr"></i>':''}`).join('')}</div>
+  <div class="tabs">${tabs.map(t=>`<button class="${S.caseTab===t[0]?'on':''}" data-casetab="${t[0]}">${t[1]}${t[2]?`<span class="cnt">${t[2]}</span>`:''}</button>`).join('')}</div>
+  ${panel}`;
+}
+
+function vBoard(list){
+  const cols=[['Blocked / release risk','crit'],['Review / approval','warn'],['Waiting externally / monitoring','review'],['Ready to progress','ready'],['Completed / verified','done']];
+  return `<div class="kanban">${cols.map((col,i)=>`<div class="col ${col[1]}"><div class="ch">${col[0]}<span class="cnt">${list.filter(t=>t.col===i).length}</span></div>
+    ${list.filter(t=>t.col===i).map(t=>`<div class="kcard" data-case="${t.case}"><div class="chips"><span class="tag">${t.sector}</span><span class="tag">${FLAG[t.market]} ${t.market}</span></div><div class="t">${t.t}</div><div class="m">${t.p}</div><div class="m">${t.why}</div><div class="f"><span class="avatar">${t.who}</span><span class="m num">${t.due}</span><button class="btn sm">Open</button></div></div>`).join('')}</div>`).join('')}</div>`;
+}
+function vWork(){
+  const k=[['Blocking','5','release risk','crit'],['Review','5','human decision','warn'],['Waiting','5','external / monitoring','review'],['Ready','3','can progress','ready'],['Done','2','verified','']];
+  return `<div class="pagehead"><div class="grow"><div class="eyebrow">My work · cross-case operations</div><h1>All actions across products and markets</h1><p>Kanban is the operational view. Home shows only the priority slice; this board shows the full portfolio workflow.</p></div><div class="seg"><button class="on">Kanban</button><button data-toast="List view (demo)">List</button></div></div>
+  ${motto('Complex behind the scenes. Clear where it matters.')}
+  <div class="grid g5">${k.map(x=>`<div class="card kpi ${x[3]}"><div class="eyebrow">${x[0]}</div><div class="v num">${x[1]}</div><div class="d">${x[2]}</div></div>`).join('')}</div>
+  <div class="toolbar"><div class="search" style="max-width:420px">${I.search}<span>Search action, product, SKU, owner, role…</span></div><span class="select">All sectors ${I.chev}</span><span class="select">All markets ${I.chev}</span><span class="select">All action types ${I.chev}</span><span class="select">All owners ${I.chev}</span></div>
+  <div class="chips"><span class="chip on">All work</span><span class="chip">Blocking release</span><span class="chip">Due soon</span></div>
+  ${vBoard(tasks)}`;
+}
+
+function vOutputs(){
+  const lc=[['Generated','1','Controlled draft created'],['Validating','1','Automated validation'],['In review','1','Human review'],['Approved','2','Approved version'],['Ready to publish','1','Release preflight complete'],['Published','5','Published governed result'],['Submitted','1','External filing branch']];
+  const list=outputs.filter(o=>S.outState==='all'||o.state===S.outState);
+  const ot = S.outTab || 'outputs';
+  const head = `<div class="pagehead"><div class="grow"><div class="eyebrow">Regulated results & controlled deliverables</div><h1>Outputs</h1><p>The controlled artefact, its lifecycle state, its representation and how it is delivered. Passports, declarations, labels, certificates, filings, codes and EPR exports in one place.</p></div><div class="actions"><div class="seg"><button class="on">Cards</button><button data-toast="List view (demo)">List</button></div><a class="btn primary" href="#/outputs/new">${I.plus}Create output</a></div></div>
+  ${motto('Claims are easy. Proof is harder. WidinX makes it verifiable.')}
+  <div class="tabs">${[['outputs','All outputs','9'],['codes','Codes & carriers'],['exports','EPR & reporting exports','4']].map(x=>`<button class="${ot===x[0]?'on':''}" data-outtab="${x[0]}">${x[1]}${x[2]?`<span class="cnt">${x[2]}</span>`:''}</button>`).join('')}</div>`;
+  if(ot==='codes') return head+vCodes();
+  if(ot==='exports') return head+vExports();
+  return head+`
+  <div class="card"><div class="hd"><div><div class="eyebrow">Controlled output lifecycle</div><h2>From generated draft to governed result</h2></div><span class="muted" style="font-size:12px;margin-left:auto">Click a state to filter</span></div>
+    <div class="bd"><div class="lcstrip">${lc.map(x=>`<div class="lc ${S.outState===x[0]?'on':''}" data-outstate="${x[0]}"><span class="l">${x[0]}</span><span class="v num">${x[1]}</span><span class="d">${x[2]}</span></div>`).join('')}</div></div></div>
+  <div class="toolbar"><div class="search" style="max-width:420px">${I.search}<span>Search output, product, code, identifier, resolver, carrier…</span></div><span class="select">All lifecycle states ${I.chev}</span><span class="select">All markets ${I.chev}</span><span class="select">All output classes ${I.chev}</span>${S.outState!=='all'?`<button class="btn sm" data-outstate="all">Reset</button>`:''}</div>
+  <div class="grid g3">${list.map(o=>`<div class="card ocard" data-output="${o.id}">
+    <div class="oh"><span class="ico" style="width:34px;height:34px;border-radius:8px;background:var(--surface-2);border:1px solid var(--hair);display:grid;place-items:center;color:var(--primary)"><span style="width:16px;height:16px;display:block">${I.out}</span></span><div style="flex:1;min-width:0"><div class="eyebrow">${o.cls}</div><b style="font-family:var(--f-display)">${o.name}</b><div class="muted" style="font-size:12px">${o.p} · <span class="mono">${o.sku}</span></div></div><span class="badge ${o.sc}">${o.state}</span></div>
+    <div class="chips">${o.chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div>
+    <div class="bd" style="padding-top:0"><div>${o.how}</div><div class="muted" style="font-size:12px"><b>${o.state.toUpperCase()}</b> · ${o.v}</div></div>
+    <div class="of"><button class="btn sm primary" data-output="${o.id}">${o.a[0]}</button><button class="btn sm" data-toast="${o.a[1]} (demo)">${o.a[1]}</button></div></div>`).join('')}</div>`;
+}
+function outputDrawer(id){
+  const o=outputs.find(x=>x.id===id);
+  return `<div class="dh"><b class="mono">${o.id}</b><span>· ${o.name}</span><button class="iconbtn" style="margin-left:auto" data-close>${I.x}</button></div>
+  <div class="db">
+    <div style="display:flex;gap:8px;align-items:center"><span class="badge ${o.sc}">${o.state}</span><span class="badge info">${o.v.split(' · ')[0]}</span><span class="badge primary" style="margin-left:auto">Regulatory output</span></div>
+    <h2 style="font-size:20px">${o.p}</h2><div class="muted">${o.cls} · ${o.v.split(' · ')[1]}</div>
+    <div class="grid g3">${[['Representation',o.chips[0]],['Identifier / resolution',o.chips[1].replace('ID: ','')+' · '+o.chips[2].replace('Resolve: ','')],['Carrier / channel',o.chips[3].replace('Carrier: ','')+' · '+o.how]].map(x=>`<div class="tile" style="flex-direction:column;gap:2px"><small>${x[0]}</small><b style="font-size:13px">${x[1]}</b></div>`).join('')}</div>
+    <div class="tile"><span style="width:44px;height:44px;border-radius:8px;background:repeating-conic-gradient(var(--ink) 0 25%,var(--surface) 0 50%) 0 0/8px 8px;flex:none;border:1px solid var(--hair)"></span><div><b>This is a ${o.state.toLowerCase()} governed result.</b><p>The lifecycle state is distinct from the format or carrier. Publishing freezes a controlled version, creates an audit event and exposes only the authorised resource / channel.</p></div></div>
+    <dl class="kv"><dt>Signed</dt><dd>${o.state==='Published'?'Ed25519 · key widinx-2026-09 · signed 09 Sep':'Not yet signed'}</dd><dt>Registry</dt><dd>${o.state==='Published'?'EU battery registry · pending (sandbox)':'—'}</dd><dt>Grain</dt><dd>Model (extend to batch / serial from the case)</dd><dt>Audiences</dt><dd>Consumer · B2B · Authority · Recycler / repairer</dd><dt>Supersedes</dt><dd>${o.state==='Published'?'v0.9 (superseded 09 Sep)':'—'}</dd></dl>
+    <div class="actions"><button class="btn" data-toast="metadata.json downloaded (demo)">Download metadata JSON</button><button class="btn" data-toast="carrier.svg downloaded (demo)">Download carrier SVG</button><button class="btn" data-toast="ZIP with QR + DataMatrix for 3 SKUs (demo)">Bulk ZIP</button><a class="btn primary" href="#/passport" data-close>Open live result</a></div>
+    ${o.state!=='Published'?`<div class="actions"><button class="btn" data-toast="Superseding creates a new controlled version">Supersede</button><button class="btn primary" data-toast="Publication needs Legal / Quality approval (rule / human)">Publish</button></div>`:''}
+  </div>`;
+}
+
+function vProjects(){
+  const folders=[['all','All projects',projects.length],['Batteries','Batteries',1],['Textiles','Textiles',2],['Imports','Imports',2],['archived','Archived',3]];
+  const list=projects.filter(p=>S.folder==='all'||p.folder===S.folder);
+  return `<div class="pagehead"><div class="grow"><h1>Projects</h1><p>A market case is a project of type “Regulation & DPP”; a data import is a project of type “Data import”. Folders, members, assets and the board are kept.</p></div><div class="actions"><span class="select">Create ${I.chev}</span><button class="btn primary" data-modal="newcase">${I.plus}Regulation & DPP project</button></div></div>
+  <div class="projects"><div class="folders"><div class="eyebrow" style="padding:6px 10px">Folders</div>${folders.map(f=>`<button class="${S.folder===f[0]?'on':''}" data-folder="${f[0]}">${I.folder}${f[1]}<span class="cnt num">${f[2]}</span></button>`).join('')}<button data-toast="New folder (demo)">${I.plus}New folder</button><div class="muted" style="font-size:11px;padding:8px 10px 2px">Drag a card onto a folder to move it.</div></div>
+  <div class="grid g3">${list.map(p=>`<div class="card pjcard" data-project="${p.id}"><div class="ph2"><span class="letter">${p.name[0]}</span><div style="flex:1;min-width:0"><b style="font-family:var(--f-display)">${p.name}</b><div class="muted" style="font-size:12px">${p.folder}</div></div><span class="badge ${p.type==='Data import'?'info':'primary'}">${p.type}</span></div>
+    <div><div style="display:flex;justify-content:space-between;font-size:12px"><span class="muted">${p.type==='Data import'?'source → mapping → run → review → enrich':LIFECYCLE[Math.min(p.done,6)]}</span><span class="num">${p.done}/${p.of}</span></div><div class="bar"><i style="width:${p.done/p.of*100}%"></i></div></div>
+    <div class="assets"><span>${p.assets.products} products</span><span>${p.assets.outputs} outputs</span><span>${p.assets.evidence} evidence</span><span style="margin-left:auto">${p.done===p.of?'Done':'Updated today'}</span></div></div>`).join('')}</div></div>`;
+}
+
+function vAdmin(){
+  const tabs=[['overview','Overview'],['members','Members'],['roles','Roles & access'],['integrations','Integrations'],['email','Email & notifications'],['input','Input methods'],['output','Output formats'],['publishing','Publishing & carriers'],['afous','Afous.ai policy'],['dev','Developers'],['brand','Branding']];
+  let panel='';
+  const t=S.adminTab;
+  if(t==='overview') panel=`<div class="grid g4">${[['Members','6','all active','ready'],['Role policies','6','maker-checker capable','warn'],['Connected methods','8','files + API + secure links','review'],['Mail health','98.7%','demo delivery rate','ready']].map(k=>`<div class="card kpi ${k[3]}"><div class="eyebrow">${k[0]}</div><div class="v num">${k[1]}</div><div class="d">${k[2]}</div></div>`).join('')}</div>
+    <div class="grid g2"><div class="card"><div class="bd"><h3>What belongs here?</h3><p class="muted" style="margin:6px 0 0">Tenant admins manage people, tenant permissions, source-system connections and external communication settings.</p></div></div><div class="card"><div class="bd"><h3>What does not?</h3><p class="muted" style="margin:6px 0 0">Global regulations, regulatory templates, canonical output schemas, resolver / carrier policies and legal maturity are authored in the separate WidinX Platform Regulatory Admin.</p></div></div></div>`;
+  if(t==='members') panel=`<div class="card"><div class="hd"><h2>Members</h2><span class="muted" style="font-size:12px">Operational access, current workload and critical-role assignments.</span><button class="btn sm primary" style="margin-left:auto" data-toast="Invite sent (demo)">Invite member</button></div><table><thead><tr><th>Member</th><th>Workspace role</th><th>Status</th><th>Current work</th><th>Risk / restriction</th><th></th></tr></thead><tbody>${members.map(m=>`<tr><td><span class="avatar" style="display:inline-grid;width:24px;height:24px;font-size:9px;margin-right:8px">${m[0]}</span><b>${m[1]}</b></td><td>${m[2]}</td><td><span class="badge ready">Active</span></td><td>${m[3]}</td><td>${m[4]}</td><td><button class="btn sm">Edit access</button></td></tr>`).join('')}</tbody></table></div>`;
+  if(t==='roles'){const perms=['Import','Map','Review mapping','Verify evidence','Approve output','Publish / submit','Invite members'];const rows=[['Product Owner',[1,1,0,0,0,0,1]],['Data Steward',[1,1,0,0,0,0,0]],['Compliance Reviewer',[0,1,1,0,0,0,0]],['Evidence Owner / Quality',[0,0,0,1,0,0,0]],['Legal / Quality Approver',[0,0,0,0,1,0,0]],['Submission Manager',[0,0,0,0,0,1,0]]];
+    panel=`<div class="card"><div class="hd"><h2>Roles & access</h2><span class="muted" style="font-size:12px">Tenant grants remain subject to maker-checker and regulated-workflow restrictions.</span><button class="btn sm primary" style="margin-left:auto" data-toast="Policy saved">Save policy</button></div><table class="matrix"><thead><tr><th>Role</th>${perms.map(p=>`<th>${p}</th>`).join('')}</tr></thead><tbody>${rows.map(r=>`<tr><td><b>${r[0]}</b></td>${r[1].map(v=>`<td><span class="cb ${v?'on':''}" data-cb></span></td>`).join('')}</tr>`).join('')}</tbody></table></div>`;}
+  if(t==='integrations') panel=`<div class="toolbar"><div class="search" style="max-width:420px">${I.search}<span>Search SAP, Akeneo, REST, SFTP…</span></div><span class="select">All categories ${I.chev}</span><span class="select">All maturity ${I.chev}</span><button class="btn primary" style="margin-left:auto" data-toast="Connector request logged">Request connector</button></div>
+    <div class="grid g3">${[['C/X','File & bulk · native','CSV / XLSX','Enabled','ready'],['J/J','File & bulk · native','JSON / JSON-LD','Enabled','ready'],['X','File & bulk · native','XML','Enabled','ready'],['S/M','File & bulk · enterprise','SFTP / managed file drop','Planned','warn'],['RA','API & events · native','REST API','Enabled','ready'],['G','API & events · adapter','GraphQL','Planned','warn'],['IW','API & events · adapter','Inbound webhooks','Planned','warn'],['OW','API & events · lifecycle','Outbound webhooks','Planned','warn'],['A','PIM · connector','Akeneo','Enabled','ready']].map(c=>`<div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:8px"><div style="display:flex;align-items:center"><span class="tag mono">${c[0]}</span><span class="badge ${c[4]}" style="margin-left:auto">${c[3]}</span></div><div class="eyebrow" style="font-size:10px">${c[1]}</div><b>${c[2]}</b><div><button class="btn sm">${c[3]==='Enabled'?'Configure':'Request / assess'}</button></div></div>`).join('')}</div>`;
+  if(t==='email') panel=`<div class="grid g4">${[['Delivery rate','98.7%','demo month','ready'],['Messages','300','transactional / month','review'],['Pending reminders','4','next 24h','warn'],['Bounces','2','needs address review','crit']].map(k=>`<div class="card kpi ${k[3]}"><div class="eyebrow">${k[0]}</div><div class="v num">${k[1]}</div><div class="d">${k[2]}</div></div>`).join('')}</div>
+    <div class="grid g2">${[['Active','WidinX transactional mail','Default managed sender for secure evidence / data requests.','View service'],['Optional','Verified customer domain','Use a validated brand domain while keeping WidinX request tracking.','Configure'],['Optional','Microsoft 365 delegated sending','Enterprise sender integration subject to customer authorization.','Connect'],['Optional','SMTP relay','Enterprise relay configuration for approved environments.','Configure']].map(c=>`<div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:8px"><span class="badge ${c[0]==='Active'?'ready':'warn'}" style="align-self:flex-start">${c[0]}</span><b>${c[1]}</b><p class="muted" style="margin:0;font-size:12px">${c[2]}</p><div><button class="btn sm">${c[3]}</button></div></div>`).join('')}</div>`;
+  if(t==='input') panel=`<div class="tile" style="background:var(--surface-2)"><div><b>Three layers:</b> platform supports it → tenant enables it → a case / source workflow is permitted to use it.</div></div><div class="grid g3">${[['CSV',1,'Bulk file intake for tabular source data.'],['XLSX',1,'Business-user spreadsheet intake.'],['JSON',1,'Structured source / API payload intake.'],['JSON-LD',1,'Linked-data payload intake where used.'],['XML',1,'Schema-driven interchange where applicable.'],['REST API',1,'Live machine-to-machine source connection.'],['GraphQL',0,'Optional API source method.'],['SFTP / file drop',0,'Managed batch / file exchange.'],['Inbound webhook',0,'Event-driven inbound updates.']].map(x=>`<div class="tile ${x[1]?'on':''}"><div style="flex:1"><b>${x[0]}</b><small>${x[1]?'Tenant enabled':'Tenant disabled'}</small><p>${x[2]}</p></div><span class="toggle ${x[1]?'on':''}" data-toggle></span></div>`).join('')}</div><div class="tile"><div><b>PIM / PLM / ERP connectors live under Integrations.</b><p>Enabling CSV or REST does not automatically configure SAP, Akeneo or another enterprise connector.</p></div></div>`;
+  if(t==='output') panel=`<div class="grid g3">${[['HTML / Web',1,'Required by active pack','Human-readable hosted output view.'],['PDF',1,'Tenant enabled','Controlled documents and printable packs.'],['JSON',1,'Required by active pack','Machine interchange / API responses.'],['JSON-LD',1,'Tenant enabled','Linked-data DPP / interoperability.'],['CSV',1,'Tenant enabled','Bulk export / reporting.'],['XLSX',1,'Tenant enabled','Business-user export.'],['ZIP',1,'Tenant enabled','Evidence / document bundles.'],['SVG',1,'Tenant enabled','Vector carrier / label artwork.'],['PNG',1,'Tenant enabled','Raster carrier / label artwork.'],['XML',0,'Tenant disabled','Authority / enterprise schema where pack requires.'],['Webhook event',1,'Tenant enabled','Outbound lifecycle / change event.'],['Print-ready PDF',0,'Tenant disabled','Artwork / label handoff.']].map(x=>`<div class="tile ${x[1]?'on':''}"><div style="flex:1"><b>${x[0]}</b><small>${x[2]}</small><p>${x[3]}</p></div><span class="toggle ${x[1]?'on':''}" ${x[2].startsWith('Required')?'style="opacity:.5"':'data-toggle'}></span></div>`).join('')}</div><div class="tile" style="background:var(--warn-bg);color:var(--warn)"><div><b>Tenant preference cannot invalidate a regulatory output.</b><p style="color:inherit">If a case requires a structured schema or a specific representation, WidinX keeps that required representation available for that output.</p></div></div>`;
+  if(t==='publishing') panel=`<div class="pagehead" style="align-items:center"><div class="grow"><div class="eyebrow">Publishing & interoperability</div><h2 style="font-size:18px">Resolution, identifiers & data carriers</h2><p>Define technical availability at Workspace level, then set narrower preferences for Brands or Product Families. Operational defaults, never legal overrides.</p></div><span class="badge warn">Output policy always wins</span></div>
+    <div class="scope">${[['ws','1 · Workspace','Atlas Industries','Global tenant capability + baseline defaults'],['brand','2 · Brand','Atlas Mobility','Overrides only this brand'],['family','3 · Product family','EV Batteries','Narrowest tenant preference']].map(s=>`<div class="s ${S.scope===s[0]?'on':''}" data-scope="${s[0]}"><small>${s[1]}</small><b>${s[2]}</b><div class="muted" style="font-size:12px">${s[3]}</div></div>`).join('')}</div>
+    <div class="grid" style="grid-template-columns:2fr 1fr">
+      <div style="display:flex;flex-direction:column;gap:14px">
+        <div><h3 style="margin-bottom:8px">Resolution / target modes</h3><div class="grid g2">${[['WidinX HTTPS output URL','Direct governed WidinX-hosted resource.',1,S.scope!=='family'],['WidinX canonical resolver','Identifier-agnostic WidinX resolution layer.',1,0],['GS1 Digital Link resolver','GS1 identifier URI resolution to typed resources.',1,S.scope==='family'],['Customer-owned HTTPS domain','Customer-controlled domain resolving to governed resources.',0,0],['Authority / registry URL','External regulated destination where the pack requires it.',0,0],['Custom HTTPS target','Controlled direct HTTPS target for permitted use cases.',1,0]].map(r=>`<div class="tile ${r[2]?'':''}" style="${r[2]?'':'opacity:.55'}"><div style="flex:1"><b>${r[0]}</b><small>${r[2]?'Workspace enabled':'Workspace off'}</small><p>${r[1]}</p></div><button class="btn sm ${r[3]?'primary':''}" data-toast="Preference set for this scope">${r[3]?'Preferred ✓':'Set preference'}</button></div>`).join('')}</div></div>
+        <div><h3 style="margin-bottom:8px">Data carriers / AIDC</h3><div class="grid g3">${[['QR Code','2D web-resolvable carrier',S.scope!=='brand'],['Data Matrix','Compact 2D matrix carrier',S.scope==='brand'],['GS1 DataMatrix','GS1-structured 2D carrier',0]].map(c=>`<div class="tile" style="flex-direction:column"><span style="width:100%;height:70px;border-radius:8px;background:var(--surface-2);display:grid;place-items:center"><span style="width:44px;height:44px;background:repeating-conic-gradient(var(--ink) 0 25%,transparent 0 50%) 0 0/${c[0]==='QR Code'?'8px 8px':'6px 6px'}"></span></span><b>${c[0]}</b><p>${c[1]}</p><button class="btn sm ${c[2]?'primary':''}" data-toast="Carrier preference set">${c[2]?'Preferred ✓':'Set preference'}</button></div>`).join('')}</div></div>
+      </div>
+      <div class="card"><div class="hd"><div><div class="eyebrow">Effective preference preview</div><h2>${S.scope==='brand'?'Data Matrix':'QR Code'}</h2></div></div><div class="bd" style="display:flex;flex-direction:column;gap:10px"><span style="width:100%;aspect-ratio:1.4;border-radius:10px;background:var(--surface-2);display:grid;place-items:center"><span style="width:56px;height:56px;background:repeating-conic-gradient(var(--ink) 0 25%,transparent 0 50%) 0 0/8px 8px"></span></span>
+        <dl class="kv" style="grid-template-columns:90px 1fr"><dt>Scope</dt><dd>${S.scope==='ws'?'Atlas Industries workspace':S.scope==='brand'?'Atlas Mobility (brand)':'EV Batteries (family)'}</dd><dt>Resolver</dt><dd>${S.scope==='family'?'GS1 Digital Link':'WidinX HTTPS output URL'}</dd><dt>Carrier</dt><dd>${S.scope==='brand'?'Data Matrix':'QR Code'}</dd></dl>
+        <div class="tile" style="background:var(--review-bg);color:var(--review)"><div><b>What changes here?</b><p style="color:inherit">Only the starting preference for compatible outputs inside this scope. No publication is triggered.</p></div></div>
+        <div class="tile" style="background:var(--warn-bg);color:var(--warn)"><div><b>Case / output policy can override this.</b><p style="color:inherit">An EV Battery Passport can lock QR even when a Brand prefers Data Matrix.</p></div></div></div></div></div>`;
+  if(t==='afous') panel=`<div class="pagehead" style="align-items:center"><div class="grow"><div class="eyebrow">AI assistance</div><h2 style="font-size:18px">Afous.ai policy</h2><p><b>Afous</b> means “hands” in Amazigh — an assistant designed to help people do the next step, not replace controlled regulatory decisions. Never a floating popup: a header drawer and in-context actions only.</p></div><span class="badge info">Assistive only</span></div>
+    <div class="grid g2"><div class="card"><div class="hd"><h2>Allowed assistance</h2></div><div class="list">${['Extract facts from documents','Suggest source → canonical mapping','Suggest product classification','Summarise evidence','Explain why a requirement is shown','Detect anomalies / missing context','Write descriptions and passport texts','Draft claim candidates'].map(a=>`<div class="it"><span class="cb on" data-cb></span>${a}</div>`).join('')}</div></div>
+    <div class="card"><div class="hd"><h2>Always controlled</h2></div><div class="list">${['Final legal applicability','Final compliance decision','Evidence validity approval','Market-readiness approval','Publication / submission approval'].map(a=>`<div class="it"><span class="badge crit">Rule / human</span>${a}</div>`).join('')}</div></div></div>`;
+  if(t==='dev') panel=`<div class="grid g2"><div class="card"><div class="hd"><h2>API keys</h2><button class="btn sm primary" style="margin-left:auto" data-toast="Key created — copy it now, it will not be shown again">Create key</button></div><div class="list"><div class="it"><span class="mono">wx_live_…8f2a</span><span class="muted" style="font-size:12px">Akeneo sync · last used 2 h ago</span><span class="badge ready" style="margin-left:auto">Active</span></div><div class="it"><span class="mono">wx_test_…c91d</span><span class="muted" style="font-size:12px">Sandbox</span><span class="badge info" style="margin-left:auto">Test</span></div></div></div>
+    <div class="card"><div class="hd"><h2>Webhooks</h2></div><div class="list"><div class="it"><span class="mono">output.published</span><span class="muted" style="font-size:12px">https://erp.atlas.example/hooks</span><span class="badge ready" style="margin-left:auto">200 · 5 min ago</span></div><div class="it"><span class="mono">case.readiness.changed</span><span class="muted" style="font-size:12px">https://erp.atlas.example/hooks</span><span class="badge ready" style="margin-left:auto">200</span></div></div></div></div>`;
+  if(t==='brand') panel=`<div class="card"><div class="bd grid g2"><div class="field"><label>Logo</label><div class="tile"><span class="mark" style="width:36px;height:36px;border-radius:8px;background:var(--primary);color:var(--primary-ink);display:grid;place-items:center;font-weight:800;font-family:var(--f-display)">VX</span><div><b>WidinX mark</b><p>SVG · used on public passports and outputs</p></div></div></div><div class="field"><label>Primary colour</label><div class="tile"><span style="width:36px;height:36px;border-radius:8px;background:#1B3D2F"></span><div><b class="mono">#1B3D2F</b><p>Locked to the WidinX green.</p></div></div></div></div></div>`;
+  return `<div class="pagehead"><div class="grow"><div class="eyebrow">Workspace administration</div><h1>Workspace configuration</h1><p>People, permissions, enterprise connections, external collaboration and tenant-visible platform capabilities.</p></div></div>
+  ${motto('More intelligence. Less interface.')}
+  <div class="admin"><div class="subnav">${tabs.map(x=>`<button class="${t===x[0]?'on':''}" data-admintab="${x[0]}">${x[1]}</button>`).join('')}</div><div style="display:flex;flex-direction:column;gap:14px;min-width:0">${panel}</div></div>`;
+}
+
+function vPartner(){
+  const clients=[['Atlas Industries','3 market cases','Review mappings · prepare outputs',[1,1,1,0],'Publication retained by Atlas'],['Northwind Imports','1 US filing case','Prepare filing · request evidence',[1,1,1,0],'Submission retained by client'],['Medica Labs','Evidence-only','Evidence upload / verification',[1,1,1,0],'No output rights']];
+  return `<div class="pagehead"><div class="grow"><div class="eyebrow">Partner / consultant</div><h1>Delegated client operations</h1><p>One partner account, multiple client delegations — each client controls exactly what you may see and do.</p></div><span class="badge tenant">Signed in as Partner / consultant</span></div>
+  ${motto('Every requirement. Every evidence. Every market. WidinX.')}
+  <div class="grid g3">${clients.map(c=>`<div class="card client"><div style="display:flex;align-items:center"><b style="font-family:var(--f-display);font-size:15px">${c[0]}</b><span class="badge primary" style="margin-left:auto">${c[1]}</span></div><div class="muted" style="font-size:13px">${c[2]}</div><div class="perm">${['Cases','Tasks','Evidence','Publish'].map((p,i)=>`<span style="${c[3][i]?'':'opacity:.5'}">${p} ${c[3][i]?'✓':'✕'}</span>`).join('')}</div><div class="boundary"><b>Release boundary</b>${c[4]}</div><button class="btn primary" data-delegated="${c[0]}">Open delegated workspace</button></div>`).join('')}</div>
+  <div class="card"><div class="hd"><div><div class="eyebrow">Cross-client work</div><h2>Assigned deliverables</h2></div><button class="btn sm" style="margin-left:auto">All delegated cases</button></div><table><tbody>
+    ${[['Review recycled-content mapping','Atlas · VC-75E','Review','review','c1'],['Prepare CPSC filing package','Northwind · Kids Rain Jacket','Output prep','warn','c5'],['Upload verification evidence','Medica Labs · scoped request','Evidence','info','c1']].map(r=>`<tr class="row" data-case="${r[4]}"><td><b>${r[0]}</b><div class="muted" style="font-size:12px">${r[1]}</div></td><td>${r[2]}</td><td><span class="badge ${r[3]}">${r[3]==='review'?'Review':r[3]==='warn'?'Action required':'Waiting'}</span></td><td style="text-align:right"><button class="btn sm">Open</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+
+function vSignin(){
+  const opts=[['operator','Product operator','Manufacturer, importer, distributor, brand / private label or authorised representative managing market cases.',I.cube],['controlled','Controlled access & review','Recycler, repairer, laboratory, certifier, authority, customs or supplier / evidence contributor.',I.shield],['partner','Partner / consultant','Multi-client regulatory service provider or integration partner with delegated permissions.',I.users]];
+  const form = S.access==='controlled'?`<div class="grid g2"><div class="field"><label>Organisation / authority *</label><input class="input" value="Circular Recovery Lab"></div><div class="field"><label>Access type *</label><span class="select" style="justify-content:space-between">Recycler / repairer / remanufacturer ${I.chev}</span></div><div class="field"><label>Business email *</label><input class="input" value="review@circular.example"></div><div class="field"><label>Country *</label><span class="select" style="justify-content:space-between">${FLAG.FR} France ${I.chev}</span></div><div class="field"><label>Credential / licence number</label><input class="input" placeholder="Required only by the selected verification policy"></div><div class="field"><label>Password *</label><input class="input" type="password" value="••••••••"></div></div><div class="lock"><span>⚠</span><div><b>Access is approval- and purpose-scoped.</b> A QR scan does not grant restricted data access. Verification requirements depend on actor type and applicable policy.</div></div><div><a class="btn primary" href="#/passport" data-audience="recycler">Create account & continue</a></div>`
+   : S.access==='partner'?`<div class="grid g2"><div class="field"><label>Partner company *</label><input class="input" value="Regulatory Partners SARL"></div><div class="field"><label>Country *</label><span class="select" style="justify-content:space-between">${FLAG.FR} France ${I.chev}</span></div><div class="field"><label>Contact name *</label><input class="input" value="Nadia B."></div><div class="field"><label>Business email *</label><input class="input" value="contact@partner.example"></div></div><div class="lock" style="background:var(--review-bg);color:var(--review)"><span>ⓘ</span><div><b>Partner onboarding is approval-gated.</b> Client workspaces remain isolated and become visible only after explicit delegation.</div></div><div><a class="btn primary" href="#/partner">Submit partner account for approval</a></div>`
+   : `<div class="grid g2"><div class="field"><label>Company *</label><input class="input" value="Atlas Industries"></div><div class="field"><label>Role *</label><span class="select" style="justify-content:space-between">Manufacturer ${I.chev}</span></div><div class="field"><label>Business email *</label><input class="input" value="youssef@atlas.example"></div><div class="field"><label>Password *</label><input class="input" type="password" value="••••••••"></div></div><div><a class="btn primary" href="#/home">Create workspace & continue</a></div>`;
+  return `<div class="auth"><div class="left"><div class="brand" style="padding:0;border:0"><span class="mark">VX</span><div><b>WidinX</b><small>Regulation OS</small></div></div>
+    <h1>Compliance shouldn't be searched for. <em>It should be WidinX.</em></h1>
+    <p style="max-width:52ch;font-size:16px;color:var(--muted)">Tell us what you sell, where you want to sell it and when. WidinX turns regulatory complexity into owned actions, verifiable evidence and the outputs needed to reach the market. <b style="color:var(--ink)">Know it. Link it. Prove it.</b></p>
+    <div class="pillars"><div><b>Context first</b><p>Product · market · date · legal capacity.</p></div><div><b>Action, not legal noise</b><p>Only what is missing, who owns it and what it blocks.</p></div><div><b>Outputs to release</b><p>Documents, passports, labels, filings and machine data.</p></div></div>
+    <p class="muted" style="margin-top:auto;font-size:12px">Demo prototype · legal conclusions shown inside demo cases are explicitly sourced or marked as sample.</p></div>
+  <div class="right"><div class="tabs"><button class="on">Create account</button><button data-route="home">Sign in</button></div>
+    <div><div class="eyebrow">Choose your access model</div><h2 style="font-size:18px">How will you use WidinX?</h2></div>
+    ${opts.map(o=>`<div class="opt ${S.access===o[0]?'on':''}" data-access="${o[0]}"><span class="ico">${o[3]}</span><div><b>${o[1]}</b><small>${o[2]}</small></div><span class="radio"></span></div>`).join('')}
+    ${form}
+    <p class="muted" style="font-size:12px">Invited to provide one certificate or fact? <a href="#/passport">Open scoped request</a> · Looking up a product? <a href="#/passport">Open public product view</a></p></div></div>`;
+}
+
+function vPassport(){
+  const a=S.audience;
+  const consumer=`<div class="sections">
+    <div class="sec"><h3>Product details</h3><dl><dt>Model</dt><dd>VoltCore VC-75E</dd><dt>Manufacturer</dt><dd>Atlas Mobility GmbH</dd><dt>Made in</dt><dd>${FLAG.DE} Germany</dd><dt>For markets</dt><dd>${FLAG.EU} EU · ${FLAG.US} US</dd><dt>GTIN</dt><dd class="mono">04012345678905</dd><dt>Category</dt><dd>EV battery · 75 kWh</dd></dl></div>
+    <div class="sec"><h3>Sustainability</h3><dl><dt>Carbon footprint</dt><dd>Class B · 61 kg CO₂e / kWh</dd><dt>Recycled content</dt><dd>Cobalt 16% · Lithium 6% · Nickel 6%</dd><dt>Expected lifetime</dt><dd>1,500 cycles · 8 years</dd><dt>Verified by</dt><dd>TÜV SÜD · 09 Sep 2026</dd></dl></div>
+    <div class="sec"><h3>Care & safety</h3><p class="muted" style="margin:0;font-size:13px">Do not puncture or expose to temperatures above 60 °C. Return to an authorised collection point at end of life. Emergency: +49 800 000 000.</p></div>
+    <div class="sec"><h3>Lifecycle</h3><div class="timeline"><div class="ev"><span class="d">2026-09-09</span><span>Passport published · v1.0</span></div><div class="ev"><span class="d">2026-08-30</span><span>Placed on the EU market · DE</span></div><div class="ev"><span class="d">2026-08-12</span><span>Manufactured · batch B-2608-14</span></div></div></div></div>`;
+  const recycler=`<div class="sections">
+    <div class="sec" style="grid-column:1/-1;background:var(--primary-soft);border-color:transparent"><div style="display:flex;align-items:center;gap:10px"><span class="badge primary">Recycler / repairer audience</span><span class="muted" style="font-size:12px">Signed in as Circular Recovery Lab · approved 05 Sep · purpose: end-of-life treatment</span><button class="btn sm primary" style="margin-left:auto" data-modal="evidence">${I.upload}Upload evidence</button></div></div>
+    <div class="sec"><h3>Dismantling</h3><dl><dt>Pack format</dt><dd>12 modules · 96 cells · bolted, no adhesive</dd><dt>Disassembly manual</dt><dd><a href="#" data-toast="Manual opened (demo)">VC-75E-DIS-v3.pdf</a></dd><dt>Discharge procedure</dt><dd>Below 30% SoC before removal</dd><dt>Tools</dt><dd>T40 Torx · insulated · 1000 V</dd></dl></div>
+    <div class="sec"><h3>Materials & substances of concern</h3><dl><dt>Cathode</dt><dd>NMC 811</dd><dt>Lead (CAS 7439-92-1)</dt><dd>&lt; 0.1% w/w · declared</dd><dt>Electrolyte</dt><dd>LiPF₆ · SDS attached</dd><dt>Housing</dt><dd>Aluminium 6061 · 4.2 kg</dd></dl></div>
+    <div class="sec"><h3>Repair & spare parts</h3><dl><dt>Replaceable</dt><dd>Module · BMS · contactor</dd><dt>Spare parts</dt><dd>Available until 2036 · <a href="#" data-toast="Parts catalogue (demo)">catalogue</a></dd><dt>Firmware</dt><dd>BMS 4.2.1 · signed</dd><dt>State of health</dt><dd class="mono">read via CAN 0x18F</dd></dl></div>
+    <div class="sec"><h3>Evidence you can add</h3><div class="timeline">${S.evidenceAdded?`<div class="ev"><span class="d">today</span><span><b>Recycled-content certificate</b> · uploaded · lifecycle event written on unit VC-75E-000481</span></div>`:''}<div class="ev"><span class="d">any time</span><span>Recycled-content certificate · repair record · end-of-life receipt</span></div><div class="ev"><span class="d">2026-09-01</span><span>Repair record · module 7 replaced · Circular Recovery Lab</span></div></div></div></div>`;
+  const authority=`<div class="sections"><div class="sec" style="grid-column:1/-1"><div class="lock" style="background:var(--review-bg);color:var(--review)"><span>ⓘ</span><div><b>Authority view requires a verified authority account.</b> Sign in with an eIDAS credential or open a scoped request. Consumer data stays visible.</div></div></div>${consumer.replace('<div class="sections">','').replace(/<\/div>$/,'')}`;
+  return `<div class="pub">
+    <div class="pubtop"><div class="brand" style="padding:0;border:0"><span class="mark">VX</span><div><b>WidinX</b><small>Digital product passport</small></div></div><span class="badge ready">${I.seal} Signed · registry pending</span><span class="lang select">EN ${I.chev}</span><a class="btn sm" href="#/outputs">Back to console</a></div>
+    <div class="hero"><div class="photo"><svg viewBox="0 0 200 200" fill="none"><rect x="30" y="60" width="130" height="80" rx="12" fill="var(--primary-soft)" stroke="var(--primary)" stroke-width="3"/><rect x="160" y="85" width="12" height="30" rx="3" fill="var(--primary)"/><rect x="45" y="75" width="22" height="50" rx="4" fill="var(--primary)"/><rect x="75" y="75" width="22" height="50" rx="4" fill="var(--primary)"/><rect x="105" y="75" width="22" height="50" rx="4" fill="var(--primary)" opacity=".5"/><rect x="135" y="75" width="12" height="50" rx="4" fill="var(--primary)" opacity=".25"/></svg><div class="qr"><canvas id="qr" width="21" height="21"></canvas></div></div>
+      <div class="herotxt"><div class="eyebrow">Battery passport · EU · Regulation (EU) 2023/1542</div><h1>VoltCore VC-75E</h1><div class="muted">EV battery · 75 kWh · Atlas Mobility</div>
+        <div class="badges"><span class="flag">Made in ${FLAG.DE} Germany</span><span class="flag">For ${FLAG.EU} EU · ${FLAG.US} US</span><span class="flag mono">GTIN 04012345678905</span><span class="flag mono">Serial VC-75E-000481</span></div>
+        <div><div class="eyebrow" style="margin-bottom:6px">Carbon footprint class</div><div class="carbon">${['A','B','C','D','E'].map((l,i)=>`<span class="${l==='B'?'on':''}" style="background:${['#1F6B45','#4F9A5E','#C9A227','#D97B2B','#B03A2E'][i]}">${l}</span>`).join('')}</div></div>
+        <div><div class="eyebrow" style="margin-bottom:6px">I am a…</div><div class="aud">${[['consumer','Consumer'],['b2b','B2B partner'],['recycler','Recycler / repairer'],['authority','Authority']].map(x=>`<button class="${a===x[0]?'on':''}" data-audience="${x[0]}">${x[1]}</button>`).join('')}</div></div>
+      </div></div>
+    ${a==='consumer'?consumer:a==='recycler'?recycler:a==='b2b'?`<div class="sections"><div class="sec" style="grid-column:1/-1;background:var(--primary-soft);border-color:transparent"><span class="badge primary">B2B audience</span> <span class="muted" style="font-size:12px">Signed in as Northwind Imports · distributor · sees test reports, certificates and supply-chain documents</span></div><div class="sec"><h3>Certificates & test reports</h3><div class="timeline"><div class="ev"><span class="d">valid → 2027</span><span>TÜV SÜD carbon footprint verification</span></div><div class="ev"><span class="d">valid → 2028</span><span>UN 38.3 transport test report · Medica Labs</span></div><div class="ev"><span class="d">2026-09-11</span><span>EU Declaration of Conformity v3.1</span></div></div></div><div class="sec"><h3>Supply chain</h3><dl><dt>Cathode supplier</dt><dd>Nordic Cathode AB · ${FLAG.DE} DE plant</dd><dt>Cells</dt><dd>Batch B-2608-14 · 620 units</dd><dt>Incoterms</dt><dd>DAP · HS 850760</dd><dt>JSON-LD</dt><dd><a href="#" data-toast="JSON-LD downloaded (demo)">download</a></dd></dl></div>${consumer.replace('<div class="sections">','').replace(/<\/div>$/,'')}`:authority}
+    <p class="muted" style="font-size:12px;text-align:center">Resolved via GS1 Digital Link · /01/04012345678905/21/000481 · WidinX HTTPS · JSON-LD available</p></div>`;
+}
+
+/* ---------- cases board (market cases are the Kanban cards) ---------- */
+function vCasesBoard(){
+  const cols = LIFECYCLE;
+  const all = products.flatMap(p=>p.cases.map(c=>({p,c})));
+  return `<div class="kanban" style="grid-template-columns:repeat(7,minmax(210px,1fr))">${cols.map((col,i)=>`<div class="col ${i===2?'warn':i===3?'review':i>=5?'done':''}" data-dropstage="${i}"><div class="ch">${col}<span class="cnt">${all.filter(x=>x.c.stage===i).length}</span></div>
+    ${all.filter(x=>x.c.stage===i).map(({p,c})=>`<div class="kcard" draggable="true" data-drag="${c.id}" data-case="${c.id}"><div class="chips"><span class="tag">${p.sector}</span><span class="tag">${FLAG[c.market]} ${c.market}</span></div><div class="t">${p.name}</div><div class="m mono">${c.code}</div>${badge(c.ready)}<div class="m">Next: ${c.next}</div><div class="f"><span class="m num">target ${c.target}</span><button class="btn sm">Open</button></div></div>`).join('')}
+    ${all.filter(x=>x.c.stage===i).length?'':'<div class="muted" style="font-size:12px;padding:6px 4px">Drop a case here</div>'}</div>`).join('')}</div>
+  <p class="muted" style="font-size:12px;margin:0">Drag a case to another stage. Readiness does not change with the stage — it is recomputed from the evaluation.</p>`;
+}
+
+/* ---------- product detail (WidinX catalogue depth) ---------- */
+function vProduct(id){
+  const p = products.find(x=>x.id===id) || products[0];
+  const tabs=[['overview','Overview'],['cases','Market cases',p.cases.length],['attributes','Attributes','24'],['skus','SKUs',p.sku],['batches','Batches','2'],['units','Units','1,240'],['bom','Materials & BOM'],['images','Images','3'],['documents','Documents','5'],['outputs','Outputs','2']];
+  const t = S.productTab || 'overview';
+  const block=(title,inner,link)=>`<div class="card"><div class="hd"><h2>${title}</h2>${link?`<button class="link" data-producttab="${link}">Open tab</button>`:''}</div><div class="bd">${inner}</div></div>`;
+  let panel='';
+  if(t==='overview') panel=`<div class="grid g3">
+    ${block('Identity',`<dl class="kv" style="grid-template-columns:120px 1fr"><dt>Name</dt><dd><b>${p.name}</b> <button class="afous" data-afous="drawer">${I.spark} Write</button></dd><dt>Family</dt><dd>${p.sector} › ${p.sub}</dd><dt>Manufacturer</dt><dd>Atlas Mobility GmbH</dd><dt>Origin</dt><dd>${FLAG[p.origin]} ${p.origin}</dd><dt>Target markets</dt><dd>${p.cases.map(c=>FLAG[c.market]+' '+c.market).join(' · ')}</dd><dt>HS code</dt><dd class="mono">850760</dd><dt>GTIN</dt><dd class="mono">04012345678905</dd></dl>`,'attributes')}
+    ${block('Images',`<div style="display:flex;gap:8px">${[1,2,3].map(i=>`<span style="flex:1;aspect-ratio:1;border-radius:8px;background:var(--surface-2);border:1px solid var(--hair);display:grid;place-items:center;color:var(--primary)"><span style="width:26px;height:26px;display:block">${I[p.icon]}</span></span>`).join('')}</div><div class="muted" style="font-size:12px;margin-top:8px">3 images · primary set · delete from the Images tab</div>`,'images')}
+    ${block('Passports & outputs',`<div class="list" style="margin:-14px -16px"><div class="it" data-output="OUT-001"><b>Battery Passport</b><span class="badge ready" style="margin-left:auto">Published v1.0</span></div><div class="it" data-output="OUT-002"><b>EU Declaration of Conformity</b><span class="badge review" style="margin-left:auto">Approved v3.1</span></div></div>`,'outputs')}
+    ${block('Compliance',`<div style="display:flex;flex-direction:column;gap:8px">${p.cases.map(c=>`<div style="display:flex;align-items:center;gap:8px"><span>${FLAG[c.market]} ${c.name}</span>${badge(c.ready)}<a class="btn sm" style="margin-left:auto" href="#/case/${c.id}">Case</a></div>`).join('')}<div class="muted" style="font-size:12px">3 gaps · 2 claims · 6 evidence files · last evaluation today</div></div>`,'cases')}
+    ${block('Sustainability',`<div class="carbon" style="margin-bottom:8px">${['A','B','C','D','E'].map((l,i)=>`<span class="${l==='B'?'on':''}" style="height:26px;font-size:12px;background:${['#1F6B45','#4F9A5E','#C9A227','#D97B2B','#B03A2E'][i]}">${l}</span>`).join('')}</div><dl class="kv" style="grid-template-columns:130px 1fr"><dt>Carbon footprint</dt><dd>61 kg CO₂e / kWh · class B</dd><dt>Recycled content</dt><dd>Co 16% · Li 6% · Ni 6%</dd><dt>Durability</dt><dd>1,500 cycles · 8 y</dd></dl>`)}
+    ${block('Attribute completeness',`<div class="bar" style="height:8px"><i style="width:82%"></i></div><div class="muted" style="font-size:12px;margin-top:6px">24 of 29 pack attributes filled · missing: substance concentration, dismantling manual URL, spare-parts availability, repairability score, SoH interface</div>`,'attributes')}
+    ${block('SKUs & identifiers',`<table><thead><tr><th>SKU</th><th>GTIN</th><th>Markets</th></tr></thead><tbody>${[['VC-75E-EU','04012345678905','EU'],['VC-75E-US','04012345678912','US'],['VC-75E-FLEET','04012345678929','EU · US']].map(r=>`<tr><td class="mono">${r[0]}</td><td class="mono">${r[1]}</td><td>${r[2]}</td></tr>`).join('')}</tbody></table>`,'skus')}
+    ${block('Batches & units',`<dl class="kv" style="grid-template-columns:120px 1fr"><dt>Batches</dt><dd>B-2608-14 (620 units) · B-2609-02 (620 units)</dd><dt>Units</dt><dd>1,240 serialised · 1,188 sold · 3 in repair · 1 recycled</dd><dt>Grain</dt><dd>Passport at batch, events at unit</dd></dl>`,'batches')}
+    ${block('Materials & BOM',`<dl class="kv" style="grid-template-columns:120px 1fr"><dt>Cathode</dt><dd>NMC 811 · 38.2 kg</dd><dt>Anode</dt><dd>Graphite · 22.0 kg</dd><dt>Housing</dt><dd>Aluminium 6061 · 4.2 kg</dd><dt>Electrolyte</dt><dd>LiPF₆ · 6.1 kg · SDS</dd><dt>Substances</dt><dd>Pb &lt;0.1% · Co 8.4% · Ni 33%</dd></dl>`,'bom')}
+    ${block('Variants',`<div class="muted" style="font-size:13px">2 variants of this model: VC-75E-FLEET (fleet BMS), VC-75E-R (remanufactured) · inherit attributes, own SKUs</div>`)}
+    ${block('Projects',`<div class="list" style="margin:-14px -16px">${projects.filter(x=>x.case==='c1'||x.type==='Data import').slice(0,2).map(x=>`<div class="it" data-project="${x.id}"><b>${x.name}</b><span class="muted num" style="margin-left:auto;font-size:12px">${x.done}/${x.of}</span></div>`).join('')}</div>`)}
+    ${block('Codes & carriers',`<div style="display:flex;gap:10px;align-items:center"><span style="width:56px;height:56px;background:repeating-conic-gradient(var(--ink) 0 25%,transparent 0 50%) 0 0/8px 8px;border:1px solid var(--hair);border-radius:6px"></span><div class="muted" style="font-size:12px">QR · GS1 Digital Link<br><span class="mono">/01/04012345678905/10/B-2608-14</span><br>DataMatrix for US SKU</div></div>`,'outputs')}
+    ${block('Timeline',`<div class="timeline">${[['today','Evaluation re-run · 3 gaps'],['09 Sep','Battery Passport v1.0 published'],['04 Sep','Case moved to Gap resolution'],['30 Aug','Placed on the EU market'],['12 Aug','Batch B-2608-14 manufactured']].map(e=>`<div class="ev"><span class="d">${e[0]}</span><span>${e[1]}</span></div>`).join('')}</div>`)}
+  </div>`;
+  if(t==='cases') panel=`<div class="grid g2">${p.cases.map(c=>`<div class="card mrow" data-case="${c.id}" style="grid-template-columns:1fr auto"><b>${FLAG[c.market]} ${c.name}</b>${badge(c.ready)}<div class="meta"><span class="mono">${c.code}</span> · target ${c.target} · stage: ${LIFECYCLE[c.stage]}</div><div class="next">Next: ${c.next}</div><button class="btn sm">Open case</button></div>`).join('')}<div class="card" style="display:grid;place-items:center;padding:24px;border-style:dashed"><button class="btn" data-modal="newcase">${I.plus}Create market case for another market</button></div></div>`;
+  if(t==='attributes') panel=`<div class="card"><div class="hd"><h2>Attributes · EU Batteries pack</h2><span class="muted" style="font-size:12px">Grouped as in the pack · required by ESPR / 2023/1542 marked</span><button class="btn sm" style="margin-left:auto" data-afous="drawer"><span class="afous">${I.spark} Fill from documents</span></button></div><table><thead><tr><th>Group</th><th>Attribute</th><th>Value</th><th>Required</th><th>Source</th></tr></thead><tbody>${[['Identity','Battery category','EV battery','Yes','Manual'],['Identity','Rated capacity','75 kWh','Yes','Akeneo'],['Identity','Rated energy (Wh)','— unmapped','Yes','Wh_nominal ← Afous'],['Performance','Expected lifetime','1,500 cycles','Yes','Test report'],['Sustainability','Carbon footprint','61 kg CO₂e/kWh · B','Yes','TÜV SÜD'],['Sustainability','Recycled cobalt','16%','Yes','Supplier declaration'],['Substances','Lead (CAS 7439-92-1)','< 0.1% w/w','Yes','—'],['Circularity','Dismantling manual','— missing','Yes','—'],['Circularity','Repairability score','— missing','No','—'],['Markets','dpp_target_markets','EU · US','Yes','Manual'],['Markets','dpp_country_of_origin','DE','Yes','Manual']].map(r=>`<tr><td class="muted">${r[0]}</td><td><b>${r[1]}</b></td><td class="${r[2].startsWith('—')?'muted':''}">${r[2]}</td><td>${r[3]==='Yes'?'<span class="badge warn">Required</span>':'<span class="badge info">Optional</span>'}</td><td class="muted">${r[4]}</td></tr>`).join('')}</tbody></table></div>`;
+  if(t==='skus') panel=`<div class="card"><div class="hd"><h2>SKUs</h2><button class="btn sm primary" style="margin-left:auto" data-toast="SKU added (demo)">${I.plus}Add SKU</button></div><table><thead><tr><th>SKU</th><th>GTIN</th><th>Markets</th><th>Batches</th><th>Units</th><th>Passport</th><th></th></tr></thead><tbody>${[['VC-75E-EU','04012345678905','EU','2','1,240','Published'],['VC-75E-US','04012345678912','US','0','0','—'],['VC-75E-FLEET','04012345678929','EU · US','1','80','Draft']].map(r=>`<tr><td class="mono">${r[0]}</td><td class="mono">${r[1]}</td><td>${r[2]}</td><td class="num">${r[3]}</td><td class="num">${r[4]}</td><td>${r[5]==='Published'?'<span class="badge ready">Published</span>':r[5]==='Draft'?'<span class="badge warn">Draft</span>':'—'}</td><td style="text-align:right"><button class="btn sm" data-modal="newoutput">Issue passport</button></td></tr>`).join('')}</tbody></table></div>`;
+  if(t==='batches') panel=`<div class="card"><div class="hd"><h2>Batches</h2><button class="btn sm primary" style="margin-left:auto" data-toast="Batch created (demo)">${I.plus}New batch</button></div><table><thead><tr><th>Batch / lot</th><th>SKU</th><th>Manufactured</th><th>Units</th><th>Passport grain</th><th></th></tr></thead><tbody>${[['B-2608-14','VC-75E-EU','12 Aug 2026','620','Batch passport v1.0'],['B-2609-02','VC-75E-EU','02 Sep 2026','620','Inherits model passport']].map(r=>`<tr><td class="mono">${r[0]}</td><td class="mono">${r[1]}</td><td>${r[2]}</td><td class="num">${r[3]}</td><td>${r[4]}</td><td style="text-align:right"><button class="btn sm" data-producttab="units">Units</button> <button class="btn sm" data-modal="newoutput">Issue passport</button></td></tr>`).join('')}</tbody></table></div>`;
+  if(t==='units') panel=`<div class="card"><div class="hd"><h2>Units (serial numbers)</h2><span class="muted" style="font-size:12px">1,240 units · lifecycle events written by recyclers, repairers and the field</span><button class="btn sm" style="margin-left:auto" data-toast="ZIP with 1,240 QR codes queued">Bulk codes</button></div><table><thead><tr><th>Serial</th><th>Batch</th><th>Status</th><th>Last event</th><th>Passport</th></tr></thead><tbody>${[['VC-75E-000481','B-2608-14','In service','Repair record · module 7 · 01 Sep','Serial view'],['VC-75E-000482','B-2608-14','In service','Sold · 28 Aug',''],['VC-75E-000117','B-2608-14','In repair','Received · Circular Recovery Lab',''],['VC-75E-000009','B-2608-14','Recycled','Recycled-content certificate · today','']].map(r=>`<tr><td class="mono">${r[0]}</td><td class="mono">${r[1]}</td><td><span class="badge ${r[2]==='Recycled'?'primary':r[2]==='In repair'?'warn':'ready'}">${r[2]}</span></td><td>${r[3]}</td><td>${r[4]?`<a href="#/passport">${r[4]}</a>`:'—'}</td></tr>`).join('')}</tbody></table></div>`;
+  if(t==='bom') panel=`<div class="card"><div class="hd"><h2>Materials & bill of materials</h2><span class="muted" style="font-size:12px">Feeds substances of concern, recycled content and the recycler audience</span></div><table><thead><tr><th>Component</th><th>Material</th><th>Mass</th><th>Recycled</th><th>Substances of concern</th></tr></thead><tbody>${[['Cathode (96 cells)','NMC 811','38.2 kg','Co 16% · Ni 6%','Co, Ni'],['Anode','Graphite','22.0 kg','—','—'],['Electrolyte','LiPF₆ in EC/DMC','6.1 kg','—','SDS attached'],['Housing','Aluminium 6061','4.2 kg','35%','—'],['BMS','PCB · FR-4','0.6 kg','—','Pb < 0.1% (CAS 7439-92-1)']].map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="num">${r[2]}</td><td>${r[3]}</td><td>${r[4]}</td></tr>`).join('')}</tbody></table></div>`;
+  if(t==='images') panel=`<div class="grid g4">${['Front','Side','Label','Pack open'].map((n,i)=>`<div class="card" style="padding:12px;display:flex;flex-direction:column;gap:8px"><span style="aspect-ratio:1;border-radius:8px;background:var(--surface-2);border:1px solid var(--hair);display:grid;place-items:center;color:var(--primary)"><span style="width:40px;height:40px;display:block">${I[p.icon]}</span></span><div style="display:flex;align-items:center"><b>${n}</b>${i===0?'<span class="badge primary" style="margin-left:6px">Primary</span>':''}<button class="btn sm" style="margin-left:auto" data-toast="Image removed (demo)">Delete</button></div></div>`).join('')}<div class="card" style="display:grid;place-items:center;border-style:dashed"><button class="btn">${I.upload}Upload image</button></div></div>`;
+  if(t==='documents') panel=`<div class="card"><div class="hd"><h2>Documents</h2><button class="btn sm primary" style="margin-left:auto" data-modal="evidence">${I.upload}Upload</button></div><table><thead><tr><th>Document</th><th>Type</th><th>Valid</th><th>Used by</th><th>Audience</th></tr></thead><tbody>${[['TÜV carbon footprint verification.pdf','Certificate','to 30 Jun 2027','Battery Passport · EU DoC','Authority'],['Safety data sheet LiPF6.pdf','SDS','—','Passport','Recycler'],['Dismantling manual VC-75E-DIS-v3.pdf','Manual','—','Passport','Recycler / repairer'],['UN 38.3 test report.pdf','Test report','to 12 Aug 2028','EU DoC','Authority'],['Supplier declaration cobalt.pdf','Declaration','to 31 Dec 2026','Claims','B2B']].map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="muted">${r[3]}</td><td><span class="tag">${r[4]}</span></td></tr>`).join('')}</tbody></table></div>`;
+  if(t==='outputs') panel=`<div class="grid g3">${outputs.slice(0,2).map(o=>`<div class="card ocard" data-output="${o.id}"><div class="oh"><div style="flex:1"><div class="eyebrow">${o.cls}</div><b>${o.name}</b></div><span class="badge ${o.sc}">${o.state}</span></div><div class="chips">${o.chips.map(c=>`<span class="chip">${c}</span>`).join('')}</div><div class="of"><button class="btn sm primary" data-output="${o.id}">Open</button></div></div>`).join('')}<div class="card" style="display:grid;place-items:center;border-style:dashed;padding:24px"><button class="btn" data-modal="newoutput">${I.plus}Create output</button></div></div>`;
+  return `<div class="pagehead"><a class="iconbtn" href="#/products" title="Back">${I.back}</a><div class="grow"><div class="eyebrow">Products & markets › ${p.sector}</div><h1>${p.name}</h1><p>${p.sub} · ${p.sku} SKUs · made in ${FLAG[p.origin]} ${p.origin} · for ${p.cases.map(c=>FLAG[c.market]).join(' ')}</p></div>
+    <div class="actions">${badge(p.cases[0].ready)}<button class="btn" data-afous="drawer"><span class="afous">${I.spark} Write with Afous</span></button><button class="btn primary" data-modal="newcase">${I.plus}Create market case</button></div></div>
+  <div class="tabs">${tabs.map(x=>`<button class="${t===x[0]?'on':''}" data-producttab="${x[0]}">${x[1]}${x[2]?`<span class="cnt">${x[2]}</span>`:''}</button>`).join('')}</div>${panel}`;
+}
+
+/* ---------- imports ---------- */
+function vImports(){
+  const step = S.importStep || 1;
+  const steps=['Source','Mapping','Run','Review','Enrich'];
+  let panel='';
+  if(step===1) panel=`<div class="grid g3">${[['CSV / XLSX','Bulk file intake · drag a file or browse',I.down,true],['JSON / JSON-LD','Structured payload · schema validated',I.out,true],['External apps · Akeneo','Connected · last sync 2 h ago · 48 products',I.cube,true],['REST API','Push products from your systems',I.cog,false],['SAP · PLM','Roadmap · request connector',I.cog,false],['SFTP file drop','Roadmap · request connector',I.folder,false]].map(s=>`<div class="tile ${s[3]?'':''}" style="cursor:pointer;${s[3]?'':'opacity:.6'}" data-importstep="2"><span class="ico" style="width:36px;height:36px;border-radius:9px;background:var(--surface-2);border:1px solid var(--hair);display:grid;place-items:center;color:var(--primary)"><span style="width:16px;height:16px;display:block">${s[2]}</span></span><div><b>${s[0]}</b><p>${s[1]}</p></div></div>`).join('')}</div>`;
+  if(step===2) panel=`<div class="card"><div class="hd"><h2>Map source columns to the EU Batteries pack</h2><span class="afous">${I.spark} Afous suggested 9 of 11</span><button class="btn sm" style="margin-left:auto" data-toast="Mapping recipe saved as “Akeneo → EU Batteries v2”">Save recipe</button></div><table><thead><tr><th>Source column</th><th>Sample</th><th>→ Canonical attribute</th><th>Confidence</th><th></th></tr></thead><tbody>${[['sku','VC-75E-EU','sku','1.00'],['name_en','VoltCore VC-75E','name','1.00'],['Wh_nominal','75000','rated_energy_wh','0.96'],['capacity_kwh','75','rated_capacity_kwh','0.98'],['origin','DE','dpp_country_of_origin','0.99'],['markets','EU;US','dpp_target_markets','0.93'],['co2_kg_kwh','61','carbon_footprint_kg_co2e_kwh','0.91'],['recycled_co','0.16','recycled_content_cobalt','0.88'],['pb_pct','','substance_pb_pct','—'],['image_url','https://…/front.jpg','media.primary','0.97'],['ean','04012345678905','gtin','1.00']].map(r=>`<tr><td class="mono">${r[0]}</td><td class="muted">${r[1]||'<i>empty</i>'}</td><td>${r[2]==='substance_pb_pct'?`<span class="select">Choose attribute ${I.chev}</span>`:`<span class="mono">${r[2]}</span>`}</td><td class="num">${r[3]}</td><td><span class="cb ${r[3]!=='—'?'on':''}" data-cb></span></td></tr>`).join('')}</tbody></table><div class="bd" style="display:flex;justify-content:flex-end;gap:8px"><button class="btn" data-importstep="1">Back</button><button class="btn primary" data-importstep="3">Run import</button></div></div>`;
+  if(step===3) panel=`<div class="card"><div class="bd" style="display:flex;flex-direction:column;gap:12px"><h2>Running · Akeneo spring import</h2><div class="bar" style="height:10px"><i style="width:100%"></i></div><div class="grid g4">${[['Rows read','48'],['Created','12'],['Updated','36'],['Rejected','0']].map(k=>`<div class="kpi card"><div class="eyebrow">${k[0]}</div><div class="v num">${k[1]}</div></div>`).join('')}</div><div style="display:flex;justify-content:flex-end"><button class="btn primary" data-importstep="4">Review</button></div></div></div>`;
+  if(step===4) panel=`<div class="card"><div class="hd"><h2>Review · 48 products</h2><span class="muted" style="font-size:12px">3 warnings · 0 errors</span><button class="btn sm primary" style="margin-left:auto" data-importstep="5">Accept & enrich</button></div><table><thead><tr><th>Product</th><th>Action</th><th>Warnings</th><th>Readiness after import</th></tr></thead><tbody>${[['VoltCore VC-75E','Updated','—','action'],['PocketCell P-10','Updated','—','cond'],['VoltCore VC-75E-R','Created','Missing dismantling manual','unknown'],['PocketCell P-12','Created','GTIN check digit invalid','unknown']].map(r=>`<tr><td><b>${r[0]}</b></td><td>${r[1]}</td><td class="${r[2]==='—'?'muted':''}">${r[2]}</td><td>${badge(r[3])}</td></tr>`).join('')}</tbody></table></div>`;
+  if(step===5) panel=`<div class="grid g3">${[['Create market cases','12 new products have no case yet. Create EU cases from the Batteries pack.','Create 12 cases','newcase'],['Fill gaps with Afous','Afous can extract 31 attribute values from the attached test reports and SDS.','Extract facts','afous'],['Generate codes','QR + GS1 Digital Link for 48 SKUs, bulk ZIP.','Generate','toast']].map(x=>`<div class="card" style="padding:16px;display:flex;flex-direction:column;gap:8px"><b>${x[0]}</b><p class="muted" style="margin:0;font-size:13px">${x[1]}</p><div><button class="btn sm primary" ${x[3]==='newcase'?'data-modal="newcase"':x[3]==='afous'?'data-afous="drawer"':'data-toast="48 codes generated · ZIP ready"'}>${x[2]}</button></div></div>`).join('')}</div>`;
+  return `<div class="pagehead"><div class="grow"><div class="eyebrow">Products & markets › Import</div><h1>Import products</h1><p>CSV, JSON or a connected app. Every run is a Data import project: source → mapping → run → review → enrich.</p></div><div class="actions"><a class="btn" href="#/admin">Input methods</a><a class="btn" href="#/admin">Integrations</a></div></div>
+  <div class="stepper">${steps.map((s,i)=>`<span class="step ${i+1<step?'done':i+1===step?'now':''}" data-importstep="${i+1}"><i class="dot"></i>${i+1} · ${s}</span>${i<4?'<i class="arr"></i>':''}`).join('')}</div>${panel}`;
+}
+
+/* ---------- sector packs (templates by market) ---------- */
+function vPacks(){
+  const m = S.packMarket || 'EU';
+  const eu=[['Batteries','ESPR + Reg. 2023/1542','29 attributes · passport · DoC · carbon class'],['Textiles & apparel','ESPR delegated act · fibre labelling','22 · passport · fibre label dataset'],['Footwear','Dir. 94/11/EC · PPE where applicable','18 · label dataset · DoC'],['Electronics / ICT','ESPR · RoHS · WEEE','26 · passport · DoC · WEEE marking'],['Furniture','ESPR · EUTR','17 · passport'],['Toys','Toy Safety Reg. · CE','21 · DoC · certificate'],['Packaging','PPWR · EPR schemes','14 · EPR export · recyclability'],['Construction products','CPR','20 · DoP · passport'],['Cosmetics','Reg. 1223/2009','19 · PIF · label'],['Detergents','Reg. 648/2004','12 · label · SDS'],['Tyres','Tyre labelling Reg.','11 · label'],['Lighting','Ecodesign · energy label','13 · label · DoC'],['Chemicals','REACH · CLP','16 · SDS · notification'],['Medical devices','MDR','24 · UDI · DoC'],['Agri-food inputs','Fertilising products Reg.','15 · label · DoC']];
+  const us=[['Batteries','DOE · UL 2580 · state EPR','21 · Prop 65 · recyclability claim'],['Textiles & apparel','FTC care label · origin marking','17 · care label dataset · CPC'],["Children's products",'CPSIA · CPSC eFiling','19 · CPC · eFiling package'],['Footwear','FTC origin · Prop 65','14 · label · Prop 65 warning'],['Electronics / ICT','FCC Part 15 · Prop 65','18 · FCC authorization · SDoC'],['Furniture','TB 117 · Prop 65','13 · label · flammability'],['Toys','ASTM F963 · CPSIA','20 · CPC · eFiling'],['Packaging','State EPR (CA, CO, ME, OR)','12 · EPR registrations · PFAS'],['Cosmetics','MoCRA','16 · listing · label'],['Cleaning products','CA Cleaning Product Right to Know','11 · ingredient disclosure'],['Tyres','NHTSA TIN','9 · marking'],['Lighting','DOE · Energy Guide','12 · label'],['Chemicals','TSCA · OSHA HCS','15 · SDS · notification'],['Medical devices','FDA 510(k) · UDI','22 · UDI · listing'],['Food contact','FDA 21 CFR','13 · declaration']];
+  const list=m==='EU'?eu:us;
+  return `<div class="pagehead"><div class="grow"><div class="eyebrow">Products & markets › Sector packs</div><h1>Sector templates</h1><p>A pack sets up the attributes a family carries and declares the output representations a market requires. 15 EU packs, 15 US packs.</p></div><div class="seg"><button class="${m==='EU'?'on':''}" data-packmarket="EU">${FLAG.EU} EU</button><button class="${m==='US'?'on':''}" data-packmarket="US">${FLAG.US} US</button></div></div>
+  ${m==='US'?`<div class="tile"><div><b>US core fields on every US pack</b><p>us_origin_marking · us_prop65 · us_prop65_warning_text · us_recyclability_claim · us_state_epr_registrations · us_pfas_intentionally_added</p></div></div>`:`<div class="tile"><div><b>EU core fields on every EU pack</b><p>dpp_country_of_origin · dpp_target_markets · dpp_carbon_intensity_class · manufacturer · hs_code · gtin · substances_of_concern</p></div></div>`}
+  <div class="grid g3">${list.map(x=>`<div class="card" style="padding:14px 16px;display:flex;flex-direction:column;gap:6px"><div style="display:flex;align-items:center"><b style="font-family:var(--f-display)">${x[0]}</b><span class="tag" style="margin-left:auto">${m}</span></div><div class="muted" style="font-size:12px">${x[1]}</div><div style="font-size:12px">${x[2]}</div><div style="display:flex;gap:6px;margin-top:4px"><button class="btn sm primary" data-toast="Family created from the ${x[0]} pack · ${m}">Create family from pack</button><button class="btn sm" data-toast="Preview (demo)">Preview</button></div></div>`).join('')}</div>`;
+}
+
+/* ---------- codes & exports (inside Outputs) ---------- */
+function vCodes(){
+  return `<div class="grid" style="grid-template-columns:1fr 1fr">
+    <div class="card"><div class="hd"><h2>Generate codes</h2></div><div class="bd grid g2">
+      <div class="field"><label>Identifier scheme</label><span class="select" style="justify-content:space-between">GS1 Digital Link ${I.chev}</span></div><div class="field"><label>Resolver</label><span class="select" style="justify-content:space-between">WidinX HTTPS output URL ${I.chev}</span></div>
+      <div class="field"><label>Carrier</label><span class="select" style="justify-content:space-between">QR Code ${I.chev}</span></div><div class="field"><label>Grain</label><span class="select" style="justify-content:space-between">Batch (/10/) ${I.chev}</span></div>
+      <div class="field"><label>Subjects</label><span class="select" style="justify-content:space-between">3 SKUs · 2 batches ${I.chev}</span></div><div class="field"><label>Format</label><span class="select" style="justify-content:space-between">SVG + PNG · 600 px ${I.chev}</span></div>
+      <div style="grid-column:1/-1"><div class="mono" style="padding:10px;border:1px solid var(--hair);border-radius:8px;background:var(--paper)">https://id.widinx.com/01/04012345678905/10/B-2608-14</div></div>
+      <div style="grid-column:1/-1;display:flex;gap:8px;justify-content:flex-end"><button class="btn" data-toast="Preview rendered">Preview</button><button class="btn primary" data-toast="ZIP with 5 codes (SVG + PNG) ready">Generate bulk ZIP</button></div></div></div>
+    <div class="card"><div class="hd"><h2>Preview</h2><span class="muted" style="font-size:12px">Effective policy: workspace → brand → family → case</span></div><div class="bd" style="display:flex;gap:16px;align-items:center"><span style="width:160px;height:160px;background:repeating-conic-gradient(var(--ink) 0 25%,transparent 0 50%) 0 0/12px 12px;border:1px solid var(--hair);border-radius:8px;flex:none"></span><dl class="kv" style="grid-template-columns:100px 1fr"><dt>Scans</dt><dd class="num">1,842 · 30 d</dd><dt>Top audience</dt><dd>Consumer 91% · Recycler 6%</dd><dt>Markets</dt><dd>${FLAG.DE} DE 48% · ${FLAG.FR} FR 22% · ${FLAG.US} US 9%</dd><dt>Data Matrix</dt><dd>Used on US SKU labels</dd></dl></div></div>
+  </div>`;
+}
+function vExports(){
+  return `<div class="card"><div class="hd"><h2>EPR & reporting exports</h2><button class="btn sm primary" style="margin-left:auto" data-toast="Export queued · CSV + XLSX">New export</button></div><table><thead><tr><th>Export</th><th>Scheme / market</th><th>Period</th><th>Rows</th><th>State</th><th></th></tr></thead><tbody>${[['Packaging EPR declaration','France · Citeo','Q3 2026','12 SKUs','Validating','warn'],['Battery producer report','Germany · Stiftung EAR','H1 2026','3 SKUs','Submitted','primary'],['State EPR registrations','US · CA, CO, ME, OR','2026','8 SKUs','Published','ready'],['WEEE quantities','EU · national registers','Q2 2026','5 SKUs','Approved','review']].map(r=>`<tr class="row" data-toast="Export opened (demo)"><td><b>${r[0]}</b></td><td>${r[1]}</td><td>${r[2]}</td><td class="num">${r[3]}</td><td><span class="badge ${r[5]}">${r[4]}</span></td><td style="text-align:right"><button class="btn sm">Download</button></td></tr>`).join('')}</tbody></table></div>`;
+}
+
+/* ---------- partner: client cases & scoped request ---------- */
+function vClients(){
+  return `<div class="pagehead"><div class="grow"><div class="eyebrow">Delegated client cases</div><h1>Client workspaces</h1><p>Cases are grouped by client delegation. Opening a case changes context without exposing any other tenant data.</p></div></div>
+  ${motto('Know it. Link it. Prove it.')}
+  <div class="grid g3">${[['Atlas Industries','3 delegated','EU battery / textile review scope.',[['VC-75E · EU Battery','c1'],['ALJ-204 · EU Textile','c3'],['ALJ-204 · US Textile','c4']]],['Northwind Imports','1 delegated','US filing preparation only.',[['Kids Rain Jacket · US','c5']]],['Medica Labs','Evidence only','No product / output portfolio access.',[['Open evidence request','request']]]].map(c=>`<div class="card" style="padding:16px;display:flex;flex-direction:column;gap:10px"><div style="display:flex;align-items:center"><b style="font-family:var(--f-display);font-size:15px">${c[0]}</b><span class="badge ${c[1]==='Evidence only'?'info':'primary'}" style="margin-left:auto">${c[1]}</span></div><div class="muted" style="font-size:13px">${c[2]}</div><div style="display:flex;gap:6px;flex-wrap:wrap">${c[3].map(x=>x[1]==='request'?`<a class="btn sm" href="#/request">${x[0]}</a>`:`<button class="btn sm" data-case="${x[1]}">${x[0]}</button>`).join('')}</div></div>`).join('')}</div>`;
+}
+function vRequest(){
+  return `<div class="pub" style="max-width:720px"><div class="pubtop"><div class="brand" style="padding:0;border:0"><span class="mark">VX</span><div><b>WidinX</b><small>Scoped request</small></div></div><span class="badge warn" style="margin-left:auto">Link expires in 6 days</span></div>
+    <div class="card"><div class="bd" style="display:flex;flex-direction:column;gap:14px"><div class="eyebrow">Atlas Industries asks Medica Labs for one fact</div><h1 style="font-size:22px">UN 38.3 test report for VoltCore VC-75E</h1><p class="muted" style="margin:0">You are invited to provide one certificate or fact. You see nothing else from this workspace, and a QR scan never grants this access. Your upload becomes evidence on the EU market case and is reviewed by Quality before it counts.</p>
+      <div class="dropzone">Drop the PDF here or <b style="color:var(--ink)">browse</b></div>
+      <div class="grid g2"><div class="field"><label>Report number</label><input class="input" value="ML-38.3-2026-0912"></div><div class="field"><label>Issued</label><input class="input" value="12 Aug 2026"></div><div class="field"><label>Valid to</label><input class="input" value="12 Aug 2028"></div><div class="field"><label>Your organisation</label><input class="input" value="Medica Labs"></div></div>
+      <div class="tile"><span class="afous">${I.spark}</span><div><b>Afous checks the file</b><p>Report number and product model will be matched against the request. Validity approval stays with Atlas Quality.</p></div></div>
+      <div class="actions" style="justify-content:flex-end"><button class="btn primary" data-toast="Submitted · Atlas Quality notified in My work">Submit evidence</button></div></div></div>
+    <p class="muted" style="font-size:12px;text-align:center">Sent by WidinX transactional mail on behalf of Atlas Industries · reply-to compliance@atlas.example</p></div>`;
+}
+
+/* ---------- passport / output wizard (WidinX) ---------- */
+function vWizard(){
+  const step = S.wizStep || 1;
+  const steps=['Subject','Compliance','Content','Publish'];
+  let panel='';
+  if(step===1) panel=`<div class="grid" style="grid-template-columns:2fr 1fr"><div class="card"><div class="bd grid g2">
+      <div class="field"><label>Output class</label><span class="select" style="justify-content:space-between">Digital passport ${I.chev}</span></div><div class="field"><label>From market case</label><span class="select" style="justify-content:space-between">VoltCore VC-75E · ${FLAG.EU} EU · CASE-BAT-EU ${I.chev}</span></div>
+      <div class="field"><label>Grain</label><div class="seg"><button data-toast="Model grain">Model</button><button class="on">Batch</button><button data-toast="Serial grain: one passport per unit">Serial</button></div></div><div class="field"><label>Subjects</label><span class="select" style="justify-content:space-between">B-2608-14 · B-2609-02 (1,240 units) ${I.chev}</span></div>
+      <div class="field"><label>Origin</label><span class="select" style="justify-content:space-between">${FLAG.DE} Germany ${I.chev}</span></div><div class="field"><label>Target markets</label><div class="chips"><span class="chip on">${FLAG.EU} EU</span><span class="chip">${FLAG.US} US</span></div></div>
+      <div class="field"><label>Regulation</label><span class="select" style="justify-content:space-between">ESPR · Reg. (EU) 2023/1542 · schema v3 ${I.chev}</span></div><div class="field"><label>Audiences</label><div class="chips"><span class="chip on">Consumer</span><span class="chip on">B2B</span><span class="chip on">Authority</span><span class="chip on">Recycler / repairer</span></div></div>
+    </div></div><div class="card"><div class="hd"><h2>Subject summary</h2></div><div class="bd"><dl class="kv" style="grid-template-columns:90px 1fr"><dt>Product</dt><dd>VoltCore VC-75E</dd><dt>SKUs</dt><dd class="mono">VC-75E-EU</dd><dt>Batches</dt><dd>2 · 1,240 units</dd><dt>Case</dt><dd>${badge('action')}</dd><dt>Pack</dt><dd>EU · Batteries</dd></dl></div></div></div>`;
+  if(step===2) panel=`<div class="grid" style="grid-template-columns:2fr 1fr"><div class="card"><div class="hd"><h2>Evaluation · espr-dpp-readiness-eu v3</h2><span class="badge warn">Action required</span><button class="btn sm" style="margin-left:auto" data-toast="Re-evaluated · 3 gaps">Re-evaluate</button></div><div class="list">
+      <div class="it"><span class="badge crit">Blocking</span><div style="flex:1"><b>Carbon footprint verification missing</b><div class="muted" style="font-size:12px">Art. 7 · third-party verified declaration</div></div><button class="btn sm primary" data-modal="evidence">${I.upload}Upload evidence</button></div>
+      <div class="it"><span class="badge warn">Action</span><div style="flex:1"><b>Rated energy attribute not mapped</b></div><button class="btn sm"><span class="afous">${I.spark} Suggest mapping</span></button></div>
+      <div class="it"><span class="badge warn">Action</span><div style="flex:1"><b>Lead concentration undeclared</b></div><button class="btn sm" data-modal="evidence">Request from supplier</button></div>
+      ${S.evidenceAdded?`<div class="it" style="background:var(--ready-bg)"><span class="badge ready">Attached</span><div style="flex:1"><b>TÜV carbon footprint verification</b><div class="muted" style="font-size:12px">awaiting evidence validity approval</div></div></div>`:''}</div></div>
+    <div class="card"><div class="hd"><h2>Claims</h2><button class="btn sm" style="margin-left:auto" data-toast="2 claim candidates drafted"><span class="afous">${I.spark} Suggest</span></button></div><div class="list"><div class="it"><div style="flex:1"><b>Recycled cobalt ≥ 16%</b><div class="muted" style="font-size:12px">2 evidence files</div></div><span class="badge ready">OK</span></div><div class="it"><div style="flex:1"><b>Carbon class B</b><div class="muted" style="font-size:12px">needs verified declaration</div></div><span class="badge warn">Open</span></div></div></div></div>`;
+  if(step===3) panel=`<div class="grid" style="grid-template-columns:2fr 1fr"><div class="card"><div class="bd" style="display:flex;flex-direction:column;gap:12px">
+      <div class="field"><label>Carbon footprint class</label><div class="carbon">${['A','B','C','D','E'].map((l,i)=>`<span class="${l==='B'?'on':''}" style="background:${['#1F6B45','#4F9A5E','#C9A227','#D97B2B','#B03A2E'][i]}">${l}</span>`).join('')}</div><div class="muted" style="font-size:12px">Written as dpp_carbon_intensity_class · 61 kg CO₂e / kWh</div></div>
+      <div class="field"><label>Consumer description <button class="afous" data-afous="drawer" style="margin-left:6px">${I.spark} Write with Afous</button></label><textarea class="input" rows="3">VoltCore VC-75E is a 75 kWh NMC 811 traction battery built in Germany for EU and US markets. Carbon class B, 16% recycled cobalt, 1,500 cycles expected.</textarea></div>
+      <div class="grid g2"><div class="field"><label>Languages</label><div class="chips"><span class="chip on">EN</span><span class="chip on">FR</span><span class="chip on">DE</span><span class="chip">ES</span></div></div><div class="field"><label>Primary image</label><span class="select" style="justify-content:space-between">Front.jpg ${I.chev}</span></div></div>
+      <div class="field"><label>Sections per audience</label><table><thead><tr><th>Section</th><th>Consumer</th><th>B2B</th><th>Authority</th><th>Recycler</th></tr></thead><tbody>${[['Identity & origin',1,1,1,1],['Sustainability',1,1,1,1],['Materials & substances',0,1,1,1],['Dismantling & repair',0,0,1,1],['Test reports & certificates',0,1,1,0],['Lifecycle events',1,1,1,1]].map(r=>`<tr><td>${r[0]}</td>${r.slice(1).map(v=>`<td style="text-align:center"><span class="cb ${v?'on':''}" data-cb></span></td>`).join('')}</tr>`).join('')}</tbody></table></div></div></div>
+    <div class="card"><div class="hd"><h2>Preview</h2></div><div class="bd" style="display:flex;flex-direction:column;gap:8px"><span style="aspect-ratio:1.2;border-radius:10px;background:var(--surface-2);border:1px solid var(--hair);display:grid;place-items:center;color:var(--primary)"><span style="width:44px;height:44px;display:block">${I.battery}</span></span><b>VoltCore VC-75E</b><div class="badges"><span class="flag">Made in ${FLAG.DE}</span><span class="flag">For ${FLAG.EU}</span></div><a class="btn sm" href="#/passport">Open public preview</a></div></div></div>`;
+  if(step===4) panel=`<div class="grid" style="grid-template-columns:2fr 1fr"><div class="card"><div class="bd" style="display:flex;flex-direction:column;gap:12px">
+      <div class="lock"><span>⚠</span><div><b>The case is Action required.</b> A controlled draft is generated now (state Generated). Publishing needs the blocking gap closed and Legal / Quality approval — rule / human.</div></div>
+      <div class="grid g2"><div class="field"><label>Resolver</label><span class="select" style="justify-content:space-between">WidinX HTTPS output URL ${I.chev}</span></div><div class="field"><label>Carrier</label><span class="select" style="justify-content:space-between">QR Code (locked by pack) ${I.chev}</span></div><div class="field"><label>Signing key</label><span class="select" style="justify-content:space-between">widinx-2026-09 · Ed25519 ${I.chev}</span></div><div class="field"><label>Registry</label><span class="select" style="justify-content:space-between">EU battery registry (sandbox) ${I.chev}</span></div></div>
+      <div class="tile"><div><b>Already published: Battery Passport v1.0.</b><p>This run will supersede it as v1.1 once published; v1.0 stays resolvable and marked superseded.</p></div></div>
+      <div class="actions" style="justify-content:flex-end"><button class="btn" data-wizstep="3">Back</button><a class="btn" href="#/outputs" data-toast="Controlled draft OUT-007 · Generated">Generate draft</a><button class="btn primary" data-toast="Blocked: close the carbon-footprint gap and get Legal / Quality approval first">Publish & sign</button></div></div></div>
+    <div class="card"><div class="hd"><h2>Codes</h2></div><div class="bd" style="display:flex;flex-direction:column;gap:8px"><span style="width:120px;height:120px;background:repeating-conic-gradient(var(--ink) 0 25%,transparent 0 50%) 0 0/9px 9px;border:1px solid var(--hair);border-radius:8px"></span><div class="mono" style="font-size:11px">/01/04012345678905/10/B-2608-14</div><button class="btn sm" data-toast="ZIP with 2 batch codes ready">Bulk ZIP (2 batches)</button></div></div></div>`;
+  return `<div class="pagehead"><a class="iconbtn" href="#/outputs">${I.back}</a><div class="grow"><div class="eyebrow">Outputs › Create output</div><h1>Create output · Digital passport</h1><p>Subject → Compliance → Content → Publish. Launched from a case at Output preparation.</p></div></div>
+  <div class="stepper">${steps.map((s,i)=>`<span class="step ${i+1<step?'done':i+1===step?'now':''}" data-wizstep="${i+1}"><i class="dot"></i>${i+1} · ${s}</span>${i<3?'<i class="arr"></i>':''}`).join('')}</div>${panel}
+  ${step<4?`<div class="actions" style="justify-content:flex-end">${step>1?`<button class="btn" data-wizstep="${step-1}">Back</button>`:''}<button class="btn primary" data-wizstep="${step+1}">Continue</button></div>`:''}`;
+}
+
+/* ---------- public site (WidinX marketing) ---------- */
+function vSite(){
+  return `<div class="pub" style="max-width:1120px"><div class="pubtop"><div class="brand" style="padding:0;border:0"><span class="mark">VX</span><div><b>WidinX</b><small>Regulation OS</small></div></div><nav style="display:flex;gap:16px;margin-left:24px;font-weight:600;font-size:13px"><a href="#/site" data-toast="Sectors (demo)">Sectors</a><a href="#/site" data-toast="Standards (demo)">Standards</a><a href="#/site" data-toast="Docs (demo)">Docs</a><a href="#/site" data-toast="FAQ (demo)">FAQ</a></nav><span style="margin-left:auto"></span><a class="btn sm" href="#/signin">Sign in</a><a class="btn sm primary" href="#/signin">Get a demo</a></div>
+    <div style="padding:32px 0 8px"><h1 style="font-size:44px;font-weight:800;letter-spacing:-.02em;max-width:18ch">Compliance shouldn't be searched for. <span style="color:var(--primary)">It should be WidinX.</span></h1><p style="font-size:17px;color:var(--muted);max-width:60ch">Tell us what you sell, where you want to sell it and when. WidinX turns regulatory complexity into owned actions, verifiable evidence and the outputs needed to reach the market.</p></div>
+    <div class="grid g3">${[['Digital product passports','Model, batch or serial grain. Consumer, B2B, authority and recycler audiences. Signed, registry-ready, multilingual.'],['Market cases','One case per product × market with a readiness decision, a lifecycle and a Kanban of actions.'],['Outputs that release','Passports, declarations, labels, certificates, filings, EPR exports — governed from draft to submitted.']].map(x=>`<div class="card" style="padding:18px"><b style="font-family:var(--f-display);font-size:15px">${x[0]}</b><p class="muted" style="margin:6px 0 0">${x[1]}</p></div>`).join('')}</div>
+    <div><div class="eyebrow" style="margin-bottom:8px">Pricing</div><div class="grid g3">${[['Starter','€290 / mo','1 workspace · 250 passports · EU packs · CSV & JSON imports'],['Scale','€990 / mo','5 brands · 5,000 passports · EU + US packs · Akeneo & REST · partner delegation'],['Enterprise','Talk to us','Unlimited · SSO · custom resolvers & domains · authority registries · SLA']].map((t,i)=>`<div class="card" style="padding:18px;${i===1?'border-color:var(--primary)':''}"><div class="eyebrow">${t[0]}</div><div style="font-family:var(--f-display);font-size:26px;font-weight:800">${t[1]}</div><p class="muted" style="margin:6px 0 12px">${t[2]}</p><a class="btn sm ${i===1?'primary':''}" href="#/signin">Start</a></div>`).join('')}</div></div>
+    <div class="grid g4">${['Batteries','Textiles & apparel','Footwear','Electronics','Toys','Packaging','Cosmetics','Furniture'].map(s=>`<div class="tile" style="cursor:pointer" data-route="packs"><div><b>${s}</b><p>EU + US sector pack</p></div></div>`).join('')}</div>
+    <p class="muted" style="font-size:12px;text-align:center">Know it. Link it. Prove it. · Public product view: <a href="#/passport">open a passport</a> · Scoped request: <a href="#/request">example</a></p></div>`;
+}
+
+/* ---------- global search & notifications ---------- */
+function searchDrawer(){
+  const q='volt';
+  return `<div class="dh"><div class="search" style="flex:1;max-width:none">${I.search}<input class="input" style="border:0;background:transparent;padding:0" value="${q}" autofocus></div><button class="iconbtn" data-close>${I.x}</button></div>
+  <div class="db">${[['Product','VoltCore VC-75E · EV battery','product/p1'],['Case','VC-75E · CASE-BAT-EU · Action required','case/c1'],['Task','Obtain carbon-footprint verification · due 18 Sep','work'],['Requirement','Reg. 2023/1542 Art. 7 · carbon footprint declaration','case/c1'],['Output','OUT-001 · Battery Passport · Published v1.0','outputs'],['Evidence','TÜV carbon footprint verification.pdf','product/p1']].map(r=>`<div class="it" style="display:flex;gap:12px;align-items:center;padding:10px 4px;border-bottom:1px solid var(--hair-2);cursor:pointer" data-route="${r[2]}" data-close><span class="tag" style="width:96px;text-align:center">${r[0]}</span><span>${r[1]}</span></div>`).join('')}<div class="muted" style="font-size:12px">Search covers product, case, task, requirement, output and evidence in this workspace.</div></div>`;
+}
+function notifDrawer(){
+  return `<div class="dh"><b>Notifications</b><span class="badge warn">4 new</span><button class="iconbtn" style="margin-left:auto" data-close>${I.x}</button></div>
+  <div class="db">${[['today','Readiness changed','VoltCore VC-75E · EU moved to Action required after evaluation','case/c1'],['today','Evidence received','Medica Labs answered the scoped request (UN 38.3)','case/c1'],['yesterday','Output approved','EU Declaration of Conformity v3.1 approved by Yasmine M.','outputs'],['2 d ago','Reminder','Carbon-footprint certificate expires in 12 days','product/p1']].map(n=>`<div class="sugg" data-route="${n[3]}" data-close style="cursor:pointer"><div style="display:flex;gap:8px"><b>${n[1]}</b><span class="muted num" style="margin-left:auto;font-size:12px">${n[0]}</span></div><div class="muted" style="font-size:13px">${n[2]}</div></div>`).join('')}</div>`;
+}
+
+/* ---------- afous drawer ---------- */
+function afousDrawer(){
+  const ctx = S.route.startsWith('case')?'VoltCore VC-75E · EU case':S.route==='outputs'?'Outputs':S.route==='products'?'Products & markets':'Overview';
+  return `<div class="dh"><span class="afous">${I.spark} Afous</span><b>${ctx}</b><span class="badge info" style="margin-left:auto">Assistive only</span><button class="iconbtn" data-close>${I.x}</button></div>
+  <div class="db">
+    <div class="sugg"><div class="t">What blocks the VoltCore passport?</div><div class="muted" style="font-size:13px">One blocking gap: the carbon-footprint declaration is not third-party verified (Reg. 2023/1542 Art. 7). Two action gaps: rated energy mapping, lead concentration. Fix the first and readiness moves to <b>Review required</b>.</div><div class="actions"><a class="btn sm" href="#/case/c1" data-close>Open case</a><button class="btn sm" data-modal="evidence">Attach evidence</button></div></div>
+    <div class="sugg"><div class="t">Suggested mapping</div><div class="mono">Wh_nominal → rated_energy_wh (0.96)</div><div class="actions"><button class="btn sm primary" data-toast="Mapping applied · 48 rows updated">Apply</button><button class="btn sm">Explain</button></div></div>
+    <div class="sugg"><div class="t">Write with Afous</div><div class="muted" style="font-size:13px">“VoltCore VC-75E is a 75 kWh NMC 811 traction battery built in Germany for EU and US markets, carbon class B, 16% recycled cobalt…”</div><div class="actions"><button class="btn sm" data-toast="Inserted into the passport description">Insert</button><button class="btn sm">Regenerate</button></div></div>
+    <div class="muted" style="font-size:12px">Afous never decides legal applicability, compliance, evidence validity, readiness or publication. Those stay rule / human.</div>
+  </div>`;
+}
+const evidenceModal = `<div class="hd"><b>Attach evidence</b><span class="muted" style="font-size:12px">· Carbon footprint verification · VoltCore VC-75E · EU</span><button class="iconbtn" style="margin-left:auto" data-close>${I.x}</button></div>
+  <div class="bd"><div class="dropzone">Drop a PDF here or <b style="color:var(--ink)">browse</b> · certificate, test report, supplier declaration</div>
+  <div class="grid g2"><div class="field"><label>Evidence type</label><span class="select" style="justify-content:space-between">Third-party verification certificate ${I.chev}</span></div><div class="field"><label>Issuer</label><input class="input" value="TÜV SÜD Product Service"></div><div class="field"><label>Valid from</label><input class="input" value="01 Jul 2026"></div><div class="field"><label>Valid to</label><input class="input" value="30 Jun 2027"></div></div>
+  <div class="tile"><span class="afous">${I.spark}</span><div><b>Afous read the file</b><p>Declared 61 kg CO₂e/kWh · scope: cradle-to-gate · matches claim “Carbon footprint class B”. Validity approval stays with Quality.</p></div></div>
+  <div class="actions" style="justify-content:flex-end"><button class="btn" data-close>Cancel</button><button class="btn primary" data-evidence>Attach & re-evaluate</button></div></div>`;
+const lifecycleModal = `<div class="hd"><b>Lifecycle & readiness explained</b><button class="iconbtn" style="margin-left:auto" data-close>${I.x}</button></div><div class="bd"><div><h3>1 · Operational lifecycle</h3><p class="muted" style="margin:4px 0 8px;font-size:13px">The chronological workflow. A case can move forward or return to an earlier step after a change.</p><div class="stepper" style="flex-wrap:wrap;gap:6px">${LIFECYCLE.map(s=>`<span class="step">${s}</span>`).join('')}</div></div><div><h3>2 · Readiness decision</h3><p class="muted" style="margin:4px 0 8px;font-size:13px">Not a second workflow. The current decision at a point in time for Product × Market × Date × Role.</p><div class="chips">${Object.keys(READY).map(k=>badge(k)).join('')}</div></div><p style="font-size:13px;margin:0"><b>Important:</b> BLOCKED is a severity / result state, not a chronological stage. READY WITH CONDITIONS means the case can progress only under the displayed conditions.</p></div>`;
+const newCaseModal = `<div class="hd"><b>Create market case</b><button class="iconbtn" style="margin-left:auto" data-close>${I.x}</button></div><div class="bd"><div class="grid g2"><div class="field"><label>Product</label><span class="select" style="justify-content:space-between">Atlas SafeStep S3 ${I.chev}</span></div><div class="field"><label>Target market</label><span class="select" style="justify-content:space-between">${FLAG.US} US Federal ${I.chev}</span></div><div class="field"><label>Sector pack</label><span class="select" style="justify-content:space-between">US · Footwear (FTC origin, Prop 65) ${I.chev}</span></div><div class="field"><label>Target date</label><input class="input" value="01 Mar 2027"></div><div class="field"><label>Folder</label><span class="select" style="justify-content:space-between">Footwear ${I.chev}</span></div><div class="field"><label>Owner</label><span class="select" style="justify-content:space-between">Leila N. ${I.chev}</span></div></div><div class="tile"><span class="afous">${I.spark}</span><div><b>Afous pre-filled 3 fields</b><p>From the product's origin (PT), existing EU case and the US sector template.</p></div></div><div class="actions" style="justify-content:flex-end"><button class="btn" data-close>Cancel</button><a class="btn primary" href="#/case/c6" data-close>Create & open case</a></div></div>`;
+const newOutputModal = `<div class="hd"><b>Create output</b><button class="iconbtn" style="margin-left:auto" data-close>${I.x}</button></div><div class="bd"><div class="grid g2"><div class="field"><label>From case</label><span class="select" style="justify-content:space-between">VoltCore VC-75E · ${FLAG.EU} EU ${I.chev}</span></div><div class="field"><label>Output class</label><span class="select" style="justify-content:space-between">Digital passport ${I.chev}</span></div><div class="field"><label>Grain</label><span class="select" style="justify-content:space-between">Batch · B-2608-14 ${I.chev}</span></div><div class="field"><label>Audiences</label><span class="select" style="justify-content:space-between">Consumer · B2B · Authority · Recycler ${I.chev}</span></div></div><div class="lock"><span>⚠</span><div><b>The case is Action required.</b> You can generate a controlled draft now; it cannot reach Ready to publish until the blocking gap is closed.</div></div><div class="actions" style="justify-content:flex-end"><button class="btn" data-close>Cancel</button><button class="btn primary" data-toast="Controlled draft generated · OUT-007 · state Generated" data-close>Generate draft</button></div></div>`;
+
+/* ---------- router ---------- */
+function render(){
+  const h = location.hash.replace(/^#\/?/,'') || 'home';
+  S.route = h;
+  const app=$('#app'); let html='';
+  if(h==='signin') html=vSignin();
+  else if(h==='passport') html=vPassport();
+  else if(h==='site') html=vSite();
+  else if(h==='request') html=vRequest();
+  else if(h.startsWith('product/')) html=shell(vProduct(h.split('/')[1]),'products');
+  else if(h==='imports') html=shell(vImports(),'imports');
+  else if(h==='packs') html=shell(vPacks(),'packs');
+  else if(h==='clients') html=shell(vClients(),'clients');
+  else if(h==='outputs/new') html=shell(vWizard(),'outputs');
+  else if(h.startsWith('case/')) html=shell(vCase(h.split('/')[1]),'products');
+  else if(h==='products') html=shell(vProducts(),'products');
+  else if(h==='work') html=shell(vWork(),'work');
+  else if(h==='outputs') html=shell(vOutputs(),'outputs');
+  else if(h==='projects') html=shell(vProjects(),'projects');
+  else if(h==='admin') html=shell(vAdmin(),'admin');
+  else if(h==='partner') html=shell(vPartner(),'partner');
+  else html=shell(vHome(),'home');
+  app.innerHTML=html; window.scrollTo(0,0);
+  const q=$('#qr'); if(q){ const g=q.getContext('2d'); let s=7; for(let y=0;y<21;y++)for(let x=0;x<21;x++){ s=(s*1103515245+12345)&0x7fffffff; const fin=(x<7&&y<7)||(x>13&&y<7)||(x<7&&y>13); const on=fin?((x%6===0||y%6===0||x%6===6||y%6===6)||(x>1&&x<5&&y>1&&y<5)||(x>15&&x<19&&y>1&&y<5)||(x>1&&x<5&&y>15&&y<19)):(s%3===0); g.fillStyle=on?'#111':'#fff'; g.fillRect(x,y,1,1);} }
+}
+window.addEventListener('hashchange',render);
+document.addEventListener('click',e=>{
+  const t=e.target.closest('[data-case],[data-route],[data-filter],[data-view],[data-casetab],[data-admintab],[data-folder],[data-audience],[data-outstate],[data-output],[data-afous],[data-modal],[data-toast],[data-close],[data-evidence],[data-access],[data-scope],[data-toggle],[data-cb],[data-delegated],[data-project],[data-product],[data-producttab],[data-importstep],[data-packmarket],[data-wizstep],[data-outtab],[data-search],[data-notif]');
+  if(!t) return;
+  const d=t.dataset;
+  if(d.close!==undefined) closeAll();
+  if(d.product){ e.preventDefault(); e.stopPropagation(); closeAll(); S.productTab='overview'; go('product/'+d.product); return; }
+  if(d.producttab){ S.productTab=d.producttab; render(); return; }
+  if(d.importstep){ S.importStep=+d.importstep; render(); return; }
+  if(d.packmarket){ S.packMarket=d.packmarket; render(); return; }
+  if(d.wizstep){ S.wizStep=+d.wizstep; render(); return; }
+  if(d.outtab){ S.outTab=d.outtab; render(); return; }
+  if(d.search!==undefined){ openDrawer(searchDrawer()); return; }
+  if(d.notif!==undefined){ openDrawer(notifDrawer()); return; }
+  if(d.case){ e.preventDefault(); closeAll(); go('case/'+d.case); return; }
+  if(d.route){ e.preventDefault(); go(d.route); return; }
+  if(d.project){ const p=projects.find(x=>x.id===d.project); if(p.case) go('case/'+p.case); else toast('Import project: source → mapping → run → review → enrich (demo)'); return; }
+  if(d.filter){ S.filter=d.filter; render(); return; }
+  if(d.view){ S.view=d.view; render(); return; }
+  if(d.casetab){ S.caseTab=d.casetab; render(); return; }
+  if(d.admintab){ S.adminTab=d.admintab; render(); return; }
+  if(d.folder){ S.folder=d.folder; render(); return; }
+  if(d.scope){ S.scope=d.scope; render(); return; }
+  if(d.audience){ S.audience=d.audience; if(S.route!=='passport'){ location.hash='#/passport'; } else render(); return; }
+  if(d.access){ S.access=d.access; render(); return; }
+  if(d.outstate){ S.outState=d.outstate; render(); return; }
+  if(d.output){ openDrawer(outputDrawer(d.output)); return; }
+  if(d.afous){ if(d.afous==='drawer') openDrawer(afousDrawer()); else openDrawer(afousDrawer()); return; }
+  if(d.modal){ openModal(d.modal==='evidence'?evidenceModal:d.modal==='lifecycle'?lifecycleModal:d.modal==='newcase'?newCaseModal:newOutputModal); return; }
+  if(d.evidence!==undefined){ S.evidenceAdded=true; closeAll(); toast('Evidence attached · re-evaluated · 2 gaps left'); render(); return; }
+  if(d.toggle!==undefined){ t.classList.toggle('on'); toast('Saved'); return; }
+  if(d.cb!==undefined){ t.classList.toggle('on'); return; }
+  if(d.delegated){ toast('Opening '+d.delegated+' scoped workspace'); setTimeout(()=>go('products'),500); return; }
+  if(d.toast){ toast(d.toast); }
+});
+$('#scrim').addEventListener('click',closeAll);
+/* drag & drop: market cases move between lifecycle stages on the board */
+document.addEventListener('dragstart',e=>{ const c=e.target.closest('[data-drag]'); if(c){ e.dataTransfer.setData('text/plain',c.dataset.drag); c.style.opacity=.5; } });
+document.addEventListener('dragend',e=>{ const c=e.target.closest('[data-drag]'); if(c) c.style.opacity=1; });
+document.addEventListener('dragover',e=>{ const col=e.target.closest('[data-dropstage]'); if(col){ e.preventDefault(); col.style.outline='2px solid var(--primary)'; } });
+document.addEventListener('dragleave',e=>{ const col=e.target.closest('[data-dropstage]'); if(col) col.style.outline=''; });
+document.addEventListener('drop',e=>{ const col=e.target.closest('[data-dropstage]'); if(!col) return; e.preventDefault(); const id=e.dataTransfer.getData('text/plain'); const hit=caseById(id); if(hit){ hit.c.stage=+col.dataset.dropstage; toast(`${hit.p.name} · ${hit.c.market} moved to ${LIFECYCLE[hit.c.stage]} — readiness unchanged`); render(); } });
+document.addEventListener('keydown',e=>{ if((e.metaKey||e.ctrlKey)&&e.key.toLowerCase()==='k'){ e.preventDefault(); openDrawer(searchDrawer()); } if(e.key==='Escape') closeAll(); });
+render();
+if (QS.get('drawer')) openDrawer(outputDrawer(QS.get('drawer')));
+if (QS.get('afous')) openDrawer(afousDrawer());
+if (QS.get('modal')) openModal(QS.get('modal')==='evidence'?evidenceModal:QS.get('modal')==='lifecycle'?lifecycleModal:QS.get('modal')==='newcase'?newCaseModal:newOutputModal);
+</script>
