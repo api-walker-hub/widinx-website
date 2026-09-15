@@ -1,0 +1,85 @@
+<!doctype html>
+<html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Supplier request portal — one request, submit and clarify, never accept — WidinX artboard</title>
+<style>
+:root{--bg:#F1EFE9;--fg:#10231C;--card:#FDFDFC;--primary:#1A3C2E;--primary-fg:#F9F7F1;--secondary:#E5E1D7;--muted:#E6E3DB;--muted-fg:#536A60;--accent:#2F7955;--destructive:#AE3A29;--border:#C7D1CC;--input:#9EB3A9;--ring:#2F7955;--sidebar:#EDEAE3;--sidebar-fg:#465D54;--sidebar-accent:#E0DCD2;--success:#2B6E4E;--warning:#AD770B;--info:#2C6F96;--stamp:4px 4px 0 0 var(--fg);--stamp-sm:3px 3px 0 0 var(--fg);--display:"Space Grotesk","Inter",ui-sans-serif,system-ui,sans-serif;--body:"Inter",ui-sans-serif,system-ui,sans-serif;--mono:ui-monospace,SFMono-Regular,Menlo,monospace;--serif:"Instrument Serif",Georgia,serif}
+*{box-sizing:border-box}html,body{margin:0;background:#D9D6CC;color:var(--fg);font:14px/1.5 var(--body)}
+.bar{position:sticky;top:0;z-index:10;display:flex;gap:8px;align-items:center;padding:10px 16px;background:var(--fg);color:var(--primary-fg);font:12px/1.3 var(--mono)}
+.bar b{font:700 13px var(--display);letter-spacing:.02em;margin-right:8px}.bar button{font:12px var(--mono);background:transparent;color:var(--primary-fg);border:1px solid rgba(255,255,255,.4);padding:4px 10px;cursor:pointer}.bar button.on{background:var(--primary-fg);color:var(--fg)}
+.bar .sp{flex:1}.bar .note{opacity:.75}
+.stage{display:flex;justify-content:center;padding:24px 16px 64px}
+.frame{container-type:inline-size;container-name:frame;width:1280px;max-width:100%;background:var(--bg);border:1px solid var(--border);box-shadow:8px 8px 0 0 rgba(16,35,28,.16);min-height:760px;overflow:hidden}
+.frame.w390{width:390px}.frame.w768{width:768px}.frame.w1280{width:1280px}
+.shell{display:grid;grid-template-columns:232px 1fr;min-height:760px}
+.rail{background:var(--sidebar);border-right:1px solid var(--border);padding:14px 12px;color:var(--sidebar-fg);font-size:13px}
+.brand{display:flex;gap:10px;align-items:center;margin-bottom:18px}.brand .mark{width:30px;height:30px;background:var(--primary);color:var(--primary-fg);display:grid;place-items:center;font:700 12px var(--display)}.brand b{font:700 17px var(--display);color:var(--fg);display:block;line-height:1}.brand small{font:650 8.5px/1 var(--body);letter-spacing:.22em;text-transform:uppercase;color:var(--muted-fg)}
+.eyebrow{font:650 11px/1.3 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);margin:14px 0 6px}
+.nav a{display:flex;gap:10px;align-items:center;padding:7px 10px;color:inherit;text-decoration:none;border-left:3px solid transparent}.nav a.on{background:var(--sidebar-accent);color:var(--fg);border-left-color:var(--primary);font-weight:600}.nav a .cnt{margin-left:auto;font:600 11px var(--mono);color:var(--muted-fg)}.nav .kids a{padding-left:34px;font-size:12.5px}
+.main{min-width:0}.top{display:flex;gap:12px;align-items:center;padding:10px 24px;border-bottom:1px solid var(--border);background:var(--card)}
+.search{flex:1;max-width:520px;display:flex;align-items:center;gap:8px;height:34px;border:1px solid var(--input);background:var(--card);padding:0 10px;color:var(--muted-fg);font-size:13px}.search kbd{margin-left:auto;font:11px var(--mono);border:1px solid var(--border);padding:1px 5px}
+.select{display:inline-flex;align-items:center;gap:6px;height:30px;border:1px solid var(--border);background:var(--card);padding:0 10px;font-size:12.5px}
+.avatar{width:28px;height:28px;border-radius:9999px;background:var(--primary);color:var(--primary-fg);display:grid;place-items:center;font:600 11px var(--body)}
+.page{padding:20px 24px;display:flex;flex-direction:column;gap:16px}
+.pagehead{display:flex;gap:16px;align-items:flex-start}.pagehead h1{font:700 28px/1.15 var(--display);letter-spacing:-.015em;margin:0}.pagehead p{margin:4px 0 0;color:var(--muted-fg)}.pagehead .grow{flex:1;min-width:0}.actions{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.btn{display:inline-flex;align-items:center;gap:6px;height:36px;padding:0 16px;border:1px solid var(--border);background:var(--card);color:var(--fg);font:500 14px var(--body);cursor:pointer;text-decoration:none;white-space:nowrap}.btn:hover{box-shadow:var(--stamp);transform:translate(-2px,-2px)}.btn.primary{background:var(--primary);border-color:var(--primary);color:var(--primary-fg)}.btn.sm{height:28px;padding:0 10px;font-size:12.5px}.btn.sm:hover{box-shadow:var(--stamp-sm)}.btn[disabled]{opacity:.5;cursor:not-allowed}.btn[disabled]:hover{box-shadow:none;transform:none}
+.seg{display:inline-flex;border:1px solid var(--border);background:var(--card)}.seg button{font:500 12.5px var(--body);background:transparent;border:0;padding:6px 12px;cursor:pointer;color:var(--muted-fg)}.seg button.on{background:var(--fg);color:var(--primary-fg)}
+.card{background:var(--card);border:1px solid var(--border)}.card .hd{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border)}.card .hd h2{font:700 16px/1.3 var(--display);margin:0}.card .bd{padding:16px}.card .hd .muted{font-size:12px}
+.muted{color:var(--muted-fg)}.mono{font:500 12px var(--mono)}.num{font-variant-numeric:tabular-nums}
+.grid{display:grid;gap:16px}.g2{grid-template-columns:repeat(2,1fr)}.g3{grid-template-columns:repeat(3,1fr)}.g5{grid-template-columns:repeat(5,1fr)}
+.kpi{padding:12px 14px;border-top:3px solid var(--border)}.kpi .v{font:700 28px/1 var(--display);margin:4px 0}.kpi .d{font-size:12px;color:var(--muted-fg)}.kpi.crit{border-top-color:var(--destructive)}.kpi.warn{border-top-color:var(--warning)}.kpi.review{border-top-color:var(--info)}.kpi.ready{border-top-color:var(--success)}
+table{width:100%;border-collapse:collapse;font-size:13.5px}th{text-align:left;font:650 11px/1.3 var(--body);letter-spacing:.12em;text-transform:uppercase;color:var(--muted-fg);padding:10px 12px;border-bottom:1px solid var(--border);background:var(--bg)}td{padding:10px 12px;border-bottom:1px solid var(--border);vertical-align:top;min-height:44px}tr:hover td{background:var(--muted)}
+.badge{display:inline-flex;align-items:center;gap:4px;height:20px;padding:0 8px;font:650 10.5px/1 var(--body);letter-spacing:.08em;text-transform:uppercase;border:1px solid currentColor;white-space:nowrap}.badge.crit{color:var(--destructive);background:#F5E2DE}.badge.warn{color:var(--warning);background:#F6EDD8}.badge.ready{color:var(--success);background:#E6F0EA}.badge.info{color:var(--info);background:#E1EBF2}.badge.neutral{color:var(--muted-fg);background:var(--muted)}
+.banner{border-left:4px solid var(--destructive)}.banner.ok{border-left-color:var(--success)}.banner h2{font:700 20px/1.25 var(--display);margin:6px 0 10px}.cols{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;font-size:13px}.cols .eyebrow{margin:0 0 3px}
+.dim{display:grid;grid-template-columns:120px 1fr 1fr;gap:10px;align-items:center;font-size:12.5px;padding:6px 0;border-bottom:1px solid var(--muted)}.bar6{height:6px;background:var(--muted)}.bar6 i{display:block;height:100%;background:var(--primary)}.bar6 i.low{background:var(--destructive)}.bar6 i.mid{background:var(--warning)}
+.list .it{display:flex;gap:12px;align-items:center;padding:10px 16px;border-bottom:1px solid var(--border)}.list .it:last-child{border-bottom:0}
+.tabs{display:flex;gap:2px;border-bottom:1px solid var(--border);overflow-x:auto}.tabs button{font:500 13.5px var(--body);background:transparent;border:0;border-bottom:3px solid transparent;padding:10px 14px;cursor:pointer;color:var(--muted-fg);white-space:nowrap}.tabs button.on{color:var(--fg);border-bottom-color:var(--primary);font-weight:600}.tabs .cnt{margin-left:6px;font:600 11px var(--mono);color:var(--muted-fg)}
+.ctx{display:grid;grid-template-columns:repeat(7,1fr);gap:12px;padding:10px 16px}.ctx b{font-size:12.5px;display:block}
+.tile{display:flex;gap:10px;padding:12px 14px;background:var(--muted);font-size:13px}.tile.warn{background:#F6EDD8;color:var(--warning)}
+.hand{width:36px;height:36px;border-radius:9999px;background:var(--primary);color:var(--primary-fg);display:grid;place-items:center;font-size:16px}
+.drawer{border-left:1px solid var(--border);background:var(--card);box-shadow:8px 8px 0 0 rgba(16,35,28,.16)}.drawer .dh{display:flex;gap:10px;align-items:center;padding:12px 16px;border-bottom:1px solid var(--border)}.drawer .dh.inv{background:var(--primary);color:var(--primary-fg)}.drawer .db{padding:16px;display:flex;flex-direction:column;gap:12px}
+.chip{border:1px solid var(--border);background:var(--card);padding:5px 10px;font-size:12.5px}.chips{display:flex;gap:6px;flex-wrap:wrap}
+.diff{display:grid;grid-template-columns:1fr 1fr;gap:10px}.diff .tile{flex-direction:column;align-items:flex-start;gap:4px}.diff .tile.after{background:#E6F0EA}
+.kanban{display:grid;grid-template-columns:repeat(5,1fr);gap:12px}.col{background:var(--sidebar);border-top:3px solid var(--border);padding:10px;min-height:200px}.col .ch{font:700 13px var(--display);display:flex;justify-content:space-between;margin-bottom:8px}.kcard{background:var(--card);border:1px solid var(--border);padding:10px;margin-bottom:8px;font-size:12.5px}.kcard .t{font:600 13px var(--body);margin:4px 0}
+.denied{border:1px dashed var(--destructive);padding:8px 10px;font-size:12.5px;color:var(--destructive);background:#F5E2DE}
+.footer{margin:24px;padding:12px 14px;border:1px solid var(--border);background:var(--card);font:12px/1.5 var(--mono);color:var(--muted-fg)}
+.pub{max-width:672px;margin:0 auto;padding:0 16px 48px}.pub .ptop{display:flex;justify-content:space-between;align-items:center;height:56px;border-bottom:1px solid var(--border)}.pub .img{border:1px solid var(--border);background:var(--muted);height:220px;display:grid;place-items:center;color:var(--muted-fg);margin:24px 0 16px}.pub h1{font:700 28px/1.15 var(--display);letter-spacing:-.015em;margin:4px 0}.pub .story{font:400 22px/1.35 var(--serif);margin:16px 0}.pub dl{display:grid;grid-template-columns:150px 1fr;gap:6px 12px;font-size:14px;margin:0}.pub dt{color:var(--muted-fg)}
+.portal{max-width:840px;margin:0 auto;padding:0 16px 48px}
+@container frame (max-width: 1100px){.shell{grid-template-columns:64px 1fr}.rail .brand b,.rail .brand small,.rail .nav a span,.rail .eyebrow,.rail .nav .kids,.rail .nav .cnt{display:none}.rail .nav a{justify-content:center;padding:9px 0}.g5{grid-template-columns:repeat(3,1fr)}.g3{grid-template-columns:repeat(2,1fr)}.grid.case{grid-template-columns:1fr}.ctx{grid-template-columns:repeat(4,1fr)}.kanban{grid-template-columns:repeat(3,1fr)}.diff{grid-template-columns:1fr}.cols{grid-template-columns:1fr 1fr}.tablewrap{overflow-x:auto}.tablewrap table{min-width:760px}}
+@container frame (max-width: 600px){.shell{grid-template-columns:1fr}.rail{display:none}.top{padding:10px 12px}.top .search{max-width:none}.top .select,.top .hidden-sm{display:none}.page{padding:12px}.pagehead{flex-direction:column;gap:10px}.pagehead h1{font-size:22px}.g5,.g3,.g2{grid-template-columns:1fr 1fr}.grid.case{grid-template-columns:1fr}.cols{grid-template-columns:1fr}.dim{grid-template-columns:1fr;gap:4px}.ctx{grid-template-columns:1fr 1fr;position:sticky;top:0;z-index:2}.kanban{grid-template-columns:1fr}.cards390 table{display:none}.cards390 .cardlist{display:block}.pub dl{grid-template-columns:1fr}.pub .img{height:180px}}
+.cardlist{display:none;padding:12px;font-size:13px}.cardlist .c{border:1px solid var(--border);background:var(--card);padding:10px;margin-bottom:8px}.cardlist .c b{display:block;margin-bottom:4px}
+.frame.w390 .sheet-hint{display:block}.sheet-hint{display:none;padding:8px 12px;background:var(--fg);color:var(--primary-fg);font:12px var(--mono)}
+</style></head>
+<body>
+<div class="bar"><b>E5-requests-and-shells / supplier-portal</b><span class="note">Supplier request portal — one request, submit and clarify, never accept</span><span class="sp"></span>
+<button data-w="390">390</button><button data-w="768">768</button><button data-w="1280" class="on">1280</button></div>
+<div class="stage"><div class="frame w1280" id="frame">
+<div class="portal">
+ <div class="ptop" style="display:flex;justify-content:space-between;align-items:center;height:56px;border-bottom:1px solid var(--border)"><div class="brand" style="margin:0"><span class="mark">VX</span><div><b style="font:700 15px var(--display)">WidinX</b><small>Supplier request portal</small></div></div><span class="muted" style="font-size:12.5px">Request from <b>Atlas Wear SA</b> · link valid until 30 Sep 2026</span></div>
+ <div class="pagehead" style="margin-top:20px"><div class="grow"><div class="eyebrow" style="margin:0 0 4px">REQ-2026-034 · to Portuguese Textile Mills, Lda</div><h1 style="font-size:24px">Confirm shell composition for fabric revision F-42</h1><p>You see only this request. The requester's catalogue, other requests and internal assessments are not visible here.</p></div><span class="badge info">Opened</span></div>
+ <div class="card" style="margin-top:12px"><div class="hd"><h2>What is asked</h2></div><div class="bd" style="display:grid;grid-template-columns:160px 1fr;gap:8px 12px;font-size:13.5px">
+  <span class="muted">Material</span><span>Shell fabric · revision F-42 · Atlas Linen Jacket</span>
+  <span class="muted">Two values on file</span><span>Your declaration rev 2: <b>60 % linen / 40 % cotton</b> (revision not stated) · buyer's bill of materials rev 4: <b>55 % linen / 45 % cotton</b> (F-42)</span>
+  <span class="muted">Requested</span><span>The composition that applies to F-42, and a revised declaration naming the fabric revision</span>
+  <span class="muted">Due</span><span>18 Sep 2026</span></div></div>
+ <div class="card" style="margin-top:12px"><div class="hd"><h2>Your response</h2></div><div class="bd" style="display:flex;flex-direction:column;gap:12px">
+  <div><div class="eyebrow" style="margin:0 0 4px">Shell composition for F-42</div><div style="display:flex;gap:8px"><span class="select" style="height:36px">Linen ▾</span><span class="select" style="height:36px;width:90px">55 %</span><span class="select" style="height:36px">Cotton ▾</span><span class="select" style="height:36px;width:90px">45 %</span></div></div>
+  <div><div class="eyebrow" style="margin:0 0 4px">Revised declaration</div><div class="tile" style="border:1px dashed var(--input);background:var(--card)">⬆ declaration-F42-rev3.pdf · 412 KB · issuer: Portuguese Textile Mills, Lda</div></div>
+  <div><div class="eyebrow" style="margin:0 0 4px">Clarification thread</div><div class="list" style="border:1px solid var(--border)"><div class="it"><span class="avatar">MS</span><div style="flex:1;font-size:13px"><b>Maria Santos · Atlas Wear SA</b><div>Does rev 2 describe F-41 or F-42?</div></div></div><div class="it"><span class="avatar" style="background:var(--accent)">AM</span><div style="flex:1;font-size:13px"><b>You</b><div>Rev 2 described F-41. Rev 3 attached covers F-42: 55/45.</div></div></div></div></div>
+  <div class="actions" style="justify-content:flex-end"><button class="btn">Save draft</button><button class="btn primary">Submit response</button></div>
+  <div class="muted" style="font-size:12px">Submitting sends your response to Atlas Wear SA for review. Only the requester can accept it. Your organisation will be named as the issuer of what you submit.</div>
+ </div></div>
+</div></div></div>
+<div class="footer">DESIGN.md and EXPERIENCE.md win over any artboard. A drifted artboard is a bug in the artboard.<br>Flow: Flow 6 — Amine answers from Fes (UJ-6, FR-22, FR-23, FR-36). Tokens: DESIGN.md (Stamped Ledger). Behaviour: EXPERIENCE.md. This artboard is illustrative; fixture names are shared with the PRD journeys.</div>
+<script>
+document.querySelectorAll('.bar button').forEach(function(b){b.addEventListener('click',function(){
+  document.querySelectorAll('.bar button').forEach(function(x){x.classList.remove('on')});b.classList.add('on');
+  var f=document.getElementById('frame');f.className='frame w'+b.dataset.w;})});
+</script>
+
+<footer style="position:fixed;left:0;right:0;bottom:0;z-index:2147483647;
+  font:12px/1.5 ui-monospace,SFMono-Regular,Menlo,monospace;
+  background:#111;color:#eee;padding:8px 12px;border-top:1px solid #333">
+  <strong>E5-requests-and-shells / supplier-portal</strong> &middot; artboard 8dd94d3 &middot; published 2026-09-15<br>
+  DESIGN.md and EXPERIENCE.md win over any artboard. A drifted artboard is a bug in the artboard.
+</footer>
+</body></html>
