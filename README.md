@@ -56,7 +56,7 @@ src/
     forms/                Demo form, field wrapper, chip multi-select
   views/                  One file per route
   router/index.js         Routes, scroll behaviour, document titles
-public/                   Favicon, artwork, passport product images (public/passports/)
+public/                   Favicon, artwork, passport product images (public/passport-images/)
 ```
 
 ## Design system

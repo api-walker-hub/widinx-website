@@ -38,11 +38,11 @@ export const passports = [
     gtin: gtin('200000000301'),
     batch: 'KN26-0417',
     grain: 'batch',
-    image: '/passports/tx-03-001.jpg',
+    image: '/passport-images/tx-03-001.jpg',
     variants: [
-      { label: 'Oatmeal', swatch: '#D8CCBA', image: '/passports/tx-03-001.jpg' },
-      { label: 'Charcoal', swatch: '#3E4143', image: '/passports/tx-03-002.jpg' },
-      { label: 'Burgundy', swatch: '#6E2232', image: '/passports/tx-03-003.jpg' },
+      { label: 'Oatmeal', swatch: '#D8CCBA', image: '/passport-images/tx-03-001.jpg' },
+      { label: 'Charcoal', swatch: '#3E4143', image: '/passport-images/tx-03-002.jpg' },
+      { label: 'Burgundy', swatch: '#6E2232', image: '/passport-images/tx-03-003.jpg' },
     ],
     sizes: ['XS', 'S', 'M', 'L', 'XL'],
     version: { n: 3, validFrom: '2026-09-02' },
@@ -128,8 +128,8 @@ export const passports = [
     gtin: gtin('200000011022'),
     batch: 'LN26-B12',
     grain: 'batch',
-    image: '/passports/tx-11-002.jpg',
-    variants: [{ label: 'Terracotta', swatch: '#B4593B', image: '/passports/tx-11-002.jpg' }],
+    image: '/passport-images/tx-11-002.jpg',
+    variants: [{ label: 'Terracotta', swatch: '#B4593B', image: '/passport-images/tx-11-002.jpg' }],
     version: { n: 1, validFrom: '2026-07-21' },
     regulation: TEXTILE_ACT,
     highlights: [
@@ -204,7 +204,7 @@ export const passports = [
     batch: 'VB26-W31',
     serial: 'VB500-0042719',
     grain: 'serial',
-    image: '/passports/battery.svg',
+    image: '/passport-images/battery.svg',
     version: { n: 2, validFrom: '2026-08-14' },
     regulation: 'Batteries Regulation (EU) 2023/1542 · passport from 18 Feb 2027',
     highlights: [
@@ -286,7 +286,7 @@ export const passports = [
     model: 'NB-A14-2026',
     gtin: gtin('200000014007'),
     grain: 'model',
-    image: '/passports/laptop.svg',
+    image: '/passport-images/laptop.svg',
     version: { n: 1, validFrom: '2026-06-10' },
     regulation: 'ESPR · Ecodesign for electronics (expected 2028) · EPREL',
     highlights: [
@@ -359,7 +359,7 @@ export const passports = [
     gtin: gtin('200000000707'),
     batch: 'FN26-311',
     grain: 'batch',
-    image: '/passports/chair.svg',
+    image: '/passport-images/chair.svg',
     version: { n: 1, validFrom: '2026-05-19' },
     regulation: 'ESPR · furniture (working plan 2025–2030) · EUDR',
     highlights: [
@@ -425,7 +425,7 @@ export const passports = [
     gtin: gtin('200000000501'),
     batch: 'L26-288-B',
     grain: 'batch',
-    image: '/passports/bottle.svg',
+    image: '/passport-images/bottle.svg',
     version: { n: 1, validFrom: '2026-08-12' },
     regulation: 'PPWR (EU) 2025/40 · applies from 12 Aug 2026',
     highlights: [
@@ -481,7 +481,7 @@ export const passports = [
     model: 'RW-EG-2055516',
     gtin: gtin('200000205516'),
     grain: 'model',
-    image: '/passports/tyre.svg',
+    image: '/passport-images/tyre.svg',
     version: { n: 2, validFrom: '2026-03-01' },
     regulation: 'Tyre labelling (EU) 2020/740 · EPREL',
     highlights: [
@@ -539,7 +539,7 @@ export const passports = [
     gtin: gtin('200000000127'),
     batch: 'LP26-0812',
     grain: 'batch',
-    image: '/passports/toy.svg',
+    image: '/passport-images/toy.svg',
     version: { n: 1, validFrom: '2026-09-15' },
     regulation: 'Toy Safety Regulation (EU) 2025 · digital product passport',
     highlights: [
@@ -586,7 +586,7 @@ export const passports = [
     gtin: gtin('200000001001'),
     batch: 'IT26-35',
     grain: 'batch',
-    image: '/passports/insulation.svg',
+    image: '/passport-images/insulation.svg',
     version: { n: 1, validFrom: '2026-04-04' },
     regulation: 'Construction Products Regulation (EU) 2024/3110',
     highlights: [
@@ -632,7 +632,7 @@ export const passports = [
     gtin: gtin('200000000509'),
     batch: 'HB26-271',
     grain: 'batch',
-    image: '/passports/cream.svg',
+    image: '/passport-images/cream.svg',
     version: { n: 1, validFrom: '2026-10-01' },
     regulation: 'Cosmetics Regulation (EC) 1223/2009 · digital labelling',
     highlights: [
@@ -676,7 +676,7 @@ export const passports = [
     batch: 'AL26-09',
     serial: 'AL-TT-01-000318',
     grain: 'serial',
-    image: '/passports/handbag.svg',
+    image: '/passport-images/handbag.svg',
     version: { n: 2, validFrom: '2026-09-28' },
     regulation: 'ESPR · authenticity & ownership (voluntary)',
     highlights: [
@@ -733,7 +733,7 @@ export const passports = [
     model: 'CLF-LL-150',
     gtin: gtin('200000001506'),
     grain: 'model',
-    image: '/passports/detergent.svg',
+    image: '/passport-images/detergent.svg',
     version: { n: 1, validFrom: '2026-07-01' },
     regulation: 'Detergents Regulation · digital label',
     highlights: [
