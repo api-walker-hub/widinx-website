@@ -1,10 +1,15 @@
 <script setup>
-import { onMounted } from 'vue'
+import { computed, onMounted } from 'vue'
+import { useRoute } from 'vue-router'
 import SiteHeader from '@/components/layout/SiteHeader.vue'
 import SiteFooter from '@/components/layout/SiteFooter.vue'
 import { captureAttribution } from '@/composables/useUtm'
 
 onMounted(captureAttribution)
+
+// Passport pages stand alone, like the app's public passport: no site chrome.
+const route = useRoute()
+const bare = computed(() => route.meta?.bare === true)
 </script>
 
 <template>
@@ -14,7 +19,7 @@ onMounted(captureAttribution)
   >
     Skip to content
   </a>
-  <SiteHeader />
+  <SiteHeader v-if="!bare" />
   <main id="main">
     <RouterView v-slot="{ Component }">
       <Transition name="page" mode="out-in">
@@ -22,7 +27,7 @@ onMounted(captureAttribution)
       </Transition>
     </RouterView>
   </main>
-  <SiteFooter />
+  <SiteFooter v-if="!bare" />
 </template>
 
 <style>

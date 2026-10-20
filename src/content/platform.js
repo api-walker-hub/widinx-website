@@ -1,130 +1,99 @@
+/**
+ * Platform page copy. Describes what the WidinX console does today; anything
+ * not shipped is labelled roadmap.
+ */
 export const platformPage = {
   hero: {
     eyebrow: 'Platform',
-    title: 'The product record that suppliers feed, regulators check and customers',
-    em: 'trust.',
+    title: 'Everything a passport needs,',
+    em: 'in one console.',
     lead:
-      'WidinX is a SaaS platform with PIM/DAM tools, a supplier network, a regulation engine for the EU and digital twins anchored on Solana. It sits between the systems you already run — ERP, PIM, PLM, e-commerce — and the people who need proof.',
+      'WidinX is a passport console: a catalogue structured for the regulation, imports from the tools you already run, claims with their evidence, four-eyes publishing and public passports behind GS1 codes that never need reprinting.',
   },
   modules: {
     eyebrow: 'Modules',
-    title: 'Everything a passport needs, nothing you have to build.',
+    title: 'What you work with every day.',
     items: [
       {
         icon: 'box',
-        title: 'Product registry',
-        text: 'Canonical identity per SKU, batch and unit. Attributes, bill of materials and suppliers, versioned over time.',
+        title: 'Catalogue',
+        text: 'Families, categories and attributes built for passports. Products, variants, batches and units, each with the data its grain needs.',
       },
       {
         icon: 'dam',
-        title: 'PIM / DAM',
-        text: 'Product information and digital asset management: attributes, variants, media, translations and channel exports, synced with ERP, PLM and commerce.',
+        title: 'Imports',
+        text: 'CSV or JSON with a column-mapping wizard, a direct Akeneo PIM connection, images fetched with the rows. Create or update in one pass.',
       },
       {
-        icon: 'network',
-        title: 'Supplier network',
-        text: 'Invite tier-n suppliers, request documents and attestations, and share the product records they contribute to — without a full licence on their side.',
+        icon: 'scale',
+        title: 'Sector templates',
+        text: 'The 19 core fields of ESPR Annex III, plus each sector’s own: 15 EU templates, with US variants for brands selling on both sides.',
+      },
+      {
+        icon: 'shield',
+        title: 'Claims & evidence',
+        text: 'Every claim points to its evidence: test reports, certificates, declarations. What is verified and what is self-declared shows on the passport.',
+      },
+      {
+        icon: 'route',
+        title: 'Approvals & workflows',
+        text: 'Publishing needs an independent approver. Workflows per market decide who checks what before a passport goes public.',
       },
       {
         icon: 'passport',
         title: 'Passport builder',
-        text: 'Templates per product category and regulation. Public and restricted views, multilingual, resolvable by QR, NFC or GS1 Digital Link.',
-      },
-      {
-        icon: 'scale',
-        title: 'Regulation engine for the EU',
-        text: 'ESPR/DPP, AGEC, French Ecoscore, EUDR, battery passport and green-claims rules mapped to products and markets. Rules run on every data change and produce an auditable status.',
-      },
-      {
-        icon: 'twin',
-        title: 'Digital twins on Solana',
-        text: 'One twin per unit, minted and anchored on Solana. Ownership transfers, repairs and resale are written to the twin; only hashes and proofs go on-chain.',
-      },
-      {
-        icon: 'shield',
-        title: 'Verification',
-        text: 'Scan-to-verify for customers, retailers and customs, with anomaly signals for duplicated, misplaced or suspicious scans.',
-      },
-      {
-        icon: 'route',
-        title: 'Chain of custody',
-        text: 'Events from manufacturing to resale, tied to the digital twin and to the supplier who declared them.',
-      },
-      {
-        icon: 'carbon',
-        title: 'Carbon footprint & Ecoscore',
-        text: 'Life-cycle carbon in kg CO₂e per product plus the French environmental cost (Ecobalyse method), computed from declared inputs with methodology and confidence shown.',
-      },
-      {
-        icon: 'leaf',
-        title: 'AGEC environmental sheet',
-        text: 'The Article 13 product sheet — traceability, recycled content, recyclability, substances, microplastics, repairability, sorting — generated and published automatically.',
-      },
-      {
-        icon: 'spark',
-        title: 'AI assistants',
-        text: 'Extract data from certificates and invoices, suggest mappings and flag inconsistencies. Every call is inventoried and reviewable.',
+        text: 'The regulation decides the grain — model, batch or item. A five-step wizard picks the subject, checks completeness and publishes.',
       },
       {
         icon: 'plug',
-        title: 'API & integrations',
-        text: 'REST API and webhooks for everything the UI does. Connectors for common ERP, PIM, PLM and commerce platforms.',
+        title: 'Codes & labels',
+        text: 'GS1 Digital Link, QR, DataMatrix and Code 128, exported for print. The same code keeps opening the current passport.',
+      },
+      {
+        icon: 'refresh',
+        title: 'Regulatory tracking',
+        text: 'Assess products per market, follow regulatory changes and see which products a new rule touches before it applies.',
       },
     ],
   },
-  twin: {
-    eyebrow: 'Digital twins on Solana',
-    title: 'One product. One twin. No room for a copy.',
+  codes: {
+    eyebrow: 'GS1 Digital Link',
+    title: 'One code on the product. The right passport behind it.',
     intro:
-      'A counterfeit can copy a logo, a stitch or a tag. It cannot copy a twin that was created when the genuine unit was, and that anyone can check.',
-    steps: [
-      { title: 'Serialise', text: 'Each unit receives an identifier — QR, NFC or RFID — linked to its product record.' },
-      { title: 'Mint', text: 'A digital twin is created and its fingerprint anchored on Solana, a proof-of-stake network with negligible energy per transaction.' },
-      { title: 'Verify', text: 'A scan compares the physical tag with the anchored twin and shows the passport. Duplicates and misplaced scans raise a signal.' },
-      { title: 'Transfer', text: 'Resale, repair and take-back are written to the twin, so ownership and history travel with the object — without exposing the owner.' },
+      'Each passport is reachable at a standard GS1 Digital Link. Phones open it like any web page; scanners in a warehouse read the same code as a GTIN.',
+    grains: [
+      { label: 'Model', path: '/01/{GTIN}', text: 'One passport for every unit of a model — electronics, tyres, detergents.' },
+      { label: 'Batch', path: '/01/{GTIN}/10/{lot}', text: 'One per production lot — textiles, furniture, packaging, cosmetics.' },
+      { label: 'Item', path: '/01/{GTIN}/21/{serial}', text: 'One per unit — batteries, leather goods, anything resold or repaired.' },
     ],
     facts: [
-      'Hashes and proofs on-chain; documents and personal data never',
-      'Public verification without a wallet or crypto knowledge',
-      'Works with existing serialisation and tag suppliers',
-      'Network footprint reported and offset by the Solana Foundation',
+      'Passports versioned — the code always opens the current one',
+      'Audience views for consumers, partners, recyclers, authorities',
+      '12 passport languages',
+      'Signed as W3C Verifiable Credentials (Ed25519) with published keys',
     ],
   },
-  architecture: {
-    eyebrow: 'Architecture',
-    title: 'Your data stays where you decide.',
-    intro:
-      'WidinX runs EU-first on a single production cloud with a portable, infrastructure-as-code stack. Each tenant carries its own residency policy.',
-    nodes: [
-      {
-        title: 'Global edge & control',
-        text: 'DNS, WAF, tenant routing and minimal billing metadata. Never a reservoir of customer data.',
-      },
-      {
-        title: 'EU data plane',
-        text: 'Application, database, object store, search, queues, logs, keys and backups — all inside the EU region you choose.',
-      },
-      {
-        title: 'Additional data planes',
-        text: 'Same stack, isolated data, deployed for other regions only when a customer needs it.',
-      },
-    ],
-    policy: [
-      'primary_region and backup_region per tenant',
-      'Allowed AI regions and cross-border transfer policy per tenant',
-      'Region-scoped logs, backups, monitoring and support exports',
-      'Anchors and hashes may be global; personal data and documents never are',
+  standards: {
+    eyebrow: 'Standards',
+    title: 'Built on the standards the regulation points to.',
+    items: [
+      { name: 'ESPR Articles 9–13', status: 'available' },
+      { name: 'GS1 Digital Link', status: 'available' },
+      { name: 'QR & DataMatrix (ISO/IEC 18004, 16022)', status: 'available' },
+      { name: 'ISO/IEC 15459 unique identifiers', status: 'available' },
+      { name: 'W3C Verifiable Credentials · Ed25519', status: 'available' },
+      { name: 'JSON-LD & HTML content negotiation', status: 'available' },
+      { name: 'EU DPP registry identifier', status: 'partial' },
+      { name: 'EPCIS 2.0 events', status: 'roadmap' },
     ],
   },
   integrations: {
     eyebrow: 'Integrations',
-    title: 'Plays well with the stack you have.',
+    title: 'Next to the systems you already run.',
     groups: [
-      { title: 'ERP', items: ['SAP', 'Microsoft Dynamics', 'Oracle NetSuite', 'Odoo'] },
-      { title: 'PIM / PLM', items: ['Akeneo', 'Salsify', 'Centric PLM', 'PTC Windchill'] },
-      { title: 'Commerce', items: ['Shopify', 'Salesforce Commerce', 'commercetools', 'Adobe Commerce'] },
-      { title: 'Identification', items: ['GS1 Digital Link', 'QR & NFC tags', 'RFID', 'Serialisation partners'] },
+      { title: 'Shipped', items: ['CSV & JSON import', 'Akeneo PIM', 'REST API · OpenAPI', 'Exports & EPR files'] },
+      { title: 'Roadmap', items: ['SAP & other ERPs', 'Shopify & WooCommerce', 'Webhooks', 'Zapier & Make'] },
     ],
-    note: 'Connector list is indicative of the platforms we integrate with through the API and standard connectors; availability is confirmed during scoping.',
+    note: 'Everything the console does is available through the versioned REST API, with JSON Schema for each passport type.',
   },
 }

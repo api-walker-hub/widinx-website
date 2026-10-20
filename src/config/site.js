@@ -6,9 +6,9 @@ const env = import.meta.env
 
 export const site = {
   name: 'WidinX',
-  tagline: 'Every product. Every step. Verified.',
+  tagline: 'One code on the product. Everything behind it, for years.',
   description:
-    'WidinX gives every physical product a verifiable digital identity: EU Digital Product Passports, anti-counterfeiting and regulation management in one platform.',
+    'WidinX lets producers, brands, importers and authorised representatives create, publish and maintain EU Digital Product Passports at model, batch and serial level.',
   contactEmail: env.VITE_CONTACT_EMAIL || 'hello@widinx.com',
   securityEmail: env.VITE_SECURITY_EMAIL || 'security@widinx.com',
   privacyEmail: env.VITE_PRIVACY_EMAIL || 'privacy@widinx.com',
@@ -29,25 +29,35 @@ export const site = {
 }
 
 export const nav = [
+  { label: 'Live passports', to: '/passports' },
+  { label: 'Sectors', to: '/sectors' },
   { label: 'Platform', to: '/platform' },
-  { label: 'Solutions', to: '/solutions' },
-  { label: 'Ecology', to: '/sustainability' },
+  { label: 'Regulations', to: '/regulations' },
   { label: 'Trust', to: '/trust' },
   { label: 'About', to: '/about' },
-  { label: 'Careers', to: '/careers' },
 ]
 
 export const footerNav = [
   {
     title: 'Product',
     links: [
+      { label: 'Live passports', to: '/passports' },
       { label: 'Platform', to: '/platform' },
-      { label: 'Solutions', to: '/solutions' },
-      { label: 'Ecology & impact', to: '/sustainability' },
-      { label: 'AGEC & Ecoscore', to: '/sustainability#regulations' },
-      { label: 'Digital twins on Solana', to: '/platform#twins' },
+      { label: 'Sector templates', to: '/sectors' },
+      { label: 'Regulations timeline', to: '/regulations' },
+      { label: 'GS1 Digital Link', to: '/platform#codes' },
       { label: 'Trust Center', to: '/trust' },
       { label: 'Book a demo', to: '/demo' },
+    ],
+  },
+  {
+    title: 'Who it is for',
+    links: [
+      { label: 'EU producers & importers', to: '/sectors#eu' },
+      { label: 'Non-EU producers', to: '/sectors#non-eu' },
+      { label: 'Consultants & partners', to: '/sectors#partners' },
+      { label: 'Textile passports', to: '/sectors#textile' },
+      { label: 'Battery passports', to: '/sectors#battery' },
     ],
   },
   {
@@ -55,13 +65,7 @@ export const footerNav = [
     links: [
       { label: 'About WidinX', to: '/about' },
       { label: 'Careers', to: '/careers' },
-      { label: 'Research & reading', to: '/about#research' },
       { label: 'Contact', to: '/demo#contact' },
-    ],
-  },
-  {
-    title: 'Legal',
-    links: [
       { label: 'Privacy policy', to: '/privacy' },
       { label: 'Legal notice', to: '/legal' },
       { label: 'Security disclosure', to: '/trust#disclosure' },

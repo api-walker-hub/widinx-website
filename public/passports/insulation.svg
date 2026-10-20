@@ -1,0 +1,5 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><rect width="600" height="600" fill="#FFFFFF"/><ellipse cx="300" cy="512" rx="190" ry="18" fill="#142F2A" opacity=".08"/>
+<path d="M120 250 L300 180 L480 250 L300 320z" fill="#F2D27A"/>
+<path d="M120 250 L300 320 V470 L120 400z" fill="#E3B955"/><path d="M480 250 L300 320 V470 L480 400z" fill="#D4A843"/>
+<g stroke="#C29634" stroke-width="3" fill="none" opacity=".6"><path d="M140 290 q20 -10 40 0 t40 0 t40 0 t40 0"/><path d="M140 330 q20 -10 40 0 t40 0 t40 0 t40 0"/><path d="M140 370 q20 -10 40 0 t40 0 t40 0 t40 0"/></g>
+<path d="M300 320 V470 L480 400 V250z" fill="#245C4D" opacity=".85"/><text x="390" y="355" font-family="Arial,Helvetica,sans-serif" font-size="22" font-weight="700" fill="#fff" text-anchor="middle" transform="skewY(-21) translate(0 150)">ISOTERRA</text></svg>

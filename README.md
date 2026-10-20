@@ -1,8 +1,8 @@
 # WidinX website
 
-Marketing site for **WidinX** — digital product passports, end-to-end traceability and regulation management.
+Marketing site for **WidinX** — EU Digital Product Passports. Copy follows what the WidinX app (`tracex-app`) actually ships; anything not shipped is labelled roadmap.
 
-Vue 3 · Vite · Tailwind CSS v4 · vue-router. No backend: the demo form posts to whatever endpoint you configure.
+Vue 3 · Vite · Tailwind CSS v4 · vue-router, plus a small Express server that relays demo requests to HubSpot.
 
 ## Run
 
@@ -51,20 +51,23 @@ src/
   components/
     layout/               Header, footer, announcement bar, logo
     ui/                   Buttons, section heads, cards, ticker, FAQ, page hero, icons
-    sections/             Home page blocks (hero, pillars, journey, platform, trust, manifesto, CTA)
+    sections/             Page blocks (hero, pillars, live passports, timeline, roles, sectors, journey, platform, trust, CTA)
+    passport/             Passport card (with QR) used in galleries
     forms/                Demo form, field wrapper, chip multi-select
   views/                  One file per route
   router/index.js         Routes, scroll behaviour, document titles
-public/                   Favicon and brand mark
+public/                   Favicon, artwork, passport product images (public/passports/)
 ```
 
 ## Design system
 
-Square, editorial layout: hard edges (all radius tokens are 0), 2px ink borders, offset block shadows, forest/bone/neon palette, drafting-grid backgrounds. Space Grotesk for UI, Instrument Serif for display headings (italic accent in clay), DM Mono for uppercase eyebrows with a square marker. Tokens live in `main.css`; reusable surfaces are the `brut` / `brut-lift` utilities. Form controls are custom (`BaseSelect`, `.brut-check`, `ChipMultiSelect`) — no native picklists.
+Aligned with the app's "Stamped Ledger" tokens: bone `#F1EFE9`, forest ink `#10231C`, WidinX green `#1B3D2F`, leaf `#2F7955`; square corners; offset "stamp" shadows on hover. Inter for body, Space Grotesk for UI and passport headings, Instrument Serif for display headings (italic accent), DM Mono for eyebrows. The logo is the app's mark, drawn inline in `BrandLogo.vue` so the wordmark gets the web font. Illustrated full-viewport sections use mandatory scroll snapping — any new top-level section must be a `section-illustrated` or `screen-scene`, or snapping will jump over it.
 
-## Ecology & impact
+## Live passports
 
-`/sustainability` presents the environmental offer: carbon footprint per product, AGEC Article 13 product sheets, the French Ecoscore (affichage environnemental, Ecobalyse method), Triman/Info-tri, ESPR/DPP, the 2026 EU green-claims rules and CSRD. Copy and sources live in `src/content/sustainability.js`; the home page mirrors it in `ImpactSection.vue`. Capability messaging (supplier network, PIM/DAM, EU regulation engine, digital twins on Solana) is in `src/content/home.js` and `src/content/platform.js`.
+`/passports` lists demonstration passports (`src/content/passports.js`), one per sector, each with a QR code. Every passport opens at its GS1 Digital Link — `/01/{gtin}[/10/{lot}][/21/{serial}]` — or at `/passports/{slug}`, rendered by `PassportView.vue` in the layout of the app's public passport (identity + QR, badges, audience switch, folding sections, claims & evidence, lifecycle, proof). Brands and data are fictional and marked DEMO ONLY; GTINs are in the GS1 restricted-circulation range (`02…`) so they never match a real product. Textile photos come from the textile test pack; the other products are SVG illustrations.
+
+`/sectors` lists the app's 15 EU sector templates (textiles is the path live in the console; others are opened per pilot) and the three entry roles. `/regulations` holds the timeline and the basics FAQ. `/solutions`, `/sustainability` and `/ecology` redirect to `/sectors`.
 
 The privacy policy body lives in `src/components/legal/PrivacyContent.vue` and is rendered both on `/privacy` and inside a dialog (`BaseModal`) opened from the demo form, so visitors return to their filled-in form.
 

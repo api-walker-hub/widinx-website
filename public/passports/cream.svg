@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><rect width="600" height="600" fill="#FFFFFF"/><ellipse cx="300" cy="512" rx="190" ry="18" fill="#142F2A" opacity=".08"/>
+<rect x="160" y="300" width="280" height="190" rx="30" fill="#FBFAF6" stroke="#DCE4DC" stroke-width="3"/>
+<rect x="150" y="230" width="300" height="88" rx="22" fill="#387962"/><rect x="150" y="290" width="300" height="12" fill="#2E6853"/>
+<text x="300" y="390" font-family="Georgia,serif" font-size="36" font-style="italic" fill="#245C4D" text-anchor="middle">Herbelle</text>
+<text x="300" y="425" font-family="Arial,Helvetica,sans-serif" font-size="13" letter-spacing="3" fill="#5B6963" text-anchor="middle">DAILY FACE CREAM · 50 ML</text>
+<path d="M300 440 q-14 14 0 28 q14 -14 0 -28z" fill="#9CC48A"/></svg>

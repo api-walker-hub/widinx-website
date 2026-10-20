@@ -2,22 +2,23 @@
 
 /* WidinX — woven identity, warm surfaces, precise details. */
 @theme {
-  --font-sans: 'Space Grotesk', ui-sans-serif, system-ui, -apple-system, sans-serif;
+  --font-sans: 'Inter', ui-sans-serif, system-ui, -apple-system, sans-serif;
   --font-serif: 'Instrument Serif', Georgia, 'Times New Roman', serif;
+  --font-display: 'Space Grotesk', 'Inter', ui-sans-serif, system-ui, sans-serif;
   --font-mono: 'DM Mono', ui-monospace, SFMono-Regular, Menlo, monospace;
 
-  --color-ink: #142f2a;
-  --color-forest: #245c4d;
-  --color-forest-deep: #163e34;
-  --color-emerald: #387962;
+  --color-ink: #10231c;
+  --color-forest: #1b3d2f;
+  --color-forest-deep: #12291f;
+  --color-emerald: #2f7955;
   --color-neon: #c5dfb0;
-  --color-clay: #4d806a;
-  --color-bone: #f7f8f2;
-  --color-pale: #f7f8f2;
-  --color-mint: #eaf0e6;
-  --color-line: #dce4dc;
-  --color-muted: #5b6963;
-  --color-body: #2f3d37;
+  --color-clay: #2f7955;
+  --color-bone: #f1efe9;
+  --color-pale: #fdfdfc;
+  --color-mint: #e6e3db;
+  --color-line: #c7d1cc;
+  --color-muted: #536a60;
+  --color-body: #2a3a33;
 
   /* Soft, restrained geometry */
   --radius-xs: 0;
@@ -33,6 +34,12 @@
   --shadow-lift: 0 16px 40px rgb(20 47 42 / 0.08);
   --shadow-card: 0 4px 20px rgb(20 47 42 / 0.035);
   --shadow-neon: 0 12px 32px rgb(20 47 42 / 0.08);
+  --shadow-stamp: 4px 4px 0 0 #10231c;
+  --shadow-stamp-sm: 3px 3px 0 0 #10231c;
+
+  --color-ochre: #ad770b;
+  --color-slate: #2c6f96;
+  --color-brick: #ae3a29;
 
   --animate-ticker: ticker 34s linear infinite;
   --animate-orbit: orbit 30s linear infinite;
@@ -288,3 +295,23 @@ section.section-illustrated > .wrap,
 .screen-scene > .wrap { flex-shrink: 0; }
 footer { scroll-snap-align: start; }
 
+
+/* App design-system pieces used on passports (Stamped Ledger). */
+@utility section-label {
+  font-size: 11px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.1em;
+}
+@utility badge {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.35em;
+  border-width: 1px;
+  padding: 1px 6px;
+  font-size: 10.5px;
+  font-weight: 600;
+  text-transform: uppercase;
+  letter-spacing: 0.04em;
+  line-height: 1.6;
+}

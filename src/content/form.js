@@ -4,22 +4,28 @@
  * Scale and stack questions are deliberately left for discovery calls.
  */
 export const useCaseOptions = [
-  { value: 'DPP', label: 'Digital Product Passport' },
-  { value: 'Regulation', label: 'Regulation management' },
-  { value: 'Trust', label: 'Digital twins & anti-counterfeiting' },
-  { value: 'Supply', label: 'Supplier network' },
-  { value: 'PIM', label: 'PIM / DAM' },
-  { value: 'Carbon', label: 'Carbon footprint & Ecoscore' },
-  { value: 'AGEC', label: 'AGEC compliance' },
+  { value: 'DPP', label: 'Digital Product Passports' },
+  { value: 'Textile', label: 'Textile DPP' },
+  { value: 'Battery', label: 'Battery passport' },
+  { value: 'Packaging', label: 'Packaging (PPWR)' },
+  { value: 'DigitalLabel', label: 'Digital label' },
+  { value: 'Import', label: 'Import from PIM / ERP / CSV' },
+  { value: 'Regulation', label: 'Regulation tracking & approvals' },
+  { value: 'Partner', label: 'Partner / consultant programme' },
 ]
 
 export const industryOptions = [
-  'Luxury & fashion',
-  'Watches & jewellery',
-  'Cosmetics & beauty',
-  'Electronics & batteries',
-  'Furniture & textiles',
-  'Distribution & retail',
+  'Textiles & apparel',
+  'Batteries',
+  'Electronics & ICT',
+  'Furniture',
+  'Packaging',
+  'Construction products',
+  'Toys',
+  'Cosmetics & detergents',
+  'Tyres & automotive',
+  'Leather goods & luxury',
+  'Consultancy / PRO',
   'Other',
 ]
 
@@ -46,6 +52,13 @@ export const countryOptions = [
   'Ireland',
   'Poland',
   'United States',
+  'China',
+  'Türkiye',
+  'India',
+  'Bangladesh',
+  'Vietnam',
+  'Morocco',
+  'Tunisia',
   'Other',
 ]
 

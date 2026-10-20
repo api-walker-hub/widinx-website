@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><rect width="600" height="600" fill="#FFFFFF"/><ellipse cx="300" cy="512" rx="190" ry="18" fill="#142F2A" opacity=".08"/>
+<circle cx="300" cy="300" r="205" fill="#22272A"/><circle cx="300" cy="300" r="205" fill="none" stroke="#33393D" stroke-width="22" stroke-dasharray="14 10"/>
+<circle cx="300" cy="300" r="128" fill="#3A4145"/><circle cx="300" cy="300" r="112" fill="#C7CDD1"/>
+<g fill="#9BA3A8"><path d="M300 300 L300 196 A104 104 0 0 1 358 214z"/><path d="M300 300 L398 268 A104 104 0 0 1 392 330z"/><path d="M300 300 L360 384 A104 104 0 0 1 300 404z"/><path d="M300 300 L240 384 A104 104 0 0 1 206 330z"/><path d="M300 300 L202 268 A104 104 0 0 1 242 214z"/></g>
+<circle cx="300" cy="300" r="30" fill="#5B6469"/><circle cx="300" cy="300" r="12" fill="#C7CDD1"/>
+<text x="300" y="132" font-family="Arial,Helvetica,sans-serif" font-size="15" letter-spacing="4" fill="#8A9296" text-anchor="middle">RIDGEWAY</text></svg>

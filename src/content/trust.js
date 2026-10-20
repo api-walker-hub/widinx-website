@@ -38,7 +38,7 @@ export const trustPage = {
       {
         icon: 'list',
         title: 'Auditability',
-        text: 'Tamper-evident logs for sensitive actions and cryptographically verifiable product histories.',
+        text: 'Tamper-evident logs for sensitive actions, versioned passports and signatures checkable against published keys.',
       },
     ],
   },
@@ -47,8 +47,8 @@ export const trustPage = {
     title: 'Designed so the answer to “where is my data?” is short.',
     items: [
       {
-        title: 'No personal data on public blockchains',
-        text: 'Only hashes, proofs and non-personal identifiers are anchored. Personal data and documents stay in your authorised data plane.',
+        title: 'No personal data in public passports',
+        text: 'Public passports carry product data only. Personal data and restricted documents stay behind sign-in, in your authorised data plane.',
       },
       {
         title: 'Tenant isolation',
@@ -108,7 +108,7 @@ export const trustPage = {
       },
       {
         title: 'Subprocessors',
-        text: 'Cloud hosting (EU region), transactional email, CRM, monitoring, an AI model provider and blockchain RPC infrastructure. The named list is provided with the DPA and kept current.',
+        text: 'Cloud hosting (EU region), transactional email, CRM, monitoring, and an AI model provider (used only when you switch the assistant on). The named list is provided with the DPA and kept current.',
       },
       {
         title: 'International transfers',

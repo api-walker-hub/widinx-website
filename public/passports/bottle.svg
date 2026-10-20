@@ -1,0 +1,7 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 600 600"><rect width="600" height="600" fill="#FFFFFF"/><ellipse cx="300" cy="512" rx="190" ry="18" fill="#142F2A" opacity=".08"/>
+<rect x="272" y="70" width="56" height="40" rx="6" fill="#2F6FA3"/><rect x="268" y="104" width="64" height="10" rx="3" fill="#25608F"/>
+<path d="M276 114 h48 v26 q60 40 60 110 v220 q0 34 -34 34 h-100 q-34 0 -34 -34 v-220 q0 -70 60 -110z" fill="#D7ECF5" stroke="#9CC9DE" stroke-width="3"/>
+<path d="M232 300 h136 v150 h-136z" fill="#E8F2E2"/><rect x="232" y="300" width="136" height="150" fill="none" stroke="#9CC9DE" stroke-width="2"/>
+<text x="300" y="352" font-family="Arial,Helvetica,sans-serif" font-size="20" font-weight="700" fill="#245C4D" text-anchor="middle">SOURCE</text><text x="300" y="378" font-family="Arial,Helvetica,sans-serif" font-size="14" fill="#245C4D" text-anchor="middle">CLAIRE</text>
+<text x="300" y="425" font-family="Arial,Helvetica,sans-serif" font-size="13" fill="#387962" text-anchor="middle">100% rPET</text>
+<path d="M250 200 q10 -40 40 -60" stroke="#fff" stroke-width="8" fill="none" stroke-linecap="round" opacity=".7"/></svg>
