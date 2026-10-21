@@ -21,6 +21,10 @@ Copy `.env.example` to `.env.local`. The demo form picks its transport in this o
 2. `VITE_HUBSPOT_PORTAL_ID` + `VITE_HUBSPOT_FORM_GUID` — HubSpot Forms API v3 (public endpoint, no secret in the browser).
 3. Nothing set — opens a prefilled email to the contact address.
 
+## Salesforce leads (`server/index.js`)
+
+Each demo request becomes a **Lead** in the apiwalker Salesforce org (LeadSource `Web`; industry, use cases, timeline, message and UTM attribution in Description). The server authenticates with the OAuth 2.0 client-credentials flow of the External Client App **WidinX Website Leads** (Setup → External Client App Manager), which runs as the org's admin user. Set `SALESFORCE_CLIENT_ID` and `SALESFORCE_CLIENT_SECRET` as encrypted env vars on the DigitalOcean app (`SALESFORCE_LOGIN_URL` defaults to `https://apiwalker.my.salesforce.com`). Salesforce and HubSpot run independently: the request succeeds if either CRM accepted it. `/api/health` reports which are configured.
+
 ## HubSpot lead relay (`server/index.js`)
 
 A small Express server turns each demo request into HubSpot records using a **private-app token that stays server-side** (`HUBSPOT_PRIVATE_APP_TOKEN`, never prefixed with `VITE_`). For every submission it:

@@ -2,7 +2,12 @@
  * WidinX lead relay.
  *
  * Receives demo-form submissions from the website and creates the records in
- * HubSpot with a private-app token that never leaves this server:
+ * the CRMs that are configured, with credentials that never leave this server.
+ *
+ * Salesforce (when SALESFORCE_CLIENT_ID/SECRET are set): one Lead, created
+ * through the OAuth 2.0 client-credentials flow of an External Client App.
+ *
+ * HubSpot (when HUBSPOT_PRIVATE_APP_TOKEN is set):
  *   1. Contact  — created or updated by email
  *   2. Company  — created by domain if missing, associated to the contact
  *   3. Lead     — HubSpot "Leads" object associated to the contact (skipped
@@ -12,7 +17,9 @@
  * fallback, so the API and the pages share one origin.
  *
  * Run:  node --env-file=.env.local server/index.js
- * Env:  HUBSPOT_PRIVATE_APP_TOKEN (required), PORT (8787), ALLOWED_ORIGINS
+ * Env:  SALESFORCE_LOGIN_URL (https://apiwalker.my.salesforce.com), SALESFORCE_CLIENT_ID,
+ *       SALESFORCE_CLIENT_SECRET, SALESFORCE_API_VERSION (v62.0),
+ *       HUBSPOT_PRIVATE_APP_TOKEN, PORT (8787), ALLOWED_ORIGINS
  *       (comma-separated, for cross-origin dev), NODE_ENV=production to serve dist.
  */
 import path from 'node:path'
@@ -28,7 +35,13 @@ const ALLOWED = (process.env.ALLOWED_ORIGINS || 'http://localhost:5180,http://12
   .map((s) => s.trim())
   .filter(Boolean)
 
-if (!TOKEN) console.warn('[leads] HUBSPOT_PRIVATE_APP_TOKEN is not set — submissions will fail.')
+const SF_URL = (process.env.SALESFORCE_LOGIN_URL || 'https://apiwalker.my.salesforce.com').replace(/\/$/, '')
+const SF_ID = process.env.SALESFORCE_CLIENT_ID || ''
+const SF_SECRET = process.env.SALESFORCE_CLIENT_SECRET || ''
+const SF_VERSION = process.env.SALESFORCE_API_VERSION || 'v62.0'
+const SF_ON = Boolean(SF_ID && SF_SECRET)
+
+if (!SF_ON && !TOKEN) console.warn('[leads] no CRM configured (Salesforce or HubSpot) — submissions will fail.')
 
 const app = express()
 app.use(express.json({ limit: '64kb' }))
@@ -178,9 +191,75 @@ async function createLead(f, contactId) {
   }
 }
 
+// --- Salesforce helpers ----------------------------------------------------
+
+let sfToken = null // { access_token, instance_url, at }
+
+async function sfAuth() {
+  // Client-credentials tokens are reused for 50 minutes; a 401 forces a new one.
+  if (sfToken && Date.now() - sfToken.at < 50 * 60 * 1000) return sfToken
+  const res = await fetch(`${SF_URL}/services/oauth2/token`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: new URLSearchParams({ grant_type: 'client_credentials', client_id: SF_ID, client_secret: SF_SECRET }),
+  })
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const err = new Error(`Salesforce auth → ${res.status} ${data.error || ''} ${data.error_description || ''}`.trim())
+    err.status = res.status
+    throw err
+  }
+  sfToken = { access_token: data.access_token, instance_url: data.instance_url || SF_URL, at: Date.now() }
+  return sfToken
+}
+
+async function sf(method, url, body, retry = true) {
+  const { access_token, instance_url } = await sfAuth()
+  const res = await fetch(`${instance_url}/services/data/${SF_VERSION}${url}`, {
+    method,
+    headers: {
+      Authorization: `Bearer ${access_token}`,
+      'Content-Type': 'application/json',
+      // Duplicate rules may warn about an existing lead; a demo request is still worth keeping.
+      'Sforce-Duplicate-Rule-Header': 'allowSave=true',
+    },
+    body: body ? JSON.stringify(body) : undefined,
+  })
+  if (res.status === 401 && retry) {
+    sfToken = null
+    return sf(method, url, body, false)
+  }
+  const data = await res.json().catch(() => ({}))
+  if (!res.ok) {
+    const first = Array.isArray(data) ? data[0] : data
+    const err = new Error(`Salesforce ${method} ${url} → ${res.status} ${first?.errorCode || ''} ${first?.message || ''}`.trim())
+    err.status = res.status
+    err.data = data
+    throw err
+  }
+  return data
+}
+
+async function createSalesforceLead(f, note) {
+  const lead = {
+    FirstName: f.firstName,
+    LastName: f.lastName,
+    Email: f.email,
+    Company: f.company,
+    Title: f.role,
+    Country: f.country,
+    Website: f.website,
+    LeadSource: 'Web',
+    Description: [f.industry ? `Industry (self-declared): ${f.industry}` : null, note].filter(Boolean).join('\n').slice(0, 32000),
+  }
+  Object.keys(lead).forEach((k) => (lead[k] === undefined || lead[k] === '') && delete lead[k])
+  const created = await sf('POST', '/sobjects/Lead', lead)
+  return created.id
+}
+
 // --- Routes ----------------------------------------------------------------
 
-app.get('/api/health', (_req, res) => res.json({ ok: true, hubspot: Boolean(TOKEN) }))
+app.get('/api/health', (_req, res) => res.json({ ok: true, salesforce: SF_ON, hubspot: Boolean(TOKEN) }))
 
 app.post('/api/leads', async (req, res) => {
   const ip = req.headers['x-forwarded-for']?.toString().split(',')[0] || req.socket.remoteAddress || 'unknown'
@@ -206,22 +285,39 @@ app.post('/api/leads', async (req, res) => {
   if (!f.email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(f.email) || !f.firstName || !f.lastName || !f.company) {
     return res.status(400).json({ ok: false, error: 'Missing required fields' })
   }
-  if (!TOKEN) return res.status(503).json({ ok: false, error: 'CRM not configured' })
+  if (!SF_ON && !TOKEN) return res.status(503).json({ ok: false, error: 'CRM not configured' })
 
-  try {
-    const note = buildNote(f, b.utm || {})
-    const contact = await upsertContact(f, note)
-    const companyId = await upsertCompany(f, contact.id).catch((e) => {
-      console.warn('[leads] company skipped:', e.status, e.data?.message || e.message)
-      return null
-    })
-    const leadId = await createLead(f, contact.id)
-    console.log(`[leads] ${f.email} → contact ${contact.id}${contact.created ? ' (new)' : ''}, company ${companyId ?? '-'}, lead ${leadId ?? '-'}`)
-    res.json({ ok: true, contactId: contact.id, companyId, leadId })
-  } catch (e) {
-    console.error('[leads] failed:', e.status, e.data || e.message)
-    res.status(502).json({ ok: false, error: 'CRM request failed' })
+  const note = buildNote(f, b.utm || {})
+  const result = { ok: false }
+
+  // Each CRM is independent: one failing does not lose the lead in the other.
+  if (SF_ON) {
+    try {
+      result.salesforceLeadId = await createSalesforceLead(f, note)
+      result.ok = true
+      console.log(`[leads] ${f.email} → Salesforce lead ${result.salesforceLeadId}`)
+    } catch (e) {
+      console.error('[leads] Salesforce failed:', e.message, JSON.stringify(e.data || ''))
+    }
   }
+
+  if (TOKEN) {
+    try {
+      const contact = await upsertContact(f, note)
+      const companyId = await upsertCompany(f, contact.id).catch((e) => {
+        console.warn('[leads] company skipped:', e.status, e.data?.message || e.message)
+        return null
+      })
+      const leadId = await createLead(f, contact.id)
+      Object.assign(result, { contactId: contact.id, companyId, leadId, ok: true })
+      console.log(`[leads] ${f.email} → HubSpot contact ${contact.id}${contact.created ? ' (new)' : ''}, company ${companyId ?? '-'}, lead ${leadId ?? '-'}`)
+    } catch (e) {
+      console.error('[leads] HubSpot failed:', e.status, e.data || e.message)
+    }
+  }
+
+  if (!result.ok) return res.status(502).json({ ok: false, error: 'CRM request failed' })
+  res.json(result)
 })
 
 // --- Static site (production) ---------------------------------------------
