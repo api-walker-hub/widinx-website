@@ -4,8 +4,10 @@
  * Receives demo-form submissions from the website and creates the records in
  * the CRMs that are configured, with credentials that never leave this server.
  *
- * Salesforce (when SALESFORCE_CLIENT_ID/SECRET are set): one Lead, created
- * through the OAuth 2.0 client-credentials flow of an External Client App.
+ * Salesforce: one Lead per request through Web-to-Lead (the org's edition has
+ * no REST API). The form is posted server-side with the org id and the
+ * Demo Request custom field id; Salesforce answers 200 either way and emails
+ * the default lead creator if a lead is rejected.
  *
  * HubSpot (when HUBSPOT_PRIVATE_APP_TOKEN is set):
  *   1. Contact  — created or updated by email
@@ -17,8 +19,8 @@
  * fallback, so the API and the pages share one origin.
  *
  * Run:  node --env-file=.env.local server/index.js
- * Env:  SALESFORCE_LOGIN_URL (https://apiwalker.my.salesforce.com), SALESFORCE_CLIENT_ID,
- *       SALESFORCE_CLIENT_SECRET, SALESFORCE_API_VERSION (v62.0),
+ * Env:  SALESFORCE_OID (org id), SALESFORCE_DEMO_REQUEST_FIELD (Demo_Request__c id),
+ *       SALESFORCE_WEBTOLEAD=off to disable,
  *       HUBSPOT_PRIVATE_APP_TOKEN, PORT (8787), ALLOWED_ORIGINS
  *       (comma-separated, for cross-origin dev), NODE_ENV=production to serve dist.
  */
@@ -35,11 +37,9 @@ const ALLOWED = (process.env.ALLOWED_ORIGINS || 'http://localhost:5180,http://12
   .map((s) => s.trim())
   .filter(Boolean)
 
-const SF_URL = (process.env.SALESFORCE_LOGIN_URL || 'https://apiwalker.my.salesforce.com').replace(/\/$/, '')
-const SF_ID = process.env.SALESFORCE_CLIENT_ID || ''
-const SF_SECRET = process.env.SALESFORCE_CLIENT_SECRET || ''
-const SF_VERSION = process.env.SALESFORCE_API_VERSION || 'v62.0'
-const SF_ON = Boolean(SF_ID && SF_SECRET)
+const SF_OID = process.env.SALESFORCE_OID || '00DWx00000A2WfZ'
+const SF_DEMO_FIELD = process.env.SALESFORCE_DEMO_REQUEST_FIELD || '00NWx00000Dmhb3'
+const SF_ON = process.env.SALESFORCE_WEBTOLEAD !== 'off' && Boolean(SF_OID)
 
 if (!SF_ON && !TOKEN) console.warn('[leads] no CRM configured (Salesforce or HubSpot) — submissions will fail.')
 
@@ -191,71 +191,36 @@ async function createLead(f, contactId) {
   }
 }
 
-// --- Salesforce helpers ----------------------------------------------------
-
-let sfToken = null // { access_token, instance_url, at }
-
-async function sfAuth() {
-  // Client-credentials tokens are reused for 50 minutes; a 401 forces a new one.
-  if (sfToken && Date.now() - sfToken.at < 50 * 60 * 1000) return sfToken
-  const res = await fetch(`${SF_URL}/services/oauth2/token`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
-    body: new URLSearchParams({ grant_type: 'client_credentials', client_id: SF_ID, client_secret: SF_SECRET }),
-  })
-  const data = await res.json().catch(() => ({}))
-  if (!res.ok) {
-    const err = new Error(`Salesforce auth → ${res.status} ${data.error || ''} ${data.error_description || ''}`.trim())
-    err.status = res.status
-    throw err
-  }
-  sfToken = { access_token: data.access_token, instance_url: data.instance_url || SF_URL, at: Date.now() }
-  return sfToken
-}
-
-async function sf(method, url, body, retry = true) {
-  const { access_token, instance_url } = await sfAuth()
-  const res = await fetch(`${instance_url}/services/data/${SF_VERSION}${url}`, {
-    method,
-    headers: {
-      Authorization: `Bearer ${access_token}`,
-      'Content-Type': 'application/json',
-      // Duplicate rules may warn about an existing lead; a demo request is still worth keeping.
-      'Sforce-Duplicate-Rule-Header': 'allowSave=true',
-    },
-    body: body ? JSON.stringify(body) : undefined,
-  })
-  if (res.status === 401 && retry) {
-    sfToken = null
-    return sf(method, url, body, false)
-  }
-  const data = await res.json().catch(() => ({}))
-  if (!res.ok) {
-    const first = Array.isArray(data) ? data[0] : data
-    const err = new Error(`Salesforce ${method} ${url} → ${res.status} ${first?.errorCode || ''} ${first?.message || ''}`.trim())
-    err.status = res.status
-    err.data = data
-    throw err
-  }
-  return data
-}
+// --- Salesforce (Web-to-Lead) ----------------------------------------------
 
 async function createSalesforceLead(f, note) {
-  const lead = {
-    FirstName: f.firstName,
-    LastName: f.lastName,
-    Email: f.email,
-    Company: f.company,
-    Title: f.role,
-    Country: f.country,
-    Website: f.website,
-    LeadSource: 'Web',
-    Demo_Request__c: true,
-    Description: [f.industry ? `Industry (self-declared): ${f.industry}` : null, note].filter(Boolean).join('\n').slice(0, 32000),
+  const form = new URLSearchParams({
+    oid: SF_OID,
+    retURL: 'https://widinx-website-8l3s4.ondigitalocean.app/demo',
+    first_name: f.firstName,
+    last_name: f.lastName,
+    email: f.email,
+    company: f.company,
+    title: f.role || '',
+    country: f.country || '',
+    URL: f.website || '',
+    lead_source: 'Web',
+    description: [f.industry ? `Industry (self-declared): ${f.industry}` : null, note].filter(Boolean).join('\n').slice(0, 32000),
+    [SF_DEMO_FIELD]: '1',
+  })
+  const res = await fetch('https://webto.salesforce.com/servlet/servlet.WebToLead?encoding=UTF-8', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+    body: form,
+    redirect: 'manual',
+  })
+  // Web-to-Lead answers 200 (or a redirect to retURL) whether or not the lead was accepted.
+  if (res.status >= 400) {
+    const err = new Error(`Salesforce Web-to-Lead → ${res.status}`)
+    err.status = res.status
+    throw err
   }
-  Object.keys(lead).forEach((k) => (lead[k] === undefined || lead[k] === '') && delete lead[k])
-  const created = await sf('POST', '/sobjects/Lead', lead)
-  return created.id
+  return true
 }
 
 // --- Routes ----------------------------------------------------------------
@@ -294,9 +259,9 @@ app.post('/api/leads', async (req, res) => {
   // Each CRM is independent: one failing does not lose the lead in the other.
   if (SF_ON) {
     try {
-      result.salesforceLeadId = await createSalesforceLead(f, note)
+      result.salesforce = await createSalesforceLead(f, note)
       result.ok = true
-      console.log(`[leads] ${f.email} → Salesforce lead ${result.salesforceLeadId}`)
+      console.log(`[leads] ${f.email} → Salesforce Web-to-Lead accepted`)
     } catch (e) {
       console.error('[leads] Salesforce failed:', e.message, JSON.stringify(e.data || ''))
     }
