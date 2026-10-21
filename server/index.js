@@ -250,6 +250,7 @@ async function createSalesforceLead(f, note) {
     Country: f.country,
     Website: f.website,
     LeadSource: 'Web',
+    Demo_Request__c: true,
     Description: [f.industry ? `Industry (self-declared): ${f.industry}` : null, note].filter(Boolean).join('\n').slice(0, 32000),
   }
   Object.keys(lead).forEach((k) => (lead[k] === undefined || lead[k] === '') && delete lead[k])
